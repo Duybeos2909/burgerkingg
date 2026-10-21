@@ -1,0 +1,2781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-i18n="page.title">Burger King — Flame-Grilled, Your Way</title>
+  <meta name="description" content="A high-converting Burger King landing experience with menu, deals, store finder, rewards, app download, and cart interactions." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --red:#C8102E;
+      --charcoal:#1A1A1A;
+      --cream:#FFF5E4;
+      --amber:#F2A623;
+      --off:#F9F5EF;
+      --muted:#d8cfbe;
+      --text-dark:#252525;
+      --card:#252525;
+      --shadow:0 24px 60px rgba(0,0,0,.18);
+      --radius:20px;
+      --max:1280px;
+      --nav-h:76px;
+    }
+
+    *{box-sizing:border-box}
+    html{
+      scroll-behavior:smooth;
+      scroll-padding-top:calc(var(--nav-h) + 18px);
+    }
+    body{
+      margin:0;
+      font-family:'DM Sans',system-ui,-apple-system,sans-serif;
+      background:var(--charcoal);
+      color:var(--cream);
+      line-height:1.55;
+      overflow-x:hidden;
+    }
+    img{max-width:100%;display:block}
+    a{text-decoration:none;color:inherit}
+    button,input{font:inherit}
+    button{cursor:pointer}
+    :focus-visible{
+      outline:2px solid var(--red);
+      outline-offset:2px;
+    }
+
+    .skip-link{
+      position:absolute;
+      left:16px;
+      top:-80px;
+      background:var(--cream);
+      color:var(--charcoal);
+      padding:12px 16px;
+      border-radius:999px;
+      z-index:3000;
+      transition:top .2s ease;
+      font-weight:700;
+    }
+    .skip-link:focus{top:16px}
+
+    .container{
+      width:min(calc(100% - 32px), var(--max));
+      margin:0 auto;
+    }
+
+    .section{
+      position:relative;
+      padding:88px 0;
+    }
+    .section--light{
+      background:var(--off);
+      color:var(--text-dark);
+    }
+    .eyebrow{
+      display:inline-block;
+      text-transform:uppercase;
+      letter-spacing:.18em;
+      font-size:.78rem;
+      font-weight:700;
+      color:var(--amber);
+      margin-bottom:14px;
+    }
+    .section--light .eyebrow{color:var(--red)}
+    .section-title{
+      font-family:'Playfair Display',serif;
+      font-size:clamp(2.4rem,6vw,4rem);
+      line-height:.98;
+      margin:0 0 14px;
+      letter-spacing:-.03em;
+    }
+    .section-copy{
+      max-width:650px;
+      font-size:1.02rem;
+      opacity:.82;
+      margin:0;
+    }
+    .section-head{
+      text-align:center;
+      margin-bottom:40px;
+    }
+
+    .nav{
+      position:fixed;
+      inset:0 0 auto 0;
+      height:var(--nav-h);
+      background:rgba(26,26,26,.92);
+      backdrop-filter:blur(12px);
+      z-index:2000;
+      transition:border-color .2s ease, background .2s ease;
+      border-bottom:1px solid transparent;
+    }
+    .nav.scrolled{
+      border-bottom-color:rgba(255,255,255,.08);
+    }
+    .nav-inner{
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:20px;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:800;
+      letter-spacing:.08em;
+      color:var(--cream);
+      font-size:1.06rem;
+      white-space:nowrap;
+    }
+    .brand .flame{
+      font-size:1.15rem;
+      filter:drop-shadow(0 0 12px rgba(242,166,35,.5));
+    }
+    .nav-links{
+      display:none;
+      align-items:center;
+      gap:28px;
+    }
+    .nav-link{
+      font-size:.9rem;
+      position:relative;
+      opacity:.92;
+    }
+    .nav-link::after{
+      content:"";
+      position:absolute;
+      left:0;right:0;bottom:-8px;
+      height:2px;
+      background:var(--red);
+      transform:scaleX(0);
+      transform-origin:left;
+      transition:transform .2s ease;
+    }
+    .nav-link:hover::after,.nav-link:focus-visible::after{transform:scaleX(1)}
+
+    .btn{
+      border:none;
+      border-radius:999px;
+      padding:14px 22px;
+      min-height:54px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      font-weight:700;
+      transition:transform .2s ease, box-shadow .2s ease, background .2s ease, color .2s ease, border-color .2s ease;
+    }
+    .btn:hover{transform:translateY(-2px)}
+    .btn--primary{
+      background:var(--red);
+      color:#fff;
+      box-shadow:0 14px 30px rgba(200,16,46,.28);
+    }
+    .btn--ghost{
+      background:transparent;
+      color:var(--cream);
+      border:1.5px solid rgba(255,245,228,.5);
+    }
+    .btn--light-outline{
+      background:transparent;
+      color:var(--text-dark);
+      border:1.5px solid rgba(37,37,37,.18);
+    }
+    .btn--dark{
+      background:var(--charcoal);
+      color:var(--cream);
+      border-radius:14px;
+      min-height:50px;
+      padding:12px 20px;
+    }
+    .nav-cta{
+      display:none;
+      min-height:46px;
+      padding:10px 18px;
+      font-size:.9rem;
+    }
+    .hamburger{
+      border:none;
+      background:transparent;
+      color:var(--cream);
+      font-size:1.8rem;
+      line-height:1;
+      padding:6px;
+    }
+    .language-toggle{
+      min-height:40px;
+      padding:8px 12px;
+      border:1px solid rgba(255,255,255,.3);
+      border-radius:999px;
+      background:transparent;
+      color:var(--cream);
+      font-size:.82rem;
+      font-weight:700;
+      white-space:nowrap;
+    }
+    .language-toggle .active{color:var(--amber)}
+
+    .mobile-nav{
+      position:fixed;
+      inset:0;
+      background:rgba(15,15,15,.98);
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      gap:24px;
+      transform:translateY(-100%);
+      transition:transform .3s ease;
+      z-index:1900;
+    }
+    .mobile-nav.open{transform:translateY(0)}
+    .mobile-nav a{
+      font-size:1.4rem;
+      font-weight:700;
+      color:var(--cream);
+    }
+    .mobile-nav .btn{min-width:220px}
+
+    .floating-order{
+      position:fixed;
+      right:18px;
+      bottom:18px;
+      z-index:1200;
+      box-shadow:0 16px 40px rgba(200,16,46,.35);
+    }
+
+    #home{
+      min-height:100vh;
+      padding-top:calc(var(--nav-h) + 24px);
+      background:
+        radial-gradient(ellipse at 60% 50%, #3D1A0A 0%, #1A1A1A 65%);
+      overflow:hidden;
+      display:flex;
+      align-items:center;
+    }
+    .hero-grid{
+      display:grid;
+      gap:36px;
+      align-items:center;
+      min-height:calc(100vh - var(--nav-h) - 24px);
+      padding:28px 0 60px;
+      position:relative;
+    }
+    .hero-copy{
+      position:relative;
+      z-index:3;
+      max-width:620px;
+    }
+    .hero-banner{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      align-items:center;
+      background:var(--amber);
+      color:var(--charcoal);
+      padding:12px 16px;
+      border-radius:999px;
+      width:max-content;
+      max-width:100%;
+      margin-bottom:22px;
+      box-shadow:0 18px 36px rgba(242,166,35,.2);
+      font-weight:700;
+    }
+    .hero-banner span:last-child{
+      background:rgba(26,26,26,.12);
+      padding:8px 12px;
+      border-radius:999px;
+      min-width:96px;
+      text-align:center;
+      font-variant-numeric:tabular-nums;
+    }
+    .hero-title{
+      font-family:'Playfair Display',serif;
+      font-size:clamp(3.2rem,11vw,6.2rem);
+      line-height:.9;
+      margin:0 0 18px;
+      letter-spacing:-.05em;
+    }
+    .hero-desc{
+      font-size:1.08rem;
+      max-width:480px;
+      color:rgba(255,245,228,.82);
+      margin:0 0 28px;
+    }
+    .hero-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:14px;
+      margin-bottom:24px;
+    }
+    .hero-actions .btn{
+      min-width:165px;
+      min-height:56px;
+    }
+    .ticker{
+      overflow:hidden;
+      border-top:1px solid rgba(255,255,255,.08);
+      border-bottom:1px solid rgba(255,255,255,.08);
+      padding:14px 0;
+      max-width:100%;
+    }
+    .ticker-track{
+      display:inline-flex;
+      gap:50px;
+      white-space:nowrap;
+      animation:marquee 20s linear infinite;
+      padding-right:50px;
+    }
+
+    .hero-art{
+      position:relative;
+      min-height:360px;
+      z-index:1;
+    }
+    .hero-visual{
+      position:relative;
+      max-width:620px;
+      margin-inline:auto;
+    }
+    .hero-glow{
+      position:absolute;
+      inset:auto 10% -6% 10%;
+      height:160px;
+      background:radial-gradient(circle, rgba(242,166,35,.3), transparent 70%);
+      filter:blur(10px);
+      z-index:0;
+    }
+    .hero-image-wrap{
+      position:relative;
+      background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.01));
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:34px;
+      overflow:hidden;
+      box-shadow:0 30px 60px rgba(0,0,0,.35);
+      transform:rotate(-4deg);
+    }
+    .hero-image-wrap::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(180deg, rgba(0,0,0,.05), rgba(0,0,0,.2));
+      z-index:1;
+      pointer-events:none;
+    }
+    .hero-image{
+      width:100%;
+      aspect-ratio:4/4.6;
+      object-fit:cover;
+    }
+    .hero-badge{
+      position:absolute;
+      right:-10px;
+      bottom:24px;
+      z-index:2;
+      background:var(--cream);
+      color:var(--charcoal);
+      padding:16px 18px;
+      border-radius:22px;
+      box-shadow:var(--shadow);
+      max-width:220px;
+    }
+    .hero-badge strong{
+      display:block;
+      font-size:1.3rem;
+      margin-top:4px;
+    }
+    .flame-field{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      overflow:hidden;
+      z-index:0;
+    }
+    .flame-particle{
+      position:absolute;
+      width:6px;
+      height:6px;
+      border-radius:50%;
+      background:var(--amber);
+      opacity:.35;
+      animation:float-up 4s ease-in infinite;
+      box-shadow:0 0 18px rgba(242,166,35,.4);
+    }
+
+    .filter-bar{
+      display:flex;
+      gap:12px;
+      overflow:auto;
+      padding:4px 0 10px;
+      margin-bottom:24px;
+      scrollbar-width:none;
+    }
+    .filter-bar::-webkit-scrollbar{display:none}
+    .pill{
+      border:1px solid rgba(37,37,37,.14);
+      background:#fff;
+      color:var(--text-dark);
+      padding:12px 18px;
+      border-radius:999px;
+      font-weight:700;
+      white-space:nowrap;
+      transition:all .2s ease;
+    }
+    .pill.active{
+      background:var(--red);
+      color:#fff;
+      border-color:var(--red);
+      box-shadow:0 12px 24px rgba(200,16,46,.16);
+    }
+    .section--dark .pill{
+      background:transparent;
+      color:var(--cream);
+      border-color:rgba(255,255,255,.12);
+    }
+    .section--dark .pill.active{
+      background:var(--red);
+      border-color:var(--red);
+      color:#fff;
+    }
+
+    .menu-grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:20px;
+    }
+    .menu-card{
+      background:#fff;
+      border-radius:18px;
+      overflow:hidden;
+      box-shadow:0 20px 40px rgba(50,33,12,.08);
+      transition:transform .2s ease, box-shadow .2s ease;
+      display:flex;
+      flex-direction:column;
+    }
+    .menu-card:hover{
+      transform:translateY(-6px);
+      box-shadow:0 20px 40px rgba(200,16,46,.15);
+    }
+    .menu-media{
+      height:200px;
+      display:grid;
+      place-items:center;
+      font-size:4rem;
+      color:#fff;
+      position:relative;
+      overflow:hidden;
+    }
+    .menu-media::after{
+      content:"";
+      position:absolute;
+      inset:auto -20% -40% auto;
+      width:160px;height:160px;
+      border-radius:50%;
+      background:rgba(255,255,255,.12);
+      filter:blur(2px);
+    }
+    .menu-body{
+      padding:18px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      flex:1;
+    }
+    .badge{
+      width:max-content;
+      padding:7px 12px;
+      border-radius:999px;
+      font-size:.78rem;
+      font-weight:700;
+      background:rgba(242,166,35,.18);
+      color:#9b5600;
+    }
+    .menu-name{
+      margin:0;
+      color:var(--text-dark);
+      font-size:1.04rem;
+    }
+    .menu-desc{
+      margin:0;
+      color:#5d5d5d;
+      font-size:.9rem;
+      display:-webkit-box;
+      -webkit-line-clamp:2;
+      line-clamp:2;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+      min-height:2.8em;
+    }
+    .menu-meta{
+      display:grid;
+      grid-template-columns:auto auto 1fr;
+      align-items:center;
+      gap:12px;
+      margin-top:auto;
+    }
+    .price{
+      color:var(--red);
+      font-size:1.15rem;
+      font-weight:800;
+    }
+    .rating{
+      color:#7b7b7b;
+      font-weight:700;
+      font-size:.92rem;
+    }
+    .add-btn{
+      justify-self:end;
+      border:none;
+      background:var(--red);
+      color:#fff;
+      border-radius:999px;
+      padding:12px 14px;
+      font-weight:700;
+      min-height:42px;
+    }
+
+    .cart-fab{
+      position:fixed;
+      right:18px;
+      bottom:88px;
+      width:64px;
+      height:64px;
+      border-radius:50%;
+      border:none;
+      background:var(--charcoal);
+      color:var(--cream);
+      box-shadow:0 16px 32px rgba(0,0,0,.25);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:1200;
+      font-size:1.4rem;
+    }
+    .cart-count{
+      position:absolute;
+      top:-4px;
+      right:-2px;
+      min-width:24px;
+      height:24px;
+      padding:0 6px;
+      border-radius:999px;
+      display:grid;
+      place-items:center;
+      background:var(--red);
+      color:#fff;
+      font-size:.76rem;
+      font-weight:700;
+    }
+
+    .cart-sidebar{
+      position:fixed;
+      inset:0 0 0 auto;
+      width:min(100%, 420px);
+      background:#fff;
+      color:var(--text-dark);
+      box-shadow:-20px 0 60px rgba(0,0,0,.22);
+      transform:translateX(100%);
+      transition:transform .3s ease;
+      z-index:2200;
+      display:flex;
+      flex-direction:column;
+    }
+    .cart-sidebar.open{transform:translateX(0)}
+    .cart-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      padding:24px;
+      border-bottom:1px solid rgba(0,0,0,.08);
+    }
+    .cart-header h3{margin:0;font-size:1.3rem}
+    .icon-btn{
+      width:42px;height:42px;
+      border-radius:50%;
+      border:1px solid rgba(0,0,0,.1);
+      background:#fff;
+      display:grid;
+      place-items:center;
+      color:#333;
+    }
+    .cart-items{
+      padding:18px 24px;
+      overflow:auto;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      flex:1;
+    }
+    .cart-empty{
+      margin:auto 0;
+      text-align:center;
+      color:#6a6a6a;
+      padding:24px 0;
+    }
+    .cart-item{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:6px 12px;
+      padding:16px;
+      border-radius:16px;
+      background:#faf7f2;
+      border:1px solid rgba(0,0,0,.04);
+    }
+    .cart-item strong{font-size:1rem}
+    .cart-item small{color:#6f6f6f}
+    .cart-qty{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      justify-self:end;
+    }
+    .qty-btn{
+      width:28px;height:28px;border-radius:50%;
+      border:none;background:#ece7de;color:#333;font-weight:700;
+    }
+    .cart-footer{
+      padding:20px 24px 24px;
+      border-top:1px solid rgba(0,0,0,.08);
+      display:grid;
+      gap:14px;
+    }
+    .cart-total{
+      display:flex;
+      justify-content:space-between;
+      font-size:1.05rem;
+      font-weight:800;
+    }
+    .backdrop{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.45);
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .3s ease;
+      z-index:2100;
+    }
+    .backdrop.show{
+      opacity:1;
+      pointer-events:auto;
+    }
+
+    .section--dark{
+      background:var(--charcoal);
+      color:var(--cream);
+    }
+    .deals-grid{
+      display:grid;
+      gap:20px;
+    }
+    .deal-card{
+      background:var(--card);
+      border-radius:20px;
+      padding:22px;
+      border-top:3px solid var(--amber);
+      position:relative;
+      overflow:hidden;
+      box-shadow:0 18px 36px rgba(0,0,0,.18);
+    }
+    .deal-tag{
+      position:absolute;
+      top:18px;
+      right:18px;
+      background:rgba(255,255,255,.08);
+      color:var(--cream);
+      padding:8px 12px;
+      border-radius:999px;
+      font-size:.76rem;
+      font-weight:700;
+    }
+    .deal-card h3{
+      margin:14px 0 10px;
+      padding-right:120px;
+      font-family:'Playfair Display',serif;
+      font-size:1.7rem;
+      line-height:1;
+    }
+    .deal-card p{
+      margin:0 0 18px;
+      color:rgba(255,245,228,.8);
+      max-width:420px;
+    }
+    .deal-meta{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      align-items:center;
+      margin-bottom:18px;
+    }
+    .timer{
+      padding:10px 14px;
+      border-radius:999px;
+      background:rgba(242,166,35,.12);
+      color:var(--amber);
+      font-weight:800;
+      min-width:110px;
+      text-align:center;
+      font-variant-numeric:tabular-nums;
+    }
+
+    .stores-grid{
+      display:grid;
+      gap:26px;
+      align-items:start;
+    }
+    .search-row{
+      display:grid;
+      gap:12px;
+      margin-bottom:12px;
+    }
+    .search-input{
+      width:100%;
+      min-height:56px;
+      border-radius:18px;
+      border:1px solid rgba(37,37,37,.12);
+      padding:0 18px;
+      background:#fff;
+      color:var(--text-dark);
+      box-shadow:0 10px 26px rgba(0,0,0,.04);
+    }
+    .store-list{
+      display:grid;
+      gap:14px;
+      margin-top:12px;
+    }
+    .store-card{
+      background:#fff;
+      border-radius:14px;
+      box-shadow:0 16px 36px rgba(0,0,0,.06);
+      padding:18px;
+      border:1px solid rgba(37,37,37,.06);
+    }
+    .store-top{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:10px;
+      align-items:start;
+      margin-bottom:10px;
+    }
+    .store-card h3{
+      margin:0;
+      font-size:1.05rem;
+    }
+    .store-card p{
+      margin:6px 0 0;
+      color:#616161;
+      font-size:.92rem;
+    }
+    .distance{
+      background:rgba(200,16,46,.1);
+      color:var(--red);
+      padding:8px 10px;
+      border-radius:999px;
+      font-size:.78rem;
+      font-weight:800;
+      white-space:nowrap;
+    }
+    .hours{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      color:#2f6f2f;
+      font-weight:700;
+      font-size:.9rem;
+      margin-bottom:12px;
+    }
+    .hours::before{
+      content:"";
+      width:9px;height:9px;border-radius:50%;
+      background:#33b249;
+      box-shadow:0 0 0 5px rgba(51,178,73,.12);
+    }
+    .feature-tags{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-bottom:14px;
+    }
+    .feature-tag{
+      padding:7px 10px;
+      border-radius:999px;
+      background:#f3efe7;
+      color:#5b5448;
+      font-size:.78rem;
+      font-weight:700;
+    }
+    .map-box{
+      min-height:500px;
+      border-radius:24px;
+      background:#D4C5A9;
+      color:var(--charcoal);
+      display:grid;
+      place-items:center;
+      text-align:center;
+      padding:30px;
+      box-shadow:0 24px 54px rgba(0,0,0,.1);
+    }
+    .map-box span{
+      display:block;
+      font-size:3rem;
+      margin-bottom:10px;
+    }
+
+    .rewards-wrap{
+      background:linear-gradient(135deg, var(--red) 0 50%, var(--charcoal) 50% 100%);
+      color:#fff;
+      position:relative;
+      overflow:hidden;
+    }
+    .rewards-grid{
+      display:grid;
+      gap:28px;
+      align-items:center;
+    }
+    .rewards-copy .section-title{margin-bottom:16px}
+    .value-list{
+      display:grid;
+      gap:14px;
+      margin-top:24px;
+    }
+    .value-item{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      font-weight:500;
+    }
+    .value-item span:first-child{
+      font-size:1.35rem;
+      width:32px;
+      flex:0 0 auto;
+    }
+    .form-card{
+      background:#fff;
+      color:var(--text-dark);
+      border-radius:20px;
+      padding:26px;
+      box-shadow:0 28px 56px rgba(0,0,0,.2);
+    }
+    .form-card h3{
+      margin:0 0 18px;
+      font-size:1.35rem;
+    }
+    .form-grid{
+      display:grid;
+      gap:14px;
+    }
+    .field{
+      display:grid;
+      gap:8px;
+    }
+    .field label{
+      font-weight:700;
+      font-size:.92rem;
+    }
+    .field input{
+      min-height:52px;
+      border-radius:14px;
+      border:1px solid rgba(0,0,0,.12);
+      padding:0 14px;
+      background:#fff;
+    }
+    .checkbox{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      font-size:.92rem;
+      color:#4e4e4e;
+    }
+    .checkbox input{
+      margin-top:2px;
+      width:18px;
+      height:18px;
+      accent-color:var(--red);
+    }
+    .form-note{
+      margin:0;
+      color:#6b6b6b;
+      font-size:.78rem;
+    }
+    .form-error{
+      display:none;
+      color:#b8182f;
+      font-weight:700;
+      font-size:.9rem;
+      background:#fff3f5;
+      border:1px solid rgba(184,24,47,.14);
+      border-radius:14px;
+      padding:10px 12px;
+    }
+    .success-box{
+      display:none;
+      background:#f4fbf5;
+      border:1px solid rgba(55,153,73,.18);
+      color:#256c30;
+      border-radius:18px;
+      padding:18px;
+      font-weight:700;
+    }
+
+    .tiers{
+      margin-top:44px;
+      display:grid;
+      gap:18px;
+    }
+    .tier-card{
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:18px;
+      padding:20px;
+      backdrop-filter:blur(8px);
+    }
+    .tier-card h4{
+      margin:0 0 8px;
+      font-size:1.15rem;
+    }
+    .tier-card p{
+      margin:0;
+      color:rgba(255,255,255,.82);
+      font-size:.94rem;
+    }
+
+    .app-grid{
+      display:grid;
+      gap:28px;
+      align-items:center;
+    }
+    #app{
+      background:var(--amber);
+      color:var(--charcoal);
+    }
+    #app .eyebrow{color:rgba(26,26,26,.8)}
+    #app .section-copy{color:rgba(26,26,26,.78)}
+    .feature-list{
+      display:grid;
+      gap:10px;
+      margin:24px 0 28px;
+      font-weight:700;
+    }
+    .store-badges{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+    }
+
+    .phone{
+      width:min(100%, 380px);
+      margin-inline:auto;
+      background:var(--charcoal);
+      border-radius:36px;
+      padding:14px;
+      box-shadow:0 40px 80px rgba(0,0,0,.3);
+      position:relative;
+    }
+    .phone::before{
+      content:"";
+      position:absolute;
+      top:10px;left:50%;
+      transform:translateX(-50%);
+      width:120px;height:28px;
+      border-radius:999px;
+      background:#111;
+      z-index:2;
+    }
+    .phone-screen{
+      background:#fff5e4;
+      border-radius:28px;
+      overflow:hidden;
+      min-height:660px;
+      color:var(--charcoal);
+      position:relative;
+    }
+    .app-header{
+      background:var(--red);
+      color:#fff;
+      padding:42px 20px 20px;
+      font-weight:800;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+    .app-content{
+      padding:18px;
+      display:grid;
+      gap:16px;
+    }
+    .promo-card{
+      background:linear-gradient(135deg, var(--amber), #ffcc55);
+      border-radius:22px;
+      padding:20px;
+      box-shadow:0 18px 32px rgba(242,166,35,.22);
+    }
+    .promo-card strong{
+      display:block;
+      font-size:1.8rem;
+      line-height:.95;
+      font-family:'Playfair Display',serif;
+      margin-top:8px;
+    }
+    .mini-card{
+      background:#fff;
+      border-radius:18px;
+      padding:16px;
+      box-shadow:0 10px 20px rgba(0,0,0,.05);
+    }
+    .app-nav{
+      position:absolute;
+      inset:auto 12px 12px 12px;
+      background:#fff;
+      border-radius:18px;
+      padding:14px;
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:10px;
+      text-align:center;
+      font-size:.82rem;
+      box-shadow:0 14px 28px rgba(0,0,0,.08);
+    }
+
+    footer{
+      background:#0F0F0F;
+      color:var(--cream);
+      padding:54px 0 28px;
+    }
+    .footer-grid{
+      display:grid;
+      gap:24px;
+      margin-bottom:28px;
+    }
+    .footer-column h4{
+      margin:0 0 12px;
+      font-size:.92rem;
+      letter-spacing:.08em;
+    }
+    .footer-column p{
+      margin:0;
+      color:rgba(255,245,228,.72);
+      max-width:260px;
+      font-size:.92rem;
+    }
+    .footer-links{
+      display:grid;
+      gap:8px;
+    }
+    .footer-links a{
+      color:rgba(255,245,228,.62);
+      transition:color .2s ease;
+      font-size:.9rem;
+    }
+    .footer-links a:hover{color:var(--cream)}
+    .footer-bottom{
+      padding-top:18px;
+      border-top:1px solid rgba(255,255,255,.08);
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:space-between;
+      gap:16px;
+      font-size:.86rem;
+      color:rgba(255,245,228,.72);
+    }
+    .footer-legal{
+      display:flex;
+      flex-wrap:wrap;
+      gap:16px;
+    }
+
+    .modal{
+      position:fixed;
+      inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+      background:rgba(0,0,0,.55);
+      z-index:2300;
+    }
+    .modal-card{
+      width:min(100%, 540px);
+      background:#fff;
+      color:var(--text-dark);
+      border-radius:24px;
+      padding:28px;
+      box-shadow:0 30px 70px rgba(0,0,0,.25);
+    }
+    .modal-card h3{
+      margin:0 0 10px;
+      font-family:'Playfair Display',serif;
+      font-size:2rem;
+      line-height:1;
+    }
+    .modal-card p{
+      margin:0 0 20px;
+      color:#595959;
+    }
+    .promo-code{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      background:#fff3e0;
+      color:#8f5000;
+      padding:12px 14px;
+      border-radius:14px;
+      font-weight:800;
+      margin-bottom:20px;
+    }
+    .modal-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+    }
+
+    .animate-on-scroll{
+      opacity:0;
+      transform:translateY(30px);
+      transition:opacity .6s ease, transform .6s ease;
+    }
+    .animate-on-scroll.visible{
+      opacity:1;
+      transform:translateY(0);
+    }
+
+    .hidden{display:none !important}
+
+    @keyframes float-up {
+      0% { transform: translateY(0) scale(1); opacity: 0.6; }
+      100% { transform: translateY(-120px) scale(0.3); opacity: 0; }
+    }
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    @media (min-width: 768px){
+      .section{padding:108px 0}
+      .nav-links{display:flex}
+      .nav-cta{display:inline-flex}
+      .hamburger{display:none}
+      .floating-order{display:none}
+      .hero-grid{
+        grid-template-columns:1.05fr .95fr;
+        gap:28px;
+      }
+      .menu-grid{grid-template-columns:repeat(2, minmax(0,1fr))}
+      .deals-grid{grid-template-columns:repeat(2, minmax(0,1fr))}
+      .stores-grid{grid-template-columns:minmax(0, 1.05fr) minmax(340px, .95fr)}
+      .rewards-grid{grid-template-columns:1fr 1fr}
+      .tiers{grid-template-columns:repeat(3, minmax(0,1fr))}
+      .app-grid{grid-template-columns:1fr 1fr}
+      .footer-grid{grid-template-columns:1.2fr 1fr 1fr 1fr}
+      .search-row{grid-template-columns:1fr auto}
+    }
+
+    @media (min-width: 1100px){
+      .menu-grid{grid-template-columns:repeat(4, minmax(0,1fr))}
+      .hero-title{max-width:540px}
+      .cart-fab{bottom:28px}
+      .hero-image{aspect-ratio:4/5.1}
+    }
+
+    @media (max-width: 767.98px){
+      .nav-inner{
+        gap:12px;
+      }
+      .hero-banner{
+        border-radius:22px;
+      }
+      .hero-image-wrap{
+        transform:none;
+      }
+      .hero-badge{
+        right:12px;
+        bottom:14px;
+      }
+      .rewards-wrap{
+        background:linear-gradient(180deg, var(--red) 0 46%, var(--charcoal) 46% 100%);
+      }
+      .cart-fab{
+        right:18px;
+        bottom:92px;
+      }
+    }
+  
+    .user-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 14px;
+      border-radius:999px;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
+      color:var(--cream);
+      font-size:.88rem;
+      font-weight:700;
+      white-space:nowrap;
+    }
+    .status-dot{
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      background:#33b249;
+      box-shadow:0 0 0 5px rgba(51,178,73,.12);
+      flex:0 0 auto;
+    }
+    .cart-meta{
+      display:grid;
+      gap:10px;
+    }
+    .cart-mini-input{
+      width:100%;
+      min-height:46px;
+      border-radius:14px;
+      border:1px solid rgba(0,0,0,.12);
+      padding:0 14px;
+      background:#fff;
+      color:var(--text-dark);
+    }
+    .cart-helper{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      font-size:.88rem;
+      color:#5d5d5d;
+      font-weight:700;
+    }
+    .selected-store-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      background:#f6efe4;
+      color:#7a4a10;
+      padding:10px 12px;
+      border-radius:12px;
+      font-size:.86rem;
+      font-weight:700;
+    }
+    .mini-muted{
+      color:#6b6b6b;
+      font-size:.88rem;
+    }
+    .auth-links{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .text-btn{
+      border:none;
+      background:none;
+      padding:0;
+      color:var(--red);
+      font-weight:800;
+      cursor:pointer;
+    }
+    .profile-box{
+      display:none;
+      margin-top:18px;
+      background:#fff;
+      border-radius:20px;
+      padding:20px;
+      border:1px solid rgba(0,0,0,.08);
+      box-shadow:0 18px 36px rgba(0,0,0,.08);
+    }
+    .profile-top{
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:space-between;
+      gap:12px;
+      align-items:center;
+      margin-bottom:16px;
+    }
+    .profile-points{
+      font-family:'Playfair Display',serif;
+      font-size:2rem;
+      line-height:1;
+      margin:6px 0 0;
+    }
+    .reward-list{
+      display:grid;
+      gap:10px;
+      margin-top:14px;
+    }
+    .reward-item{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:10px;
+      align-items:center;
+      padding:12px 14px;
+      background:#faf7f2;
+      border-radius:14px;
+    }
+    .reward-item strong{
+      display:block;
+    }
+    .api-banner{
+      position:fixed;
+      left:16px;
+      bottom:16px;
+      z-index:1250;
+      background:rgba(26,26,26,.92);
+      color:var(--cream);
+      border:1px solid rgba(255,255,255,.1);
+      border-radius:14px;
+      padding:10px 14px;
+      font-size:.85rem;
+      box-shadow:0 18px 36px rgba(0,0,0,.18);
+      max-width:min(420px, calc(100vw - 32px));
+    }
+    .api-banner strong{
+      color:#fff;
+    }
+    .deal-code{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.08);
+      color:var(--cream);
+      font-size:.78rem;
+      font-weight:800;
+    }
+    .store-action-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+    }
+    .store-action-row .btn{
+      min-height:46px;
+      padding:12px 16px;
+    }
+    .store-action-row .selected-store-pill{
+      background:#fff3e0;
+    }
+    @media (max-width: 767.98px){
+      .user-badge{
+        display:none;
+      }
+      .api-banner{
+        left:12px;
+        right:12px;
+        bottom:12px;
+        max-width:none;
+      }
+    }
+
+  </style>
+</head>
+<body>
+  <a href="#home" class="skip-link" data-i18n="skip.content">Skip to content</a>
+
+  <header class="nav" id="main-nav" aria-label="Main navigation" data-i18n-aria-label="nav.main">
+    <div class="container nav-inner">
+      <a href="#home" class="brand" aria-label="Burger King home">
+        <span class="flame" aria-hidden="true">🔥</span>
+        <span>BURGER KING</span>
+      </a>
+
+      <nav class="nav-links" aria-label="Primary" data-i18n-aria-label="nav.primary">
+        <a class="nav-link" href="#menu" data-i18n="nav.menu">Menu</a>
+        <a class="nav-link" href="#deals" data-i18n="nav.deals">Deals</a>
+        <a class="nav-link" href="#stores" data-i18n="nav.stores">Find a Store</a>
+        <a class="nav-link" href="#rewards" data-i18n="nav.rewards">Rewards</a>
+        <a class="nav-link" href="#app" data-i18n="nav.app">App</a>
+      </nav>
+
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button class="btn btn--ghost nav-cta" id="auth-btn" type="button" data-i18n="nav.signIn">SIGN IN</button>
+        <div class="user-badge hidden" id="user-badge"><span class="status-dot"></span><span id="user-badge-text">Guest</span></div>
+        <a href="#menu" class="btn btn--primary nav-cta" data-i18n="nav.order">ORDER NOW</a>
+        <button class="language-toggle" id="language-toggle" type="button" aria-label="Switch language">
+          <span data-lang-code="en">EN</span> <span aria-hidden="true">|</span> <span data-lang-code="vi">VI</span>
+        </button>
+        <button class="hamburger" id="hamburger" aria-label="Open menu" data-i18n-aria-label="nav.openMenu" aria-controls="mobile-nav" aria-expanded="false">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation" data-i18n-aria-label="nav.primary">
+    <a href="#home" data-i18n="nav.home">Home</a>
+    <a href="#menu" data-i18n="nav.menu">Menu</a>
+    <a href="#deals" data-i18n="nav.deals">Deals</a>
+    <a href="#stores" data-i18n="nav.stores">Find a Store</a>
+    <a href="#rewards" data-i18n="nav.rewards">Rewards</a>
+    <a href="#app" data-i18n="nav.app">App</a>
+    <a href="#menu" class="btn btn--primary" data-i18n="nav.order">ORDER NOW</a>
+  </div>
+
+  <a href="#menu" class="btn btn--primary floating-order" data-i18n="hero.order">Order Now</a>
+
+  <button class="cart-fab" id="cart-toggle" aria-label="Shopping cart" data-i18n-aria-label="cart.label">
+    👜
+    <span class="cart-count" id="cart-count">0</span>
+  </button>
+
+  <div class="backdrop" id="backdrop" aria-hidden="true"></div>
+
+  <aside class="cart-sidebar" id="cart-sidebar" aria-label="Shopping cart" data-i18n-aria-label="cart.label" aria-hidden="true">
+    <div class="cart-header">
+      <h3 data-i18n="cart.title">Your Bag</h3>
+      <button class="icon-btn" id="close-cart" aria-label="Close cart" data-i18n-aria-label="cart.close">✕</button>
+    </div>
+    <div class="cart-items" id="cart-items">
+      <div class="cart-empty" id="cart-empty">
+        <p style="font-size:2rem;margin:0 0 10px;">🍔</p>
+        <p style="margin:0;" data-i18n="cart.empty">Your bag is empty. Add something flame-grilled.</p>
+      </div>
+    </div>
+    <div class="cart-footer">
+      <div class="cart-total">
+        <span data-i18n="cart.subtotal">Subtotal</span>
+        <span id="cart-total">$0.00</span>
+      </div>
+      <div class="cart-meta">
+        <div class="selected-store-pill" id="selected-store-label" data-i18n="feature.selectedStore">📍 Pickup store: choose a store below</div>
+        <input class="cart-mini-input" id="promo-code-input" type="text" placeholder="Promo code (optional)" data-i18n-placeholder="feature.promo" />
+        <div class="cart-helper">
+          <span id="cart-mode-label" data-i18n="feature.guestCheckout">Guest checkout</span>
+          <span id="cart-points-label" data-i18n="feature.signInPoints">Sign in to earn points</span>
+        </div>
+      </div>
+      <button class="btn btn--primary" id="checkout-btn" data-i18n="cart.checkout">Checkout</button>
+    </div>
+  </aside>
+
+  <main>
+    <section id="home" class="section">
+      <div class="flame-field" aria-hidden="true" id="flame-field"></div>
+      <div class="container hero-grid">
+        <div class="hero-copy animate-on-scroll">
+          <div class="hero-banner">
+            <span data-i18n="hero.banner">🔥 LIMITED TIME: Double Whopper for $5.99 — Today Only</span>
+            <span id="hero-timer">06:00:00</span>
+          </div>
+
+          <div class="eyebrow" data-i18n="hero.eyebrow">Flame-Grilled Since 1953</div>
+          <h1 class="hero-title" data-i18n="hero.title">Have It<br>Your Way.</h1>
+          <p class="hero-desc" data-i18n="hero.description">
+            100% beef. Flame-grilled to perfection. No freezers. No shortcuts. Ever.
+          </p>
+
+          <div class="hero-actions">
+            <a href="#menu" class="btn btn--primary" data-i18n="hero.order">ORDER NOW</a>
+            <a href="#menu" class="btn btn--ghost" data-i18n="hero.seeMenu">SEE MENU</a>
+          </div>
+
+          <div class="ticker" aria-label="Social proof ticker">
+            <div class="ticker-track">
+              <span data-i18n="hero.tickerReviews">⭐ 4.7/5 from 2.3M reviews</span>
+              <span data-i18n="hero.tickerStores">🍔 12,000+ restaurants worldwide</span>
+              <span data-i18n="hero.tickerApp">📱 #1 Fast Food App 2024</span>
+              <span data-i18n="hero.tickerReviews">⭐ 4.7/5 from 2.3M reviews</span>
+              <span data-i18n="hero.tickerStores">🍔 12,000+ restaurants worldwide</span>
+              <span data-i18n="hero.tickerApp">📱 #1 Fast Food App 2024</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-art animate-on-scroll">
+          <div class="hero-visual">
+            <div class="hero-glow"></div>
+            <div class="hero-image-wrap">
+              <img
+                class="hero-image"
+                loading="lazy"
+                src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=900&auto=format&fit=crop&q=80"
+                alt="Close-up of a Burger King style burger"
+              />
+            </div>
+            <div class="hero-badge">
+              <div style="font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;" data-i18n="hero.badgeFresh">Fresh off the flame</div>
+              <strong data-i18n="hero.badgeOrder">Made to order</strong>
+              <div style="margin-top:6px;color:#5c554e;font-size:.92rem;" data-i18n="hero.badgeDescription">Editorial food styling meets fast-food urgency.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="menu" class="section section--light">
+      <div class="container">
+        <div class="section-head animate-on-scroll">
+          <div class="eyebrow" data-i18n="menu.eyebrow">The Menu</div>
+          <h2 class="section-title" data-i18n="menu.title">Built Different.</h2>
+          <p class="section-copy" style="margin-inline:auto;" data-i18n="menu.description">
+            Browse the full menu, filter by craving, and add your favourites to the bag in a tap.
+          </p>
+        </div>
+
+        <div class="filter-bar animate-on-scroll" id="menu-filters" aria-label="Menu category filters">
+          <button class="pill active filter-pill" data-category="all" data-i18n="category.all">All</button>
+          <button class="pill filter-pill" data-category="burgers" data-i18n="category.burgers">Burgers</button>
+          <button class="pill filter-pill" data-category="chicken" data-i18n="category.chicken">Chicken</button>
+          <button class="pill filter-pill" data-category="sides" data-i18n="category.sides">Sides</button>
+          <button class="pill filter-pill" data-category="drinks" data-i18n="category.drinks">Drinks</button>
+          <button class="pill filter-pill" data-category="desserts" data-i18n="category.desserts">Desserts</button>
+          <button class="pill filter-pill" data-category="combos" data-i18n="category.combos">Combos</button>
+          <button class="pill filter-pill" data-category="vegetarian" data-i18n="category.vegetarian">Vegetarian</button>
+        </div>
+
+        <div class="menu-grid animate-on-scroll" id="menu-grid" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section id="deals" class="section section--dark">
+      <div class="container">
+        <div class="section-head animate-on-scroll">
+          <div class="eyebrow" data-i18n="deals.eyebrow">Hot Right Now</div>
+          <h2 class="section-title" data-i18n="deals.title">Deals That Hit Different.</h2>
+          <p class="section-copy" style="margin-inline:auto;" data-i18n="deals.description">
+            App-exclusive offers, meal combos, and daily specials — always fresh, always urgent.
+          </p>
+        </div>
+
+        <div class="deals-grid" id="deals-grid"></div>
+      </div>
+    </section>
+
+    <section id="stores" class="section section--light">
+      <div class="container">
+        <div class="section-head animate-on-scroll">
+          <div class="eyebrow" data-i18n="stores.eyebrow">Find Us</div>
+          <h2 class="section-title" data-i18n="stores.title">12,000 Reasons to Never Cook Again.</h2>
+        </div>
+
+        <div class="stores-grid">
+          <div class="animate-on-scroll">
+            <div class="search-row">
+              <input id="store-search" class="search-input" type="text" placeholder="🔍 Enter your city or postcode..." data-i18n-placeholder="stores.search" aria-label="Search stores by city or postcode" data-i18n-aria-label="stores.searchLabel" />
+              <button class="btn btn--light-outline" id="use-location" data-i18n="stores.location">Use My Location</button>
+            </div>
+
+            <div class="filter-bar" id="store-filters" aria-label="Store filters">
+              <button class="pill active store-pill" data-storefilter="all" data-i18n="category.all">All</button>
+              <button class="pill store-pill" data-storefilter="Drive-Thru" data-i18n="feature.driveThru">Drive-Thru</button>
+              <button class="pill store-pill" data-storefilter="Open Now" data-i18n="stores.open">Open Now</button>
+              <button class="pill store-pill" data-storefilter="Delivery" data-i18n="feature.delivery">Delivery</button>
+              <button class="pill store-pill" data-storefilter="Dine-In" data-i18n="feature.dineIn">Dine-In</button>
+            </div>
+
+            <div class="store-list" id="store-list" aria-live="polite"></div>
+          </div>
+
+          <div class="map-box animate-on-scroll">
+            <div>
+              <span>📍</span>
+              <strong style="font-size:1.5rem;display:block;margin-bottom:10px;" data-i18n="stores.map">Interactive Map</strong>
+              <div data-i18n="stores.mapNote">In production: integrate Google Maps API with store pins</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="rewards" class="section rewards-wrap">
+      <div class="container">
+        <div class="rewards-grid">
+          <div class="rewards-copy animate-on-scroll">
+            <h2 class="section-title" data-i18n="rewards.title">Earn While<br>You Eat.</h2>
+            <p class="section-copy" style="color:rgba(255,255,255,.86);" data-i18n="rewards.description">
+              Join BK Rewards and earn points on every order. Redeem for free food, exclusive deals, and member-only surprises.
+            </p>
+
+            <div class="value-list">
+              <div class="value-item"><span>🍔</span><div data-i18n="rewards.earn">Earn <strong>10pts</strong> per $1 spent</div></div>
+              <div class="value-item"><span>🎁</span><div data-i18n="rewards.freeWhopper">Free Whopper at <strong>500 points</strong></div></div>
+              <div class="value-item"><span>👑</span><div data-i18n="rewards.memberDeals">Exclusive member deals <strong>every week</strong></div></div>
+            </div>
+          </div>
+
+          <div class="form-card animate-on-scroll">
+            <h3 data-i18n="rewards.join">Join Free — Takes 30 Seconds</h3>
+
+            <form id="rewards-form" novalidate>
+              <div class="form-grid">
+                <div class="field">
+                  <label for="firstName" data-i18n="form.firstName">First Name</label>
+                  <input id="firstName" name="firstName" type="text" required />
+                </div>
+
+                <div class="field">
+                  <label for="email" data-i18n="form.email">Email Address</label>
+                  <input id="email" name="email" type="email" required />
+                </div>
+
+                <div class="field">
+                  <label for="password" data-i18n="form.password">Password</label>
+                  <input id="password" name="password" type="password" minlength="8" placeholder="Minimum 8 characters" data-i18n-placeholder="form.passwordHint" required />
+                </div>
+
+                <div class="field">
+                  <label for="dob" data-i18n="form.dob">Date of Birth</label>
+                  <input id="dob" name="dob" type="date" required />
+                </div>
+
+                <div class="field">
+                  <label for="postcode" data-i18n="form.postcode">Postcode / ZIP</label>
+                  <input id="postcode" name="postcode" type="text" required />
+                </div>
+
+                <label class="checkbox">
+                  <input id="offers" type="checkbox" />
+                  <span data-i18n="form.emailDeals">I'd like exclusive BK deals by email</span>
+                </label>
+
+                <div class="form-error" id="form-error"></div>
+
+                <button class="btn btn--primary" type="submit" style="width:100%;" data-i18n="form.createAccount">CREATE MY ACCOUNT →</button>
+
+                <div class="auth-links">
+                  <p class="form-note" data-i18n="form.terms">By joining you agree to our Terms. Unsubscribe anytime.</p>
+                  <button class="text-btn" type="button" id="open-login" data-i18n="form.signIn">Already a member? Sign in</button>
+                </div>
+              </div>
+            </form>
+
+            <div class="success-box" id="rewards-success">
+              <span data-i18n="form.success">🎉 You're in. Your BK Rewards account is ready and your session is now active.</span>
+            </div>
+
+            <div class="profile-box" id="rewards-profile"></div>
+          </div>
+        </div>
+
+        <div class="tiers">
+          <div class="tier-card animate-on-scroll">
+            <h4>🥉 Grillmaster</h4>
+            <p>0–499 pts · Earn 10pts per $1 spent.</p>
+          </div>
+          <div class="tier-card animate-on-scroll">
+            <h4>🥈 Flame Boss</h4>
+            <p>500–1499 pts · 12pts per $1 + birthday reward.</p>
+          </div>
+          <div class="tier-card animate-on-scroll">
+            <h4>🥇 Whopper King</h4>
+            <p>1500+ pts · 15pts per $1 + free monthly item.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="app" class="section">
+      <div class="container app-grid">
+        <div class="animate-on-scroll">
+          <div class="eyebrow">The BK App</div>
+          <h2 class="section-title">Order. Earn.<br>Rule.</h2>
+          <p class="section-copy">
+            Skip the queue. Unlock app-only deals. Earn points on every order. Available on iOS and Android — free, always.
+          </p>
+
+          <div class="feature-list">
+            <div>📱 Order ahead — skip the queue</div>
+            <div>🎁 App-exclusive deals every week</div>
+            <div>👑 BK Rewards built in</div>
+            <div>📍 Find your nearest restaurant instantly</div>
+            <div>🔔 Flash sale push notifications</div>
+          </div>
+
+          <div class="store-badges">
+            <a href="#" class="btn btn--dark">🍎 Download on App Store</a>
+            <a href="#" class="btn btn--dark">▶ Get it on Google Play</a>
+          </div>
+        </div>
+
+        <div class="animate-on-scroll">
+          <div class="phone">
+            <div class="phone-screen">
+              <div class="app-header">
+                <div>🔥 BK</div>
+                <div data-i18n="app.goodMorning">Good Morning</div>
+              </div>
+
+              <div class="app-content">
+                <div class="promo-card">
+                  <div style="font-weight:800;text-transform:uppercase;letter-spacing:.08em;font-size:.8rem;" data-i18n="app.todayDeal">Today's deal</div>
+                  <strong>Whopper<br>Combo $7.99</strong>
+                  <div style="margin-top:12px;font-weight:700;" data-i18n="app.redeem">Tap to redeem in-app</div>
+                </div>
+
+                <div class="mini-card">
+                  <div style="font-weight:800;margin-bottom:6px;" data-i18n="app.rewardsTitle">Rewards</div>
+                  <div style="color:#555;" data-i18n="app.points">You have <strong>420 points</strong> — almost a free Whopper.</div>
+                </div>
+
+                <div class="mini-card">
+                  <div style="font-weight:800;margin-bottom:6px;" data-i18n="app.nearestTitle">Nearest restaurant</div>
+                  <div style="color:#555;" data-i18n="app.pickup">BK Midtown · 0.8 mi away · Pickup in 14 min</div>
+                </div>
+              </div>
+
+              <div class="app-nav" aria-hidden="true">
+                <div>🏠<br>Home</div>
+                <div>🍔<br>Menu</div>
+                <div>🎁<br>Deals</div>
+                <div>👤<br><span data-i18n="app.account">Account</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-column">
+          <h4>BURGER KING</h4>
+          <p data-i18n="footer.est">Est. 1953. Flame-grilled, not fried. Ever.</p>
+        </div>
+
+        <div class="footer-column">
+          <h4 data-i18n="footer.menu">MENU</h4>
+          <div class="footer-links">
+            <a href="#menu" data-i18n="category.burgers">Burgers</a>
+            <a href="#menu" data-i18n="category.chicken">Chicken</a>
+            <a href="#menu" data-i18n="category.sides">Sides</a>
+            <a href="#menu" data-i18n="category.drinks">Drinks</a>
+            <a href="#deals" data-i18n="nav.deals">Deals</a>
+          </div>
+        </div>
+
+        <div class="footer-column">
+          <h4 data-i18n="footer.company">COMPANY</h4>
+          <div class="footer-links">
+            <a href="#">About Us</a>
+            <a href="#">Careers</a>
+            <a href="#">Press</a>
+            <a href="#">Franchising</a>
+            <a href="#">Sustainability</a>
+          </div>
+        </div>
+
+        <div class="footer-column">
+          <h4 data-i18n="footer.follow">FOLLOW US</h4>
+          <div class="footer-links">
+            <a href="#">Instagram</a>
+            <a href="#">TikTok</a>
+            <a href="#" data-i18n="footer.twitterX">Twitter/X</a>
+            <a href="#">Facebook</a>
+            <a href="#">YouTube</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div data-i18n="footer.copyright">🔥 © 2024 Burger King Corporation. All rights reserved.</div>
+        <div class="footer-legal">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">Cookie Settings</a>
+          <a href="#">Accessibility</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <div class="modal" id="exit-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="exit-title">
+    <div class="modal-card">
+      <h3 id="exit-title">Wait — before you go! 🔥</h3>
+      <p>Use a real backend promo before the flame cools down. APP20 gives 20% off your first app-style order.</p>
+      <div class="promo-code">Code: APP20</div>
+      <div class="modal-actions">
+        <a href="#menu" class="btn btn--primary" id="grab-deal">Grab the Deal</a>
+        <button class="btn btn--light-outline" id="close-modal">No thanks</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="api-banner" id="api-banner" aria-live="polite">
+    <strong>API:</strong> Connecting to http://localhost:3001/api...
+  </div>
+
+  <div class="modal" id="auth-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="auth-title">
+    <div class="modal-card">
+      <h3 id="auth-title" data-i18n="auth.title">Welcome back 🔥</h3>
+      <p data-i18n="auth.description">Sign in to sync your cart, earn points, and redeem rewards.</p>
+      <form id="login-form" class="form-grid" novalidate>
+        <div class="field">
+          <label for="login-email" data-i18n="form.email">Email Address</label>
+          <input id="login-email" type="email" required />
+        </div>
+        <div class="field">
+          <label for="login-password" data-i18n="form.password">Password</label>
+          <input id="login-password" type="password" required />
+        </div>
+        <div class="form-error" id="login-error"></div>
+        <button class="btn btn--primary" type="submit" style="width:100%;" data-i18n="nav.signIn">SIGN IN →</button>
+        <p class="form-note">Demo seeded account: jake@example.com / Customer123!</p>
+      </form>
+      <div class="modal-actions" style="margin-top:18px;">
+        <button class="btn btn--light-outline" id="close-auth-modal" type="button" data-i18n="modal.close">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="./i18n.js"></script>
+  <script>
+    const i18n = window.BK_I18N;
+    const t = i18n.t;
+    const API_BASE = 'http://localhost:3001/api';
+    const FALLBACK_MENU = [
+      { id: 1, name: 'Whopper', category: 'Burgers', price: 5.49, rating: 4.8, description: 'Flame-grilled beef, fresh tomatoes, crisp lettuce, creamy mayo', is_featured: true },
+      { id: 2, name: 'Double Whopper', category: 'Burgers', price: 7.29, rating: 4.9, description: 'Two flame-grilled patties, all the fixings, unstoppable', is_featured: true },
+      { id: 4, name: 'Crispy Chicken Sandwich', category: 'Chicken', price: 5.99, rating: 4.7, description: 'Crispy hand-breaded fillet, pickles, mayo on a brioche bun', is_featured: true },
+      { id: 5, name: 'Spicy Crispy Chicken', category: 'Chicken', price: 6.49, rating: 4.6, description: 'Extra heat, extra crunch — for the brave', is_featured: false },
+      { id: 7, name: 'BK Veggie Burger', category: 'Vegetarian', price: 5.29, rating: 4.4, description: 'Garden-fresh plant patty with all the classics', is_featured: false },
+      { id: 8, name: 'Onion Rings', category: 'Sides', price: 2.99, rating: 4.7, description: 'Golden, crispy, stacked high', is_featured: false },
+      { id: 9, name: 'Large Fries', category: 'Sides', price: 2.49, rating: 4.8, description: 'Salted golden perfection', is_featured: false },
+      { id: 10, name: 'Chocolate Shake', category: 'Drinks', price: 4.29, rating: 4.6, description: 'Thick, creamy, and non-negotiable', is_featured: false },
+      { id: 11, name: 'Frozen Coke', category: 'Drinks', price: 1.99, rating: 4.5, description: 'Icy, refreshing, iconic', is_featured: false },
+      { id: 12, name: 'Whopper Combo', category: 'Combos', price: 9.49, rating: 4.9, description: 'Whopper + Fries + Drink — the classic trio', is_featured: true },
+      { id: 14, name: 'Chocolate Brownie', category: 'Desserts', price: 2.49, rating: 4.7, description: 'Warm, fudgy, dangerously good', is_featured: false }
+    ];
+
+    const FALLBACK_DEALS = [
+      { id: 1, title: 'Double Down Deal', offer: '2 Whoppers + 2 Large Fries for $12', tag: '🔥 Flash Sale', promo_code: 'DOUBLE12', seconds_remaining: 6 * 3600, is_app_only: false },
+      { id: 2, title: 'Loyalty Bonus', offer: 'Earn 3x points on all orders this weekend', tag: '👑 Members', promo_code: null, seconds_remaining: 48 * 3600, is_app_only: false },
+      { id: 3, title: 'Free Fries Friday', offer: 'Free Large Fries with any burger purchase', tag: '🍟 Weekly', promo_code: 'FREEFRIES', seconds_remaining: 24 * 3600, is_app_only: false },
+      { id: 4, title: 'App Exclusive', offer: '20% off your first app order', tag: '📱 App Only', promo_code: 'APP20', seconds_remaining: 72 * 3600, is_app_only: true },
+      { id: 5, title: 'Combo King', offer: 'Any combo for $7.99 all day', tag: '🍔 Value', promo_code: 'COMBO799', seconds_remaining: 12 * 3600, is_app_only: false }
+    ];
+
+    const FALLBACK_STORES = [
+      { id: 1, name: 'BK Times Square', address: '1560 Broadway', city: 'New York', postcode: 'NY 10036', phone: '(212) 555-1001', hours: 'Open · Closes 2AM', is_open_now: true, features: ['Drive-Thru', 'Delivery'], distance_miles: 0.3 },
+      { id: 2, name: 'BK Midtown', address: '350 5th Ave', city: 'New York', postcode: 'NY 10118', phone: '(212) 555-1002', hours: 'Open · Closes 12AM', is_open_now: true, features: ['Dine-In', 'Delivery'], distance_miles: 0.8 },
+      { id: 3, name: 'BK Brooklyn', address: '490 Flatbush Ave', city: 'Brooklyn', postcode: 'NY 11225', phone: '(718) 555-1003', hours: 'Open 24hrs', is_open_now: true, features: ['Drive-Thru', '24H'], distance_miles: 2.1 },
+      { id: 4, name: 'BK Queens', address: '82-01 Queens Blvd', city: 'Queens', postcode: 'NY 11373', phone: '(718) 555-1004', hours: 'Open · Closes 11PM', is_open_now: true, features: ['Drive-Thru', 'Dine-In'], distance_miles: 3.4 },
+      { id: 5, name: 'BK Jersey City', address: '30 Journal Sq', city: 'Jersey City', postcode: 'NJ 07306', phone: '(201) 555-1005', hours: 'Open · Closes 1AM', is_open_now: true, features: ['Delivery', 'Dine-In'], distance_miles: 4.2 }
+    ];
+
+    const STORAGE_KEYS = {
+      token: 'bk_token',
+      user: 'bk_user',
+      guestCart: 'bk_guest_cart',
+      selectedStoreId: 'bk_selected_store_id',
+      promoCode: 'bk_promo_code'
+    };
+
+    let menuItems = [];
+    let filteredMenuItems = [];
+    let deals = [];
+    let stores = [];
+    let cart = [];
+    let activeMenuCategory = 'all';
+    let activeStoreFilter = 'all';
+    let selectedStoreId = Number(localStorage.getItem(STORAGE_KEYS.selectedStoreId)) || null;
+    let activePromoCode = localStorage.getItem(STORAGE_KEYS.promoCode) || '';
+    let authToken = localStorage.getItem(STORAGE_KEYS.token) || '';
+    let currentUser = parseJSON(localStorage.getItem(STORAGE_KEYS.user), null);
+    let countdownIntervals = [];
+    let apiHealthy = false;
+
+    const menuGrid = document.getElementById('menu-grid');
+    const dealsGrid = document.getElementById('deals-grid');
+    const storeList = document.getElementById('store-list');
+    const heroTimer = document.getElementById('hero-timer');
+    const cartCountElement = document.getElementById('cart-count');
+    const cartItemsElement = document.getElementById('cart-items');
+    const cartTotalElement = document.getElementById('cart-total');
+    const cartSidebar = document.getElementById('cart-sidebar');
+    const backdrop = document.getElementById('backdrop');
+    const promoCodeInput = document.getElementById('promo-code-input');
+    const selectedStoreLabel = document.getElementById('selected-store-label');
+    const cartModeLabel = document.getElementById('cart-mode-label');
+    const cartPointsLabel = document.getElementById('cart-points-label');
+    const rewardsForm = document.getElementById('rewards-form');
+    const rewardsSuccess = document.getElementById('rewards-success');
+    const rewardsProfile = document.getElementById('rewards-profile');
+    const formError = document.getElementById('form-error');
+    const apiBanner = document.getElementById('api-banner');
+    const authBtn = document.getElementById('auth-btn');
+    const userBadge = document.getElementById('user-badge');
+    const userBadgeText = document.getElementById('user-badge-text');
+    const storeSearchInput = document.getElementById('store-search');
+    const loginForm = document.getElementById('login-form');
+    const loginError = document.getElementById('login-error');
+    const authModal = document.getElementById('auth-modal');
+    const checkoutBtn = document.getElementById('checkout-btn');
+
+    function parseJSON(value, fallback) {
+      try {
+        return value ? JSON.parse(value) : fallback;
+      } catch {
+        return fallback;
+      }
+    }
+
+    function escapeHtml(text = '') {
+      return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/'/g, '&#39;')
+        .replace(/"/g, '&quot;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    }
+
+    function titleCase(text = '') {
+      return String(text).charAt(0).toUpperCase() + String(text).slice(1);
+    }
+
+    function normalizeCategoryKey(category = '') {
+      return String(category).trim().toLowerCase().replace(/[^a-z0-9]+/g, '');
+    }
+
+    function formatCurrency(value) {
+      return `$${Number(value || 0).toFixed(2)}`;
+    }
+
+    function formatTime(seconds) {
+      const remaining = Math.max(0, Number(seconds || 0));
+      const h = Math.floor(remaining / 3600);
+      const m = Math.floor((remaining % 3600) / 60);
+      const s = Math.floor(remaining % 60);
+      return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    }
+
+    function getVisualForItem(item) {
+      const category = normalizeCategoryKey(item.category);
+      const lowerName = (item.name || '').toLowerCase();
+
+      if (lowerName.includes('veggie') || category === 'vegetarian') {
+        return { emoji: '🥬', color: 'linear-gradient(135deg,#4F8A10,#9ED15D)' };
+      }
+      if (category === 'burgers') {
+        return item.is_featured
+          ? { emoji: '🍔', color: 'linear-gradient(135deg,#C8102E,#F25C54)' }
+          : { emoji: '🍔', color: 'linear-gradient(135deg,#7A0E1F,#C8102E)' };
+      }
+      if (category === 'chicken') {
+        return lowerName.includes('spicy')
+          ? { emoji: '🌶️', color: 'linear-gradient(135deg,#D64D00,#F25C54)' }
+          : { emoji: '🍗', color: 'linear-gradient(135deg,#F2A623,#F5C45C)' };
+      }
+      if (category === 'sides') {
+        return lowerName.includes('onion')
+          ? { emoji: '🧅', color: 'linear-gradient(135deg,#AD7C3A,#E0B36A)' }
+          : { emoji: '🍟', color: 'linear-gradient(135deg,#F2A623,#FFD86B)' };
+      }
+      if (category === 'drinks') {
+        return lowerName.includes('shake')
+          ? { emoji: '🥤', color: 'linear-gradient(135deg,#5B2C23,#9A5E48)' }
+          : { emoji: '🥶', color: 'linear-gradient(135deg,#2563EB,#60A5FA)' };
+      }
+      if (category === 'desserts') {
+        return { emoji: '🍫', color: 'linear-gradient(135deg,#3E2723,#795548)' };
+      }
+      if (category === 'combos') {
+        return { emoji: '👑', color: 'linear-gradient(135deg,#C8102E,#F2A623)' };
+      }
+
+      return { emoji: '🍔', color: 'linear-gradient(135deg,#C8102E,#F2A623)' };
+    }
+
+    async function apiFetch(path, options = {}) {
+      const headers = { ...(options.headers || {}) };
+      if (!headers['Content-Type'] && options.body && !(options.body instanceof FormData)) {
+        headers['Content-Type'] = 'application/json';
+      }
+      if (authToken) {
+        headers.Authorization = `Bearer ${authToken}`;
+      }
+
+      const response = await fetch(`${API_BASE}${path}`, { ...options, headers });
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        const message = data.error || data.message || 'Request failed';
+        const error = new Error(message);
+        error.status = response.status;
+        error.payload = data;
+        throw error;
+      }
+
+      return data;
+    }
+
+    function setApiBanner(message, healthy = false) {
+      apiHealthy = healthy;
+      apiBanner.innerHTML = `<strong>API:</strong> ${escapeHtml(message)}`;
+      apiBanner.style.borderColor = healthy ? 'rgba(51,178,73,.2)' : 'rgba(255,255,255,.1)';
+    }
+
+    async function bootstrap() {
+      promoCodeInput.value = activePromoCode;
+
+      try {
+        const [menuRes, dealsRes, storesRes] = await Promise.all([
+          apiFetch('/menu'),
+          apiFetch('/deals'),
+          apiFetch('/stores')
+        ]);
+
+        menuItems = Array.isArray(menuRes.items) ? menuRes.items : FALLBACK_MENU;
+        deals = Array.isArray(dealsRes.deals) ? dealsRes.deals : FALLBACK_DEALS;
+        stores = Array.isArray(storesRes.stores) ? storesRes.stores : FALLBACK_STORES;
+        setApiBanner('Connected to http://localhost:3001/api', true);
+      } catch (error) {
+        console.warn('API bootstrap failed. Using fallback data.', error);
+        menuItems = FALLBACK_MENU;
+        deals = FALLBACK_DEALS;
+        stores = FALLBACK_STORES;
+        setApiBanner('Backend not reachable. Showing fallback demo data.', false);
+      }
+
+      if (!selectedStoreId && stores.length) {
+        selectedStoreId = stores[0].id;
+      }
+
+      renderMenu();
+      renderDeals();
+      renderStores();
+      updateSelectedStoreUI();
+      updateCartMeta();
+      setHeroCountdownFromDeals();
+
+      if (authToken) {
+        try {
+          await Promise.all([loadMe(), loadCartFromServer(), loadRewardsProfile()]);
+        } catch (error) {
+          console.warn('Session restore failed:', error);
+          logout(false);
+        }
+      } else {
+        restoreGuestCart();
+      }
+
+      updateAuthUI();
+      updateCartUI();
+      observeAnimated();
+    }
+
+    function setHeroCountdownFromDeals() {
+      const topDeal = deals.find((deal) => Number(deal.seconds_remaining) > 0) || deals[0];
+      if (!topDeal) return;
+      const banner = document.querySelector('.hero-banner span:first-child');
+      if (banner) {
+        banner.textContent = `🔥 LIMITED TIME: ${topDeal.offer}${topDeal.promo_code ? ` — Code ${topDeal.promo_code}` : ''}`;
+      }
+      startSingleCountdown(heroTimer, Number(topDeal.seconds_remaining || 0));
+    }
+
+    function clearCountdowns() {
+      countdownIntervals.forEach((interval) => clearInterval(interval));
+      countdownIntervals = [];
+    }
+
+    function startSingleCountdown(element, secondsRemaining) {
+      if (!element) return;
+      let remaining = Math.max(0, Number(secondsRemaining || 0));
+      element.textContent = formatTime(remaining);
+      const interval = setInterval(() => {
+        remaining -= 1;
+        if (remaining <= 0) {
+          element.textContent = 'EXPIRED';
+          clearInterval(interval);
+          return;
+        }
+        element.textContent = formatTime(remaining);
+      }, 1000);
+      countdownIntervals.push(interval);
+    }
+
+    function renderMenu() {
+      const filtered = activeMenuCategory === 'all'
+        ? menuItems
+        : menuItems.filter((item) => normalizeCategoryKey(item.category) === activeMenuCategory);
+
+      filteredMenuItems = filtered;
+
+      menuGrid.innerHTML = filtered.map((item) => {
+        const visual = getVisualForItem(item);
+        return `
+          <article class="menu-card" data-category="${escapeHtml(normalizeCategoryKey(item.category))}">
+            <div class="menu-media" style="background:${visual.color}" aria-hidden="true">${visual.emoji}</div>
+            <div class="menu-body">
+              <span class="badge">${escapeHtml(i18n.localizeMenuItem(item).category || titleCase(String(item.category).trim()))}</span>
+              <h3 class="menu-name">${escapeHtml(item.name)}</h3>
+              <p class="menu-desc">${escapeHtml(i18n.localizeMenuItem(item).description || item.description || 'Flame-grilled and made fresh.')}</p>
+              <div class="menu-meta">
+                <span class="price">${formatCurrency(item.price)}</span>
+                <span class="rating">⭐ ${Number(item.rating || 4.6).toFixed(1)}</span>
+                <button class="add-btn" data-add-menu-id="${item.id}">${t('cart.add')}</button>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+
+      observeAnimated();
+    }
+
+    function renderDeals() {
+      clearCountdowns();
+      dealsGrid.innerHTML = deals.map((deal) => {
+        const localized = i18n.localizeDeal(deal);
+        return `
+        <article class="deal-card animate-on-scroll">
+          <div class="deal-tag">${escapeHtml(localized.tag || t('deals.limited'))}</div>
+          <div class="eyebrow">${deal.is_app_only ? t('deals.app') : t('deals.limited')}</div>
+          <h3>${escapeHtml(localized.title || 'Hot Deal')}</h3>
+          <p>${escapeHtml(localized.offer || 'Fresh offer available now.')}</p>
+          <div class="deal-meta">
+            <div class="timer" id="deal-timer-${deal.id}">${formatTime(deal.seconds_remaining)}</div>
+            ${deal.promo_code ? `<div class="deal-code">Code: ${escapeHtml(deal.promo_code)}</div>` : ''}
+            <button type="button" class="btn btn--primary deal-apply-btn" data-promo="${escapeHtml(deal.promo_code || '')}">
+              ${deal.promo_code ? t('deals.apply') : t('deals.see')}
+            </button>
+          </div>
+        </article>
+      `;
+      }).join('');
+
+      deals.forEach((deal) => {
+        const el = document.getElementById(`deal-timer-${deal.id}`);
+        startSingleCountdown(el, Number(deal.seconds_remaining || 0));
+      });
+
+      observeAnimated();
+    }
+
+    function renderStores() {
+      const query = storeSearchInput.value.trim().toLowerCase();
+      let filtered = stores.filter((store) => {
+        const searchBlob = `${store.name} ${store.address} ${store.city} ${store.postcode}`.toLowerCase();
+        const matchesSearch = !query || searchBlob.includes(query);
+        const matchesFilter =
+          activeStoreFilter === 'all'
+            ? true
+            : activeStoreFilter === 'Open Now'
+              ? Boolean(store.is_open_now)
+              : Array.isArray(store.features) && store.features.includes(activeStoreFilter);
+        return matchesSearch && matchesFilter;
+      });
+
+      if (!filtered.length) {
+        storeList.innerHTML = `
+          <div class="store-card">
+            <h3>${t('stores.none')}</h3>
+            <p>${t('stores.tryAgain')}</p>
+          </div>
+        `;
+        return;
+      }
+
+      storeList.innerHTML = filtered.map((store) => {
+        const isSelected = Number(store.id) === Number(selectedStoreId);
+        const address = [store.address, store.city, store.postcode].filter(Boolean).join(', ');
+        return `
+          <article class="store-card">
+            <div class="store-top">
+              <div>
+                <h3>${escapeHtml(store.name)}</h3>
+                <p>${escapeHtml(address)}</p>
+              </div>
+              <div class="distance">${store.distance_miles != null ? `${Number(store.distance_miles).toFixed(1)} mi` : t('stores.nearby')}</div>
+            </div>
+            <div class="hours">${escapeHtml(i18n.localizeHours(store.hours || (store.is_open_now ? 'Open now' : 'Closed')))}</div>
+            <div class="feature-tags">
+              ${(store.features || []).map((feature) => `<span class="feature-tag">${escapeHtml(i18n.localizeFeature(feature))}</span>`).join('')}
+            </div>
+            <div class="store-action-row">
+              <button type="button" class="btn btn--primary select-store-btn" data-store-id="${store.id}">
+                ${isSelected ? `${t('stores.selected')} ✓` : t('stores.select')}
+              </button>
+              ${isSelected ? `<div class="selected-store-pill">${t('feature.selectedStore')}</div>` : ''}
+            </div>
+          </article>
+        `;
+      }).join('');
+
+      observeAnimated();
+    }
+
+    function restoreGuestCart() {
+      cart = parseJSON(localStorage.getItem(STORAGE_KEYS.guestCart), []) || [];
+    }
+
+    async function loadCartFromServer() {
+      const data = await apiFetch('/cart');
+      cart = Array.isArray(data.items) ? data.items : [];
+      return cart;
+    }
+
+    function saveGuestCart() {
+      localStorage.setItem(STORAGE_KEYS.guestCart, JSON.stringify(cart));
+    }
+
+    function getCartCount() {
+      return cart.reduce((sum, item) => sum + Number(item.qty || 0), 0);
+    }
+
+    function updateCartUI() {
+      cartCountElement.textContent = String(getCartCount());
+
+      if (!cart.length) {
+        cartItemsElement.innerHTML = `
+          <div class="cart-empty" id="cart-empty">
+            <p style="font-size:2rem;margin:0 0 10px;">🍔</p>
+            <p style="margin:0;">${t('feature.addSomething')}</p>
+          </div>
+        `;
+        cartTotalElement.textContent = '$0.00';
+        return;
+      }
+
+      cartItemsElement.innerHTML = cart.map((item) => `
+        <div class="cart-item">
+          <div>
+            <strong>${escapeHtml(item.name)}</strong>
+            <small>${formatCurrency(item.price)} ${t('cart.each')}</small>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-weight:800;">${formatCurrency(Number(item.price) * Number(item.qty))}</div>
+            <div class="cart-qty">
+              <button class="qty-btn" data-change-qty="${item.menu_item_id}" data-delta="-1" aria-label="Decrease quantity">−</button>
+              <span>x${item.qty}</span>
+              <button class="qty-btn" data-change-qty="${item.menu_item_id}" data-delta="1" aria-label="Increase quantity">+</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      const total = cart.reduce((sum, item) => sum + Number(item.price || 0) * Number(item.qty || 0), 0);
+      cartTotalElement.textContent = formatCurrency(total);
+    }
+
+    async function addToCart(menuItemId) {
+      const item = menuItems.find((entry) => Number(entry.id) === Number(menuItemId));
+      if (!item) return;
+
+      try {
+        if (authToken) {
+          const data = await apiFetch('/cart/add', {
+            method: 'POST',
+            body: JSON.stringify({ menu_item_id: Number(menuItemId), qty: 1 })
+          });
+          cart = data.items || [];
+        } else {
+          const existing = cart.find((entry) => Number(entry.menu_item_id) === Number(menuItemId));
+          if (existing) {
+            existing.qty += 1;
+          } else {
+            cart.push({
+              menu_item_id: Number(item.id),
+              name: item.name,
+              price: Number(item.price),
+              qty: 1
+            });
+          }
+          saveGuestCart();
+        }
+
+        updateCartUI();
+        openCart();
+      } catch (error) {
+        alert(error.message || 'Could not add item to cart.');
+      }
+    }
+
+    async function changeQty(menuItemId, delta) {
+      try {
+        if (authToken) {
+          const existing = cart.find((entry) => Number(entry.menu_item_id) === Number(menuItemId));
+          if (!existing) return;
+          const nextQty = Number(existing.qty) + Number(delta);
+          const data = await apiFetch('/cart/update', {
+            method: 'PATCH',
+            body: JSON.stringify({ menu_item_id: Number(menuItemId), qty: Math.max(0, nextQty) })
+          });
+          cart = data.items || [];
+        } else {
+          const item = cart.find((entry) => Number(entry.menu_item_id) === Number(menuItemId));
+          if (!item) return;
+          item.qty += Number(delta);
+          if (item.qty <= 0) {
+            cart = cart.filter((entry) => Number(entry.menu_item_id) !== Number(menuItemId));
+          }
+          saveGuestCart();
+        }
+
+        updateCartUI();
+      } catch (error) {
+        alert(error.message || 'Could not update cart.');
+      }
+    }
+
+    function openCart() {
+      cartSidebar.classList.add('open');
+      cartSidebar.setAttribute('aria-hidden', 'false');
+      backdrop.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeCart() {
+      cartSidebar.classList.remove('open');
+      cartSidebar.setAttribute('aria-hidden', 'true');
+      backdrop.classList.remove('show');
+      document.body.style.overflow = '';
+    }
+
+    function updateSelectedStoreUI() {
+      const store = stores.find((entry) => Number(entry.id) === Number(selectedStoreId));
+      if (store) {
+        selectedStoreLabel.textContent = `${t('feature.pickupStore')}: ${store.name}`;
+        localStorage.setItem(STORAGE_KEYS.selectedStoreId, String(store.id));
+      } else {
+        selectedStoreLabel.textContent = t('feature.selectedStore');
+      }
+    }
+
+    function updateCartMeta() {
+      if (currentUser) {
+        cartModeLabel.textContent = `${currentUser.first_name} · ${currentUser.tier || 'Member'}`;
+        cartPointsLabel.textContent = `${currentUser.tier || 'Grillmaster'} · ${currentUser.points || 0} pts`;
+      } else {
+        cartModeLabel.textContent = t('feature.guestCheckout');
+        cartPointsLabel.textContent = t('feature.signInPoints');
+      }
+    }
+
+    function setPromoCode(code) {
+      activePromoCode = String(code || '').trim().toUpperCase();
+      promoCodeInput.value = activePromoCode;
+      if (activePromoCode) {
+        localStorage.setItem(STORAGE_KEYS.promoCode, activePromoCode);
+      } else {
+        localStorage.removeItem(STORAGE_KEYS.promoCode);
+      }
+    }
+
+    function updateAuthUI() {
+      const isLoggedIn = Boolean(authToken && currentUser);
+      userBadge.classList.toggle('hidden', !isLoggedIn);
+      if (isLoggedIn) {
+        authBtn.textContent = t('auth.logout');
+        userBadgeText.textContent = `${currentUser.first_name} · ${currentUser.tier || 'Member'}`;
+      } else {
+        authBtn.textContent = t('nav.signIn');
+      }
+      updateCartMeta();
+    }
+
+    function saveAuthSession(token, user) {
+      authToken = token;
+      currentUser = user;
+      localStorage.setItem(STORAGE_KEYS.token, token);
+      localStorage.setItem(STORAGE_KEYS.user, JSON.stringify(user));
+      updateAuthUI();
+    }
+
+    async function loadMe() {
+      const data = await apiFetch('/auth/me');
+      currentUser = data.user;
+      localStorage.setItem(STORAGE_KEYS.user, JSON.stringify(currentUser));
+      updateAuthUI();
+      return data.user;
+    }
+
+    async function loadRewardsProfile() {
+      if (!authToken) return;
+      const [profile, catalogue] = await Promise.all([
+        apiFetch('/rewards/profile'),
+        apiFetch('/rewards/catalogue')
+      ]);
+
+      rewardsProfile.style.display = 'block';
+      rewardsForm.style.display = 'none';
+      rewardsSuccess.style.display = 'block';
+      rewardsSuccess.textContent = `🎉 Signed in as ${profile.user.first_name}. You are currently ${profile.user.tier}.`;
+
+      rewardsProfile.innerHTML = `
+        <div class="profile-top">
+          <div>
+            <div class="mini-muted">BK Rewards Member</div>
+            <strong>${escapeHtml(profile.user.first_name)} · ${escapeHtml(profile.user.tier)}</strong>
+            <div class="profile-points">${profile.user.points} pts</div>
+          </div>
+          <div class="selected-store-pill">Next tier: ${escapeHtml(profile.user.next_tier || 'Top tier reached')}</div>
+        </div>
+        <div class="mini-muted">
+          ${profile.user.next_tier ? `${profile.user.points_to_next_tier} pts to ${profile.user.next_tier}.` : 'You are already at the highest tier.'}
+        </div>
+        <div class="reward-list">
+          ${(catalogue.rewards || []).slice(0, 4).map((reward) => `
+            <div class="reward-item">
+              <div>
+                <strong>${escapeHtml(reward.name)}</strong>
+                <div class="mini-muted">${escapeHtml(reward.description)}</div>
+              </div>
+              <div>${reward.points_cost} pts</div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function logout(callApi = true) {
+      if (callApi && authToken) {
+        apiFetch('/auth/logout', { method: 'POST' }).catch(() => {});
+      }
+
+      authToken = '';
+      currentUser = null;
+      localStorage.removeItem(STORAGE_KEYS.token);
+      localStorage.removeItem(STORAGE_KEYS.user);
+      rewardsProfile.style.display = 'none';
+      rewardsSuccess.style.display = 'none';
+      rewardsForm.style.display = 'block';
+      updateAuthUI();
+      restoreGuestCart();
+      updateCartUI();
+      setApiBanner(apiHealthy ? 'Connected to http://localhost:3001/api' : 'Backend not reachable. Showing fallback demo data.', apiHealthy);
+    }
+
+    async function handleRegister(event) {
+      event.preventDefault();
+      formError.style.display = 'none';
+
+      const payload = {
+        first_name: document.getElementById('firstName').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        password: document.getElementById('password').value.trim(),
+        dob: document.getElementById('dob').value,
+        postcode: document.getElementById('postcode').value.trim(),
+        marketing_emails: document.getElementById('offers').checked
+      };
+
+      if (!payload.first_name || !payload.email || !payload.password || !payload.dob || !payload.postcode) {
+        return showError(formError, 'Please complete all required fields.');
+      }
+
+      if (payload.password.length < 8) {
+        return showError(formError, 'Password must be at least 8 characters long.');
+      }
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(payload.email)) {
+        return showError(formError, 'Please enter a valid email address.');
+      }
+
+      try {
+        const data = await apiFetch('/auth/register', {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        });
+
+        saveAuthSession(data.token, data.user);
+        rewardsForm.reset();
+        await Promise.all([loadCartFromServer(), loadRewardsProfile()]);
+        updateCartUI();
+        setApiBanner('Connected to http://localhost:3001/api · account created', true);
+      } catch (error) {
+        showError(formError, error.message || 'Could not create account.');
+      }
+    }
+
+    function showError(element, message) {
+      element.style.display = 'block';
+      element.textContent = message;
+    }
+
+    function openAuthModal() {
+      loginError.style.display = 'none';
+      authModal.style.display = 'flex';
+      authModal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      setTimeout(() => document.getElementById('login-email').focus(), 20);
+    }
+
+    function closeAuthModal() {
+      authModal.style.display = 'none';
+      authModal.setAttribute('aria-hidden', 'true');
+      if (!cartSidebar.classList.contains('open')) document.body.style.overflow = '';
+    }
+
+    async function handleLogin(event) {
+      event.preventDefault();
+      loginError.style.display = 'none';
+
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value.trim();
+
+      if (!email || !password) {
+        return showError(loginError, 'Please enter your email and password.');
+      }
+
+      try {
+        const data = await apiFetch('/auth/login', {
+          method: 'POST',
+          body: JSON.stringify({ email, password })
+        });
+
+        saveAuthSession(data.token, data.user);
+        closeAuthModal();
+        await Promise.all([loadCartFromServer(), loadRewardsProfile()]);
+        updateCartUI();
+        setApiBanner('Connected to http://localhost:3001/api · signed in', true);
+      } catch (error) {
+        showError(loginError, error.message || 'Could not sign in.');
+      }
+    }
+
+    async function handleCheckout() {
+      if (!cart.length) {
+        alert('Your bag is empty.');
+        return;
+      }
+
+      const storeId = selectedStoreId || (stores[0] ? stores[0].id : null);
+      if (!storeId) {
+        alert('Please select a pickup store first.');
+        return;
+      }
+
+      const promoCode = promoCodeInput.value.trim().toUpperCase();
+      setPromoCode(promoCode);
+
+      let guestEmail = '';
+      if (!authToken) {
+        guestEmail = window.prompt('Enter your email for guest checkout:');
+        if (!guestEmail) return;
+      }
+
+      const payload = {
+        items: cart.map((item) => ({
+          menu_item_id: Number(item.menu_item_id),
+          qty: Number(item.qty)
+        })),
+        order_type: 'pickup',
+        store_id: Number(storeId),
+        promo_code: promoCode || '',
+        guest_email: authToken ? '' : guestEmail.trim()
+      };
+
+      try {
+        const data = await apiFetch('/orders', {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        });
+
+        if (authToken) {
+          await Promise.all([loadCartFromServer(), loadMe(), loadRewardsProfile()]);
+        } else {
+          cart = [];
+          saveGuestCart();
+        }
+
+        updateCartUI();
+        closeCart();
+
+        const order = data.order || {};
+        alert(`Order placed! #${order.id}\nTotal: ${formatCurrency(order.total)}\nETA: ${order.estimated_ready || '15–20 mins'}`);
+      } catch (error) {
+        alert(error.message || 'Could not place order.');
+      }
+    }
+
+    async function handleUseLocation() {
+      if (!navigator.geolocation) {
+        alert('Geolocation is not supported in this browser.');
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        try {
+          const { latitude, longitude } = position.coords;
+          const data = await apiFetch(`/stores/nearby?lat=${encodeURIComponent(latitude)}&lng=${encodeURIComponent(longitude)}&radius_miles=25`);
+          if (Array.isArray(data.stores) && data.stores.length) {
+            stores = data.stores;
+            selectedStoreId = stores[0].id;
+            renderStores();
+            updateSelectedStoreUI();
+            alert(`Found ${data.count} nearby stores. Closest: ${stores[0].name}`);
+          } else {
+            alert('No nearby stores found for your location.');
+          }
+        } catch (error) {
+          alert(error.message || 'Could not find nearby stores.');
+        }
+      }, () => {
+        alert('Location access was denied.');
+      });
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.1 });
+
+    function observeAnimated() {
+      document.querySelectorAll('.animate-on-scroll').forEach((el) => observer.observe(el));
+    }
+
+    document.querySelectorAll('.filter-pill').forEach((pill) => {
+      pill.addEventListener('click', () => {
+        const active = document.querySelector('#menu-filters .filter-pill.active');
+        if (active) active.classList.remove('active');
+        pill.classList.add('active');
+        activeMenuCategory = pill.dataset.category;
+        renderMenu();
+      });
+    });
+
+    document.querySelectorAll('.store-pill').forEach((pill) => {
+      pill.addEventListener('click', () => {
+        const active = document.querySelector('#store-filters .store-pill.active');
+        if (active) active.classList.remove('active');
+        pill.classList.add('active');
+        activeStoreFilter = pill.dataset.storefilter;
+        renderStores();
+      });
+    });
+
+    menuGrid.addEventListener('click', (event) => {
+      const button = event.target.closest('[data-add-menu-id]');
+      if (!button) return;
+      addToCart(Number(button.dataset.addMenuId));
+    });
+
+    cartItemsElement.addEventListener('click', (event) => {
+      const button = event.target.closest('[data-change-qty]');
+      if (!button) return;
+      changeQty(Number(button.dataset.changeQty), Number(button.dataset.delta));
+    });
+
+    dealsGrid.addEventListener('click', (event) => {
+      const button = event.target.closest('.deal-apply-btn');
+      if (!button) return;
+      const code = button.dataset.promo || '';
+      if (code) {
+        setPromoCode(code);
+        openCart();
+        alert(`Promo code ${code} applied to your cart.`);
+      } else {
+        document.getElementById('menu').scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+
+    storeList.addEventListener('click', (event) => {
+      const button = event.target.closest('.select-store-btn');
+      if (!button) return;
+      selectedStoreId = Number(button.dataset.storeId);
+      updateSelectedStoreUI();
+      renderStores();
+      document.getElementById('menu').scrollIntoView({ behavior: 'smooth' });
+    });
+
+    promoCodeInput.addEventListener('input', () => {
+      setPromoCode(promoCodeInput.value);
+    });
+
+    storeSearchInput.addEventListener('input', renderStores);
+    document.getElementById('use-location').addEventListener('click', handleUseLocation);
+
+    document.getElementById('cart-toggle').addEventListener('click', openCart);
+    document.getElementById('close-cart').addEventListener('click', closeCart);
+    backdrop.addEventListener('click', closeCart);
+    checkoutBtn.addEventListener('click', handleCheckout);
+
+    authBtn.addEventListener('click', () => {
+      if (authToken) {
+        logout();
+      } else {
+        openAuthModal();
+      }
+    });
+
+    document.getElementById('open-login').addEventListener('click', openAuthModal);
+    document.getElementById('close-auth-modal').addEventListener('click', closeAuthModal);
+    authModal.addEventListener('click', (event) => {
+      if (event.target === authModal) closeAuthModal();
+    });
+    loginForm.addEventListener('submit', handleLogin);
+    rewardsForm.addEventListener('submit', handleRegister);
+
+    const hamburger = document.getElementById('hamburger');
+    const mobileNav = document.getElementById('mobile-nav');
+    hamburger.addEventListener('click', () => {
+      mobileNav.classList.toggle('open');
+      const expanded = mobileNav.classList.contains('open');
+      hamburger.setAttribute('aria-expanded', String(expanded));
+    });
+
+    document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+      anchor.addEventListener('click', (event) => {
+        const targetId = anchor.getAttribute('href');
+        const target = document.querySelector(targetId);
+        if (!target) return;
+        event.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth' });
+        mobileNav.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+      });
+    });
+
+    const exitModal = document.getElementById('exit-modal');
+    const closeModalBtn = document.getElementById('close-modal');
+    const grabDealBtn = document.getElementById('grab-deal');
+
+    document.addEventListener('mouseleave', (event) => {
+      if (event.clientY < 0 && !sessionStorage.getItem('exitShown')) {
+        exitModal.style.display = 'flex';
+        exitModal.setAttribute('aria-hidden', 'false');
+        sessionStorage.setItem('exitShown', '1');
+        document.body.style.overflow = 'hidden';
+      }
+    });
+
+    function closeModal() {
+      exitModal.style.display = 'none';
+      exitModal.setAttribute('aria-hidden', 'true');
+      if (!cartSidebar.classList.contains('open') && authModal.style.display !== 'flex') document.body.style.overflow = '';
+    }
+
+    closeModalBtn.addEventListener('click', closeModal);
+    grabDealBtn.addEventListener('click', () => {
+      setPromoCode('APP20');
+      openCart();
+      closeModal();
+    });
+    exitModal.addEventListener('click', (event) => {
+      if (event.target === exitModal) closeModal();
+    });
+
+    const nav = document.getElementById('main-nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 60);
+    });
+
+    const flameField = document.getElementById('flame-field');
+    for (let i = 0; i < 12; i += 1) {
+      const particle = document.createElement('span');
+      particle.className = 'flame-particle';
+      particle.style.left = `${Math.random() * 100}%`;
+      particle.style.bottom = `${Math.random() * 22}%`;
+      particle.style.animationDelay = `${Math.random() * 4}s`;
+      particle.style.animationDuration = `${3 + Math.random() * 3}s`;
+      particle.style.width = `${4 + Math.random() * 6}px`;
+      particle.style.height = particle.style.width;
+      flameField.appendChild(particle);
+    }
+
+    document.addEventListener('bk-language-change', () => {
+      renderMenu();
+      renderDeals();
+      renderStores();
+      updateCartUI();
+      updateSelectedStoreUI();
+      updateAuthUI();
+    });
+
+    bootstrap();
+  </script>
+</body>
+</html>
