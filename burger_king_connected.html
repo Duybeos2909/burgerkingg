@@ -1163,7 +1163,7 @@
       .hamburger{display:none}
       .floating-order{display:none}
       .hero-grid{
-        grid-template-columns:1.05fr .95fr;
+        grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);
         gap:28px;
       }
       .menu-grid{grid-template-columns:repeat(2, minmax(0,1fr))}
@@ -1462,7 +1462,8 @@
       }
       #home .hero-copy,
       #home .hero-art,
-      #home .hero-visual{
+      #home .hero-visual,
+      #home .ticker{
         width:100%;
         min-width:0;
         max-width:100%;
@@ -2711,14 +2712,22 @@
       });
     }
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) entry.target.classList.add('visible');
-      });
-    }, { threshold: 0.1 });
+    const observer = 'IntersectionObserver' in window
+      ? new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0 })
+      : null;
 
     function observeAnimated() {
-      document.querySelectorAll('.animate-on-scroll').forEach((el) => observer.observe(el));
+      document.querySelectorAll('.animate-on-scroll').forEach((el) => {
+        if (observer) observer.observe(el);
+        else el.classList.add('visible');
+      });
     }
 
     document.querySelectorAll('.filter-pill').forEach((pill) => {

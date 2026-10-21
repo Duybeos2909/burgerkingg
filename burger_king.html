@@ -1160,7 +1160,7 @@
       .hamburger{display:none}
       .floating-order{display:none}
       .hero-grid{
-        grid-template-columns:1.05fr .95fr;
+        grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);
         gap:28px;
       }
       .menu-grid{grid-template-columns:repeat(2, minmax(0,1fr))}
@@ -1200,6 +1200,41 @@
       .cart-fab{
         right:18px;
         bottom:92px;
+      }
+    }
+
+    @media (min-width: 768px) and (max-width: 1023.98px){
+      .nav-links{display:none}
+      .nav-inner .hamburger{
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+      }
+      .nav-inner .nav-cta{display:none}
+      .hero-grid{
+        grid-template-columns:minmax(0,1fr) minmax(0,.9fr);
+        gap:22px;
+      }
+      .hero-copy,
+      .hero-art,
+      .hero-visual{min-width:0}
+      .menu-grid,
+      .stores-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+
+    /* Keep mobile hero tracks inside the viewport; the ticker text itself stays scrolling. */
+    @media (max-width: 767.98px){
+      #home > .hero-grid{
+        grid-template-columns:minmax(0,1fr);
+        min-width:0;
+      }
+      #home .hero-copy,
+      #home .hero-art,
+      #home .hero-visual,
+      #home .ticker{
+        width:100%;
+        min-width:0;
+        max-width:100%;
       }
     }
   </style>
@@ -1890,6 +1925,7 @@
       renderDeals();
       applyStoreFilters();
       updateCartUI();
+      observeAnimated();
     });
 
     document.getElementById('use-location').addEventListener('click', () => {
@@ -1917,14 +1953,22 @@
       });
     });
 
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) entry.target.classList.add('visible');
-      });
-    }, { threshold: 0.1 });
+    const observer = 'IntersectionObserver' in window
+      ? new IntersectionObserver(entries => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0 })
+      : null;
 
     function observeAnimated() {
-      document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+      document.querySelectorAll('.animate-on-scroll').forEach(el => {
+        if (observer) observer.observe(el);
+        else el.classList.add('visible');
+      });
     }
 
     observeAnimated();
