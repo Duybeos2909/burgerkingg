@@ -1792,7 +1792,7 @@
   </div>
 
   <div class="api-banner" id="api-banner" aria-live="polite">
-    <strong>API:</strong> Connecting to http://localhost:3001/api...
+    <strong>API:</strong> Connecting to https://burgerking-backend.onrender.com/api...
   </div>
 
   <div class="modal" id="auth-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="auth-title">
@@ -1822,7 +1822,7 @@
   <script>
     const i18n = window.BK_I18N;
     const t = i18n.t;
-    const API_BASE = 'http://localhost:3001/api';
+    const API_BASE = 'https://burgerking-backend.onrender.com/api';
     const FALLBACK_MENU = [
       { id: 1, name: 'Whopper', category: 'Burgers', price: 5.49, rating: 4.8, description: 'Flame-grilled beef, fresh tomatoes, crisp lettuce, creamy mayo', is_featured: true },
       { id: 2, name: 'Double Whopper', category: 'Burgers', price: 7.29, rating: 4.9, description: 'Two flame-grilled patties, all the fixings, unstoppable', is_featured: true },
@@ -2018,7 +2018,7 @@
         menuItems = Array.isArray(menuRes.items) ? menuRes.items : FALLBACK_MENU;
         deals = Array.isArray(dealsRes.deals) ? dealsRes.deals : FALLBACK_DEALS;
         stores = Array.isArray(storesRes.stores) ? storesRes.stores : FALLBACK_STORES;
-        setApiBanner('Connected to http://localhost:3001/api', true);
+        setApiBanner('Connected to https://burgerking-backend.onrender.com/api', true);
       } catch (error) {
         console.warn('API bootstrap failed. Using fallback data.', error);
         menuItems = FALLBACK_MENU;
@@ -2434,7 +2434,7 @@
       updateAuthUI();
       restoreGuestCart();
       updateCartUI();
-      setApiBanner(apiHealthy ? 'Connected to http://localhost:3001/api' : 'Backend not reachable. Showing fallback demo data.', apiHealthy);
+      setApiBanner(apiHealthy ? 'Connected to https://burgerking-backend.onrender.com/api' : 'Backend not reachable. Showing fallback demo data.', apiHealthy);
     }
 
     async function handleRegister(event) {
@@ -2473,7 +2473,7 @@
         rewardsForm.reset();
         await Promise.all([loadCartFromServer(), loadRewardsProfile()]);
         updateCartUI();
-        setApiBanner('Connected to http://localhost:3001/api · account created', true);
+        setApiBanner('Connected to https://burgerking-backend.onrender.com/api · account created', true);
       } catch (error) {
         showError(formError, error.message || 'Could not create account.');
       }
@@ -2519,7 +2519,7 @@
         closeAuthModal();
         await Promise.all([loadCartFromServer(), loadRewardsProfile()]);
         updateCartUI();
-        setApiBanner('Connected to http://localhost:3001/api · signed in', true);
+        setApiBanner('Connected to https://burgerking-backend.onrender.com/api · signed in', true);
       } catch (error) {
         showError(loginError, error.message || 'Could not sign in.');
       }
