@@ -2199,6 +2199,9 @@
     }
 
     function renderMenu() {
+      if (!Array.isArray(menuItems) || menuItems.length === 0) {
+        menuItems = FALLBACK_MENU;
+      }
       const filtered = activeMenuCategory === 'all'
         ? menuItems
         : menuItems.filter((item) => normalizeCategoryKey(item.category) === activeMenuCategory);
