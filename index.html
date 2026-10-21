@@ -2120,10 +2120,18 @@
           apiFetch('/stores')
         ]);
 
-        menuItems = Array.isArray(menuRes.items) ? menuRes.items : FALLBACK_MENU;
-        deals = Array.isArray(dealsRes.deals) ? dealsRes.deals : FALLBACK_DEALS;
-        stores = Array.isArray(storesRes.stores) ? storesRes.stores : FALLBACK_STORES;
-        setApiBanner('Connected to https://burgerking-backend.onrender.com/api', true);
+        const hasLiveMenu = Array.isArray(menuRes.items) && menuRes.items.length > 0;
+        const hasLiveDeals = Array.isArray(dealsRes.deals) && dealsRes.deals.length > 0;
+        const hasLiveStores = Array.isArray(storesRes.stores) && storesRes.stores.length > 0;
+        menuItems = hasLiveMenu ? menuRes.items : FALLBACK_MENU;
+        deals = hasLiveDeals ? dealsRes.deals : FALLBACK_DEALS;
+        stores = hasLiveStores ? storesRes.stores : FALLBACK_STORES;
+        setApiBanner(
+          hasLiveMenu && hasLiveDeals && hasLiveStores
+            ? 'Connected to https://burgerking-backend.onrender.com/api'
+            : 'Connected; showing demo content where database data is empty',
+          true
+        );
       } catch (error) {
         console.warn('API bootstrap failed. Using fallback data.', error);
         menuItems = FALLBACK_MENU;
