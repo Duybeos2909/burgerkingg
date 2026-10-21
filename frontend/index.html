@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Burger King — Flame-Grilled, Your Way</title>
+  <meta name="description" content="A high-converting Burger King landing experience with live menu, deals, stores, rewards, auth, and checkout backed by Express + SQLite." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<a href="#home" class="skip-link">Skip to content</a>
+
+  <header class="nav" id="main-nav" aria-label="Main navigation">
+    <div class="container nav-inner">
+      <a href="#home" class="brand" aria-label="Burger King home">
+        <span class="flame" aria-hidden="true">🔥</span>
+        <span>BURGER KING</span>
+      </a>
+
+      <nav class="nav-links" aria-label="Primary">
+        <a class="nav-link" href="#menu">Menu</a>
+        <a class="nav-link" href="#deals">Deals</a>
+        <a class="nav-link" href="#stores">Find a Store</a>
+        <a class="nav-link" href="#rewards">Rewards</a>
+        <a class="nav-link" href="#app">App</a>
+      </nav>
+
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button class="btn btn--ghost nav-cta" id="auth-btn" type="button">SIGN IN</button>
+        <div class="user-badge hidden" id="user-badge"><span class="status-dot"></span><span id="user-badge-text">Guest</span></div>
+        <a href="#menu" class="btn btn--primary nav-cta">ORDER NOW</a>
+        <button class="hamburger" id="hamburger" aria-label="Open menu" aria-controls="mobile-nav" aria-expanded="false">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
+    <a href="#home">Home</a>
+    <a href="#menu">Menu</a>
+    <a href="#deals">Deals</a>
+    <a href="#stores">Find a Store</a>
+    <a href="#rewards">Rewards</a>
+    <a href="#app">App</a>
+    <a href="#menu" class="btn btn--primary">ORDER NOW</a>
+  </div>
+
+  <a href="#menu" class="btn btn--primary floating-order">Order Now</a>
+
+  <button class="cart-fab" id="cart-toggle" aria-label="Open cart">
+    👜
+    <span class="cart-count" id="cart-count">0</span>
+  </button>
+
+  <div class="backdrop" id="backdrop" aria-hidden="true"></div>
+
+  <aside class="cart-sidebar" id="cart-sidebar" aria-label="Shopping cart" aria-hidden="true">
+    <div class="cart-header">
+      <h3>Your Bag</h3>
+      <button class="icon-btn" id="close-cart" aria-label="Close cart">✕</button>
+    </div>
+    <div class="cart-items" id="cart-items">
+      <div class="cart-empty" id="cart-empty">
+        <p style="font-size:2rem;margin:0 0 10px;">🍔</p>
+        <p style="margin:0;">Your bag is empty. Add something flame-grilled.</p>
+      </div>
+    </div>
+    <div class="cart-footer">
+      <div class="cart-total">
+        <span>Subtotal</span>
+        <span id="cart-total">$0.00</span>
+      </div>
+      <div class="cart-meta">
+        <div class="selected-store-pill" id="selected-store-label">📍 Pickup store: choose a store below</div>
+        <input class="cart-mini-input" id="promo-code-input" type="text" placeholder="Promo code (optional)" />
+        <div class="cart-helper">
+          <span id="cart-mode-label">Guest checkout</span>
+          <span id="cart-points-label">Sign in to earn points</span>
+        </div>
+      </div>
+      <button class="btn btn--primary" id="checkout-btn">Checkout</button>
+    </div>
+  </aside>
+
+  <main>
+    <section id="home" class="section">
+      <div class="flame-field" aria-hidden="true" id="flame-field"></div>
+      <div class="container hero-grid">
+        <div class="hero-copy animate-on-scroll">
+          <div class="hero-banner">
+            <span>🔥 LIMITED TIME: Double Whopper for $5.99 — Today Only</span>
+            <span id="hero-timer">06:00:00</span>
+          </div>
+
+          <div class="eyebrow">Flame-Grilled Since 1953</div>
+          <h1 class="hero-title">Have It<br>Your Way.</h1>
+          <p class="hero-desc">
+            100% beef. Flame-grilled to perfection. No freezers. No shortcuts. Ever.
+          </p>
+
+          <div class="hero-actions">
+            <a href="#menu" class="btn btn--primary">ORDER NOW</a>
+            <a href="#menu" class="btn btn--ghost">SEE MENU</a>
+          </div>
+
+          <div class="ticker" aria-label="Social proof ticker">
+            <div class="ticker-track">
+              <span>⭐ 4.7/5 from 2.3M reviews</span>
+              <span>🍔 12,000+ restaurants worldwide</span>
+              <span>📱 #1 Fast Food App 2024</span>
+              <span>⭐ 4.7/5 from 2.3M reviews</span>
+              <span>🍔 12,000+ restaurants worldwide</span>
+              <span>📱 #1 Fast Food App 2024</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-art animate-on-scroll">
+          <div class="hero-visual">
+            <div class="hero-glow"></div>
+            <div class="hero-image-wrap">
+              <img
+                class="hero-image"
+                loading="lazy"
+                src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=900&auto=format&fit=crop&q=80"
+                alt="Close-up of a Burger King style burger"
+              />
+            </div>
+            <div class="hero-badge">
+              <div style="font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;">Fresh off the flame</div>
+              <strong>Made to order</strong>
+              <div style="margin-top:6px;color:#5c554e;font-size:.92rem;">Editorial food styling meets fast-food urgency.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="menu" class="section section--light">
+      <div class="container">
+        <div class="section-head animate-on-scroll">
+          <div class="eyebrow">The Menu</div>
+          <h2 class="section-title">Built Different.</h2>
+          <p class="section-copy" style="margin-inline:auto;">
+            Browse the full menu, filter by craving, and add your favourites to the bag in a tap.
+          </p>
+        </div>
+
+        <div class="filter-bar animate-on-scroll" id="menu-filters" aria-label="Menu category filters">
+          <button class="pill active filter-pill" data-category="all">All</button>
+          <button class="pill filter-pill" data-category="burgers">Burgers</button>
+          <button class="pill filter-pill" data-category="chicken">Chicken</button>
+          <button class="pill filter-pill" data-category="sides">Sides</button>
+          <button class="pill filter-pill" data-category="drinks">Drinks</button>
+          <button class="pill filter-pill" data-category="desserts">Desserts</button>
+          <button class="pill filter-pill" data-category="combos">Combos</button>
+          <button class="pill filter-pill" data-category="vegetarian">Vegetarian</button>
+        </div>
+
+        <div class="menu-grid animate-on-scroll" id="menu-grid" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section id="deals" class="section section--dark">
+      <div class="container">
+        <div class="section-head animate-on-scroll">
+          <div class="eyebrow">Hot Right Now</div>
+          <h2 class="section-title">Deals That Hit Different.</h2>
+          <p class="section-copy" style="margin-inline:auto;">
+            App-exclusive offers, meal combos, and daily specials — always fresh, always urgent.
+          </p>
+        </div>
+
+        <div class="deals-grid" id="deals-grid"></div>
+      </div>
+    </section>
+
+    <section id="stores" class="section section--light">
+      <div class="container">
+        <div class="section-head animate-on-scroll">
+          <div class="eyebrow">Find Us</div>
+          <h2 class="section-title">12,000 Reasons to Never Cook Again.</h2>
+        </div>
+
+        <div class="stores-grid">
+          <div class="animate-on-scroll">
+            <div class="search-row">
+              <input id="store-search" class="search-input" type="text" placeholder="🔍 Enter your city or postcode..." aria-label="Search stores by city or postcode" />
+              <button class="btn btn--light-outline" id="use-location">Use My Location</button>
+            </div>
+
+            <div class="filter-bar" id="store-filters" aria-label="Store filters">
+              <button class="pill active store-pill" data-storefilter="all">All</button>
+              <button class="pill store-pill" data-storefilter="Drive-Thru">Drive-Thru</button>
+              <button class="pill store-pill" data-storefilter="Open Now">Open Now</button>
+              <button class="pill store-pill" data-storefilter="Delivery">Delivery</button>
+              <button class="pill store-pill" data-storefilter="Dine-In">Dine-In</button>
+            </div>
+
+            <div class="store-list" id="store-list" aria-live="polite"></div>
+          </div>
+
+          <div class="map-box animate-on-scroll">
+            <div>
+              <span>📍</span>
+              <strong style="font-size:1.5rem;display:block;margin-bottom:10px;">Interactive Map</strong>
+              <div>In production: integrate Google Maps API with store pins</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="rewards" class="section rewards-wrap">
+      <div class="container">
+        <div class="rewards-grid">
+          <div class="rewards-copy animate-on-scroll">
+            <h2 class="section-title">Earn While<br>You Eat.</h2>
+            <p class="section-copy" style="color:rgba(255,255,255,.86);">
+              Join BK Rewards and earn points on every order. Redeem for free food, exclusive deals, and member-only surprises.
+            </p>
+
+            <div class="value-list">
+              <div class="value-item"><span>🍔</span><div>Earn <strong>10pts</strong> per $1 spent</div></div>
+              <div class="value-item"><span>🎁</span><div>Free Whopper at <strong>500 points</strong></div></div>
+              <div class="value-item"><span>👑</span><div>Exclusive member deals <strong>every week</strong></div></div>
+            </div>
+          </div>
+
+          <div class="form-card animate-on-scroll">
+            <h3>Join Free — Takes 30 Seconds</h3>
+
+            <form id="rewards-form" novalidate>
+              <div class="form-grid">
+                <div class="field">
+                  <label for="firstName">First Name</label>
+                  <input id="firstName" name="firstName" type="text" required />
+                </div>
+
+                <div class="field">
+                  <label for="email">Email Address</label>
+                  <input id="email" name="email" type="email" required />
+                </div>
+
+                <div class="field">
+                  <label for="password">Password</label>
+                  <input id="password" name="password" type="password" minlength="8" placeholder="Minimum 8 characters" required />
+                </div>
+
+                <div class="field">
+                  <label for="dob">Date of Birth</label>
+                  <input id="dob" name="dob" type="date" required />
+                </div>
+
+                <div class="field">
+                  <label for="postcode">Postcode / ZIP</label>
+                  <input id="postcode" name="postcode" type="text" required />
+                </div>
+
+                <label class="checkbox">
+                  <input id="offers" type="checkbox" />
+                  <span>I'd like exclusive BK deals by email</span>
+                </label>
+
+                <div class="form-error" id="form-error"></div>
+
+                <button class="btn btn--primary" type="submit" style="width:100%;">CREATE MY ACCOUNT →</button>
+
+                <div class="auth-links">
+                  <p class="form-note">By joining you agree to our Terms. Unsubscribe anytime.</p>
+                  <button class="text-btn" type="button" id="open-login">Already a member? Sign in</button>
+                </div>
+              </div>
+            </form>
+
+            <div class="success-box" id="rewards-success">
+              🎉 You're in. Your BK Rewards account is ready and your session is now active.
+            </div>
+
+            <div class="profile-box" id="rewards-profile"></div>
+          </div>
+        </div>
+
+        <div class="tiers">
+          <div class="tier-card animate-on-scroll">
+            <h4>🥉 Grillmaster</h4>
+            <p>0–499 pts · Earn 10pts per $1 spent.</p>
+          </div>
+          <div class="tier-card animate-on-scroll">
+            <h4>🥈 Flame Boss</h4>
+            <p>500–1499 pts · 12pts per $1 + birthday reward.</p>
+          </div>
+          <div class="tier-card animate-on-scroll">
+            <h4>🥇 Whopper King</h4>
+            <p>1500+ pts · 15pts per $1 + free monthly item.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="app" class="section">
+      <div class="container app-grid">
+        <div class="animate-on-scroll">
+          <div class="eyebrow">The BK App</div>
+          <h2 class="section-title">Order. Earn.<br>Rule.</h2>
+          <p class="section-copy">
+            Skip the queue. Unlock app-only deals. Earn points on every order. Available on iOS and Android — free, always.
+          </p>
+
+          <div class="feature-list">
+            <div>📱 Order ahead — skip the queue</div>
+            <div>🎁 App-exclusive deals every week</div>
+            <div>👑 BK Rewards built in</div>
+            <div>📍 Find your nearest restaurant instantly</div>
+            <div>🔔 Flash sale push notifications</div>
+          </div>
+
+          <div class="store-badges">
+            <a href="#" class="btn btn--dark">🍎 Download on App Store</a>
+            <a href="#" class="btn btn--dark">▶ Get it on Google Play</a>
+          </div>
+        </div>
+
+        <div class="animate-on-scroll">
+          <div class="phone">
+            <div class="phone-screen">
+              <div class="app-header">
+                <div>🔥 BK</div>
+                <div>Good Morning</div>
+              </div>
+
+              <div class="app-content">
+                <div class="promo-card">
+                  <div style="font-weight:800;text-transform:uppercase;letter-spacing:.08em;font-size:.8rem;">Today's deal</div>
+                  <strong>Whopper<br>Combo $7.99</strong>
+                  <div style="margin-top:12px;font-weight:700;">Tap to redeem in-app</div>
+                </div>
+
+                <div class="mini-card">
+                  <div style="font-weight:800;margin-bottom:6px;">Rewards</div>
+                  <div style="color:#555;">You have <strong>420 points</strong> — almost a free Whopper.</div>
+                </div>
+
+                <div class="mini-card">
+                  <div style="font-weight:800;margin-bottom:6px;">Nearest restaurant</div>
+                  <div style="color:#555;">BK Midtown · 0.8 mi away · Pickup in 14 min</div>
+                </div>
+              </div>
+
+              <div class="app-nav" aria-hidden="true">
+                <div>🏠<br>Home</div>
+                <div>🍔<br>Menu</div>
+                <div>🎁<br>Deals</div>
+                <div>👤<br>Account</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-column">
+          <h4>BURGER KING</h4>
+          <p>Est. 1953. Flame-grilled, not fried. Ever.</p>
+        </div>
+
+        <div class="footer-column">
+          <h4>MENU</h4>
+          <div class="footer-links">
+            <a href="#menu">Burgers</a>
+            <a href="#menu">Chicken</a>
+            <a href="#menu">Sides</a>
+            <a href="#menu">Drinks</a>
+            <a href="#deals">Deals</a>
+          </div>
+        </div>
+
+        <div class="footer-column">
+          <h4>COMPANY</h4>
+          <div class="footer-links">
+            <a href="#">About Us</a>
+            <a href="#">Careers</a>
+            <a href="#">Press</a>
+            <a href="#">Franchising</a>
+            <a href="#">Sustainability</a>
+          </div>
+        </div>
+
+        <div class="footer-column">
+          <h4>FOLLOW US</h4>
+          <div class="footer-links">
+            <a href="#">Instagram</a>
+            <a href="#">TikTok</a>
+            <a href="#">Twitter/X</a>
+            <a href="#">Facebook</a>
+            <a href="#">YouTube</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>🔥 © 2024 Burger King Corporation. All rights reserved.</div>
+        <div class="footer-legal">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">Cookie Settings</a>
+          <a href="#">Accessibility</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <div class="modal" id="exit-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="exit-title">
+    <div class="modal-card">
+      <h3 id="exit-title">Wait — before you go! 🔥</h3>
+      <p>Use a real backend promo before the flame cools down. APP20 gives 20% off your first app-style order.</p>
+      <div class="promo-code">Code: APP20</div>
+      <div class="modal-actions">
+        <a href="#menu" class="btn btn--primary" id="grab-deal">Grab the Deal</a>
+        <button class="btn btn--light-outline" id="close-modal">No thanks</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="api-banner" id="api-banner" aria-live="polite">
+    <strong>API:</strong> Connecting to http://localhost:3001/api...
+  </div>
+
+  <div class="modal" id="auth-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="auth-title">
+    <div class="modal-card">
+      <h3 id="auth-title">Welcome back 🔥</h3>
+      <p>Sign in to sync your cart, earn points, and redeem rewards.</p>
+      <form id="login-form" class="form-grid" novalidate>
+        <div class="field">
+          <label for="login-email">Email Address</label>
+          <input id="login-email" type="email" required />
+        </div>
+        <div class="field">
+          <label for="login-password">Password</label>
+          <input id="login-password" type="password" required />
+        </div>
+        <div class="form-error" id="login-error"></div>
+        <button class="btn btn--primary" type="submit" style="width:100%;">SIGN IN →</button>
+        <p class="form-note">Demo seeded account: jake@example.com / Customer123!</p>
+      </form>
+      <div class="modal-actions" style="margin-top:18px;">
+        <button class="btn btn--light-outline" id="close-auth-modal" type="button">Close</button>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
