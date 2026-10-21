@@ -2,6 +2,7 @@ import './config.js';
 import express from 'express';
 import cors from 'cors';
 import './db/database.js';
+import { ensureDemoCustomer } from './db/ensure-demo-customer.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import authRoutes from './routes/auth.routes.js';
 import menuRoutes from './routes/menu.routes.js';
@@ -53,4 +54,11 @@ app.use((req, res) => {
 
 app.use(errorHandler);
 
-app.listen(PORT, () => console.log(`🔥 BK Backend running on http://localhost:${PORT}`));
+ensureDemoCustomer()
+  .then(() => {
+    app.listen(PORT, () => console.log(`BK Backend running on port ${PORT}`));
+  })
+  .catch((error) => {
+    console.error('Could not prepare the demo customer:', error);
+    process.exit(1);
+  });
