@@ -1,5 +1,4 @@
 ﻿# Local backend and generated data are not needed by GitHub Pages
-bk-backend/
 
 # Environment secrets and local tooling
 .env
