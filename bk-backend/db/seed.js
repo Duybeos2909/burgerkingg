@@ -1,5 +1,7 @@
 import '../config.js';
 import bcrypt from 'bcrypt';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import db from './database.js';
 
 const menuItems = [
@@ -89,6 +91,12 @@ function seedStores() {
   insertMany(stores);
 }
 
+export function ensureDemoCatalog() {
+  if (!db.prepare('SELECT 1 FROM menu_items LIMIT 1').get()) seedMenu();
+  if (!db.prepare('SELECT 1 FROM deals LIMIT 1').get()) seedDeals();
+  if (!db.prepare('SELECT 1 FROM stores LIMIT 1').get()) seedStores();
+}
+
 async function seedUsers() {
   const password = await bcrypt.hash('Admin123!', 10);
   const customerPassword = await bcrypt.hash('Customer123!', 10);
@@ -125,7 +133,9 @@ async function main() {
   console.log('🔥 BK database seeded successfully');
 }
 
-main().catch((error) => {
-  console.error(error);
-  process.exit(1);
-});
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  main().catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
+}

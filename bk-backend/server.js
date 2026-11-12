@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import './db/database.js';
 import { ensureDemoCustomer } from './db/ensure-demo-customer.js';
+import { ensureDemoCatalog } from './db/seed.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import authRoutes from './routes/auth.routes.js';
 import menuRoutes from './routes/menu.routes.js';
@@ -56,6 +57,7 @@ app.use(errorHandler);
 
 ensureDemoCustomer()
   .then(() => {
+    ensureDemoCatalog();
     app.listen(PORT, () => console.log(`BK Backend running on port ${PORT}`));
   })
   .catch((error) => {
