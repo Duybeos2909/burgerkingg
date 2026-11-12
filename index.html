@@ -1134,6 +1134,74 @@
       flex-wrap:wrap;
       gap:12px;
     }
+    .checkout-modal-card,
+    .checkout-form,
+    .checkout-form .field{
+      min-width:0;
+    }
+    .checkout-form .field input{
+      width:100%;
+      min-width:0;
+    }
+    .checkout-summary{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:12px;
+      padding:16px;
+      border:1px solid rgba(0,0,0,.1);
+      border-radius:16px;
+      background:#faf7f2;
+      min-width:0;
+    }
+    .checkout-summary-row{
+      display:flex;
+      justify-content:space-between;
+      align-items:baseline;
+      gap:8px;
+      min-width:0;
+    }
+    .checkout-summary-row strong{
+      text-align:right;
+      overflow-wrap:anywhere;
+    }
+    .checkout-summary-total{
+      grid-column:1 / -1;
+      padding-top:10px;
+      border-top:1px solid rgba(0,0,0,.1);
+      font-size:1.08rem;
+    }
+    .checkout-form-actions{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:12px;
+    }
+    .checkout-form-actions .btn{
+      min-width:0;
+      white-space:normal;
+    }
+    .checkout-field-error,
+    .checkout-submit-error{
+      margin:0;
+      color:#b8182f;
+      font-size:.88rem;
+      font-weight:700;
+      overflow-wrap:anywhere;
+    }
+    .checkout-field-error[hidden],
+    .checkout-submit-error[hidden]{
+      display:none;
+    }
+    .checkout-empty-message{
+      margin:8px 0 0;
+      color:#b8182f;
+      font-size:.9rem;
+      font-weight:700;
+    }
+    @media (max-width:380px){
+      .checkout-form-actions{
+        grid-template-columns:minmax(0,1fr);
+      }
+    }
 
     .animate-on-scroll{
       opacity:0;
@@ -1549,6 +1617,7 @@
         </div>
       </div>
       <button class="btn btn--primary" id="checkout-btn" data-i18n="cart.checkout">Checkout</button>
+      <p class="checkout-empty-message" id="checkout-empty-message" data-i18n="checkout.empty" role="status" hidden>Your cart is empty.</p>
     </div>
   </aside>
 
@@ -1923,7 +1992,42 @@
     </div>
   </div>
 
-  <script src="./i18n.js?v=2"></script>
+  <div class="modal" id="checkout-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="checkout-title">
+    <div class="modal-card checkout-modal-card">
+      <h3 id="checkout-title" data-i18n="checkout.title">Complete your order</h3>
+      <form class="form-grid checkout-form" id="checkout-form" novalidate>
+        <div class="field">
+          <label for="checkout-email" data-i18n="checkout.email">Email address</label>
+          <input id="checkout-email" type="email" autocomplete="email" required aria-describedby="checkout-email-error" data-i18n-placeholder="checkout.emailPlaceholder" placeholder="you@example.com" />
+          <p class="checkout-field-error" id="checkout-email-error" role="alert" hidden></p>
+        </div>
+        <div class="field">
+          <label for="checkout-name">
+            <span data-i18n="checkout.name">Full name</span>
+            <span class="form-note" data-i18n="checkout.nameOptional">(optional)</span>
+          </label>
+          <input id="checkout-name" type="text" autocomplete="name" />
+        </div>
+        <div class="checkout-summary" aria-live="polite">
+          <div class="checkout-summary-row">
+            <span data-i18n="checkout.itemCount">Number of items</span>
+            <strong id="checkout-item-count">0</strong>
+          </div>
+          <div class="checkout-summary-row checkout-summary-total">
+            <span data-i18n="checkout.total">Total to pay</span>
+            <strong id="checkout-total">$0.00</strong>
+          </div>
+        </div>
+        <p class="checkout-submit-error" id="checkout-submit-error" role="alert" hidden></p>
+        <div class="checkout-form-actions">
+          <button class="btn btn--light-outline" id="checkout-back" type="button" data-i18n="checkout.back">Back to cart</button>
+          <button class="btn btn--primary" id="checkout-confirm" type="submit" data-i18n="checkout.confirm">Confirm checkout</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="./i18n.js?v=3"></script>
   <script>
     const i18n = window.BK_I18N;
     const t = i18n.t;
@@ -2006,6 +2110,20 @@
     const loginError = document.getElementById('login-error');
     const authModal = document.getElementById('auth-modal');
     const checkoutBtn = document.getElementById('checkout-btn');
+    const checkoutEmptyMessage = document.getElementById('checkout-empty-message');
+    const checkoutModal = document.getElementById('checkout-modal');
+    const checkoutForm = document.getElementById('checkout-form');
+    const checkoutEmailInput = document.getElementById('checkout-email');
+    const checkoutNameInput = document.getElementById('checkout-name');
+    const checkoutEmailError = document.getElementById('checkout-email-error');
+    const checkoutSubmitError = document.getElementById('checkout-submit-error');
+    const checkoutItemCount = document.getElementById('checkout-item-count');
+    const checkoutTotal = document.getElementById('checkout-total');
+    const checkoutBackBtn = document.getElementById('checkout-back');
+    const checkoutConfirmBtn = document.getElementById('checkout-confirm');
+    let isSubmittingOrder = false;
+    let checkoutEmailErrorKey = '';
+    let checkoutSubmitErrorKey = '';
 
     function parseJSON(value, fallback) {
       try {
@@ -2332,6 +2450,7 @@
 
     function updateCartUI() {
       cartCountElement.textContent = String(getCartCount());
+      if (cart.length) checkoutEmptyMessage.hidden = true;
 
       if (!cart.length) {
         cartItemsElement.innerHTML = `
@@ -2651,48 +2770,160 @@
       }
     }
 
-    async function handleCheckout() {
-      if (requireSignInForOrdering()) return;
+    function getOrderItemsFromCart() {
+      return cart.map((item) => {
+        const name = String(item.name || '').trim();
+        const unitPriceCents = Math.round(Number(item.price) * 100);
+        const qty = Number(item.qty);
+        const lineTotalCents = unitPriceCents * qty;
+        if (!name || !Number.isSafeInteger(unitPriceCents) || unitPriceCents < 0 ||
+            !Number.isSafeInteger(qty) || qty < 1 || !Number.isSafeInteger(lineTotalCents)) {
+          throw new Error(t('checkout.invalidCart'));
+        }
+        return { name, unitPriceCents, qty, lineTotalCents };
+      });
+    }
 
-      if (!cart.length) {
-        alert('Your bag is empty.');
-        return;
+    function renderCheckoutSummary() {
+      const items = getOrderItemsFromCart();
+      const itemCount = items.reduce((sum, item) => sum + item.qty, 0);
+      const subtotalCents = items.reduce((sum, item) => sum + item.lineTotalCents, 0);
+      if (!Number.isSafeInteger(itemCount) || !Number.isSafeInteger(subtotalCents)) {
+        throw new Error(t('checkout.invalidCart'));
       }
+      checkoutItemCount.textContent = String(itemCount);
+      checkoutTotal.textContent = formatCurrency(subtotalCents / 100);
+    }
 
-      const storeId = selectedStoreId || (stores[0] ? stores[0].id : null);
-      if (!storeId) {
-        alert('Please select a pickup store first.');
-        return;
+    function setCheckoutEmailError(key) {
+      checkoutEmailErrorKey = key;
+      checkoutEmailError.textContent = key ? t(key) : '';
+      checkoutEmailError.hidden = !key;
+      checkoutEmailInput.setAttribute('aria-invalid', key ? 'true' : 'false');
+    }
+
+    function setCheckoutSubmitError(key) {
+      checkoutSubmitErrorKey = key;
+      checkoutSubmitError.textContent = key ? t(key) : '';
+      checkoutSubmitError.hidden = !key;
+    }
+
+    function validateCheckoutEmail() {
+      checkoutEmailInput.value = checkoutEmailInput.value.trim();
+      if (!checkoutEmailInput.value) {
+        setCheckoutEmailError('checkout.emailRequired');
+        return false;
       }
+      if (!checkoutEmailInput.validity.valid) {
+        setCheckoutEmailError('checkout.emailInvalid');
+        return false;
+      }
+      setCheckoutEmailError('');
+      return true;
+    }
 
-      const promoCode = promoCodeInput.value.trim().toUpperCase();
-      setPromoCode(promoCode);
-
-      const payload = {
-        items: cart.map((item) => ({
-          menu_item_id: Number(item.menu_item_id),
-          qty: Number(item.qty)
-        })),
-        order_type: 'pickup',
-        store_id: Number(storeId),
-        promo_code: promoCode || ''
-      };
-
+    function openCheckoutModal() {
+      setCheckoutEmailError('');
+      setCheckoutSubmitError('');
+      checkoutEmailInput.value = currentUser && currentUser.email ? String(currentUser.email) : '';
+      checkoutNameInput.value = currentUser
+        ? String(currentUser.name || [currentUser.first_name, currentUser.last_name].filter(Boolean).join(' '))
+        : '';
       try {
-        const data = await apiFetch('/orders', {
-          method: 'POST',
-          body: JSON.stringify(payload)
-        });
-
-        await Promise.all([loadCartFromServer(), loadMe(), loadRewardsProfile()]);
-
-        updateCartUI();
-        closeCart();
-
-        const order = data.order || {};
-        alert(`Order placed! #${order.id}\nTotal: ${formatCurrency(order.total)}\nETA: ${order.estimated_ready || '15–20 mins'}`);
+        renderCheckoutSummary();
       } catch (error) {
-        alert(error.message || 'Could not place order.');
+        console.error('Could not render checkout summary.', error);
+        setCheckoutSubmitError('checkout.invalidCart');
+      }
+      checkoutModal.style.display = 'flex';
+      checkoutModal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      setTimeout(() => checkoutEmailInput.focus(), 20);
+    }
+
+    function closeCheckoutModal() {
+      checkoutModal.style.display = 'none';
+      checkoutModal.setAttribute('aria-hidden', 'true');
+      if (!cartSidebar.classList.contains('open') && authModal.style.display !== 'flex') {
+        document.body.style.overflow = '';
+      }
+    }
+
+    function saveOrder(order) {
+      try {
+        const storedOrders = localStorage.getItem('bk_orders');
+        const previousOrders = storedOrders ? JSON.parse(storedOrders) : [];
+        if (!Array.isArray(previousOrders)) throw new TypeError('Stored orders must be an array.');
+        sessionStorage.setItem('bk_last_order', JSON.stringify(order));
+        localStorage.setItem('bk_orders', JSON.stringify([
+          order,
+          ...previousOrders.filter((savedOrder) => savedOrder && savedOrder.id !== order.id)
+        ]));
+        // TODO: Replace local persistence with the backend order API integration.
+      } catch (error) {
+        console.error('Could not save order locally.', error);
+        throw error;
+      }
+    }
+
+    function createOrder(email, name) {
+      const items = getOrderItemsFromCart();
+      if (!items.length) throw new Error(t('checkout.invalidCart'));
+      const createdAt = new Date().toISOString();
+      const dateCode = createdAt.slice(0, 10).replace(/-/g, '');
+      const suffix = Math.random().toString(16).slice(2, 6).padEnd(4, '0').toUpperCase();
+      const subtotalCents = items.reduce((sum, item) => sum + item.lineTotalCents, 0);
+      const itemCount = items.reduce((sum, item) => sum + item.qty, 0);
+      return {
+        id: `BK-${dateCode}-${suffix}`,
+        createdAt,
+        status: 'pending',
+        lang: i18n.getLanguage() === 'vi' ? 'vi' : 'en',
+        customer: { name: name.trim(), email: email.trim() },
+        items,
+        totals: {
+          itemCount,
+          subtotalCents,
+          discountCents: 0,
+          totalCents: subtotalCents,
+          currency: 'USD'
+        }
+      };
+    }
+
+    function handleCheckout() {
+      if (!cart.length) {
+        checkoutEmptyMessage.hidden = false;
+        return;
+      }
+      checkoutEmptyMessage.hidden = true;
+      if (requireSignInForOrdering()) return;
+      openCheckoutModal();
+    }
+
+    function handleCheckoutSubmit(event) {
+      event.preventDefault();
+      if (isSubmittingOrder) return;
+      setCheckoutSubmitError('');
+      if (!validateCheckoutEmail()) return;
+      isSubmittingOrder = true;
+      checkoutConfirmBtn.disabled = true;
+      checkoutBackBtn.disabled = true;
+      try {
+        const order = createOrder(checkoutEmailInput.value, checkoutNameInput.value);
+        saveOrder(order);
+        cart = [];
+        saveGuestCart();
+        updateCartUI();
+        window.location.assign('./order-success.html');
+      } catch (error) {
+        console.error('Checkout could not be completed.', error);
+        isSubmittingOrder = false;
+        checkoutConfirmBtn.disabled = false;
+        checkoutBackBtn.disabled = false;
+        setCheckoutSubmitError(error.message === t('checkout.invalidCart')
+          ? 'checkout.invalidCart'
+          : 'checkout.saveFailed');
       }
     }
 
@@ -2806,6 +3037,17 @@
     document.getElementById('close-cart').addEventListener('click', closeCart);
     backdrop.addEventListener('click', closeCart);
     checkoutBtn.addEventListener('click', handleCheckout);
+    checkoutForm.addEventListener('submit', handleCheckoutSubmit);
+    checkoutEmailInput.addEventListener('input', () => {
+      if (checkoutEmailErrorKey) validateCheckoutEmail();
+    });
+    checkoutBackBtn.addEventListener('click', closeCheckoutModal);
+    checkoutModal.addEventListener('click', (event) => {
+      if (event.target === checkoutModal) closeCheckoutModal();
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && checkoutModal.style.display === 'flex') closeCheckoutModal();
+    });
 
     authBtn.addEventListener('click', () => {
       if (authToken) {
@@ -2897,6 +3139,16 @@
       updateCartUI();
       updateSelectedStoreUI();
       updateAuthUI();
+      if (checkoutModal.style.display === 'flex') {
+        try {
+          renderCheckoutSummary();
+        } catch (error) {
+          console.error('Could not refresh checkout summary.', error);
+          setCheckoutSubmitError('checkout.invalidCart');
+        }
+      }
+      if (checkoutEmailErrorKey) setCheckoutEmailError(checkoutEmailErrorKey);
+      if (checkoutSubmitErrorKey) setCheckoutSubmitError(checkoutSubmitErrorKey);
     });
 
     bootstrap();
