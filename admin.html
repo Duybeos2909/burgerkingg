@@ -1,0 +1,1453 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Quản trị Burger King</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      color-scheme:light;
+      --cream:#F7EEDF;
+      --sand:#EAD6B2;
+      --card:#FFFBF4;
+      --ink:#2B160B;
+      --brown:#3D1A0A;
+      --sidebar:#4A2111;
+      --sidebar-deep:#2A1108;
+      --red:#C8102E;
+      --amber:#F2A623;
+      --green:#377B45;
+      --earth:#7A3B1C;
+      --muted:#806F60;
+      --line:#E9DCC9;
+      --shadow:0 12px 32px rgba(61,26,10,.08);
+      font-family:"DM Sans",sans-serif;
+      color:var(--ink);
+      background:var(--cream);
+      font-synthesis:none;
+      text-rendering:optimizeLegibility;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;min-width:320px;min-height:100vh;background:var(--cream);font-family:"DM Sans",sans-serif}
+    button,input,select,textarea{font:inherit}
+    button{cursor:pointer}
+    button:disabled{cursor:not-allowed;opacity:.55}
+    a{color:inherit;text-decoration:none}
+    [hidden]{display:none!important}
+    .serif,h1,h2,h3,h4{font-family:"Playfair Display",serif;color:var(--brown)}
+    .muted{color:var(--muted)}
+    .eyebrow{font-size:.75rem;text-transform:uppercase;letter-spacing:.13em;font-weight:800;color:var(--earth)}
+    .login-screen{
+      min-height:100vh;display:grid;place-items:center;padding:24px;
+      background:radial-gradient(ellipse at 18% 18%,#7A3B1C 0,#3D1A0A 48%,#1d0c04 100%);
+    }
+    .login-card{
+      width:min(100%,440px);padding:clamp(24px,6vw,42px);border-radius:24px;
+      background:var(--card);box-shadow:0 28px 80px rgba(17,7,2,.34);border:1px solid rgba(255,255,255,.55)
+    }
+    .login-mark{display:grid;place-items:center;width:58px;height:58px;border-radius:18px;background:#F9E2B8;font-size:30px}
+    .login-card h1{font-size:clamp(2rem,7vw,2.7rem);line-height:1.04;margin:20px 0 8px}
+    .login-card p{line-height:1.6}
+    .login-note{padding:12px 14px;border-radius:12px;background:#F7EEDF;color:#6C5545;font-size:.88rem}
+    .form-stack{display:grid;gap:15px}
+    .field{display:grid;gap:7px;min-width:0}
+    .field label,.field-label{font-size:.9rem;font-weight:700;color:var(--brown)}
+    .field input,.field select,.field textarea,.toolbar input,.toolbar select{
+      width:100%;min-width:0;min-height:46px;padding:10px 13px;border:1px solid #D9C7AF;border-radius:12px;
+      background:#fff;color:var(--ink);outline:none
+    }
+    .field textarea{min-height:96px;resize:vertical}
+    .field input:focus,.field select:focus,.field textarea:focus,.toolbar input:focus,.toolbar select:focus{
+      border-color:var(--earth);box-shadow:0 0 0 3px rgba(122,59,28,.14)
+    }
+    .button{
+      min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:8px;
+      padding:10px 15px;border:1px solid transparent;border-radius:12px;font-weight:800;
+      transition:transform .16s ease,filter .16s ease,background .16s ease
+    }
+    .button:hover:not(:disabled){filter:brightness(.97);transform:translateY(-1px)}
+    .button-primary{background:var(--red);color:#fff}
+    .button-dark{background:var(--brown);color:#FFF5E4}
+    .button-amber{background:var(--amber);color:var(--brown)}
+    .button-outline{background:#fffaf2;border-color:#DCC9AE;color:var(--brown)}
+    .button-danger{background:#FCE9E9;border-color:#F0CACA;color:#9C1026}
+    .button-small{min-height:44px;padding:7px 10px;border-radius:10px;font-size:.82rem}
+    .login-error,.form-error{min-height:1.3em;color:#A21428;font-size:.88rem;font-weight:700}
+    .app-shell{min-height:100vh;display:grid;grid-template-columns:252px minmax(0,1fr)}
+    .sidebar{
+      position:sticky;top:0;height:100vh;padding:24px 16px;color:#FFF5E4;
+      background:linear-gradient(160deg,#4A2111 0%,#2A1108 100%);display:flex;flex-direction:column;gap:26px
+    }
+    .brand{display:flex;align-items:center;gap:11px;padding:3px 9px;color:#FFF5E4}
+    .brand-icon{width:42px;height:42px;display:grid;place-items:center;border-radius:14px;background:var(--amber);font-size:22px}
+    .brand strong{display:block;font-family:"Playfair Display",serif;font-size:1.08rem;line-height:1.1}
+    .brand small{display:block;margin-top:3px;color:#EAD6B2;font-size:.72rem}
+    .nav-list{display:grid;gap:7px}
+    .nav-link{
+      min-height:46px;width:100%;display:flex;align-items:center;gap:11px;padding:10px 12px;
+      border:0;border-radius:12px;background:transparent;color:#FFF5E4;text-align:left;font-weight:700
+    }
+    .nav-link:hover{background:rgba(255,245,228,.1)}
+    .nav-link.active{background:var(--amber);color:var(--brown)}
+    .nav-icon{width:24px;text-align:center;font-size:1.08rem;flex:0 0 auto}
+    .nav-label{min-width:0}
+    .nav-badge{margin-left:auto;min-width:22px;padding:3px 6px;border-radius:999px;background:#fff;color:var(--red);font-size:.72rem;text-align:center}
+    .sidebar-foot{margin-top:auto;padding:12px;color:#EAD6B2;font-size:.75rem;line-height:1.5}
+    .main-panel{min-width:0;background:radial-gradient(ellipse at 70% 0%,rgba(234,214,178,.74),transparent 460px),var(--cream)}
+    .topbar{
+      min-height:92px;display:flex;align-items:center;justify-content:space-between;gap:18px;
+      padding:18px clamp(18px,3vw,42px);border-bottom:1px solid rgba(122,59,28,.12)
+    }
+    .topbar h1{font-size:clamp(1.7rem,3vw,2.25rem);line-height:1.05;margin:4px 0 0}
+    .top-actions{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+    .storage-note{display:inline-flex;align-items:center;gap:7px;color:#705A47;font-size:.8rem}
+    .storage-dot{width:8px;height:8px;border-radius:50%;background:var(--green)}
+    .content{width:min(100%,1600px);margin:0 auto;padding:clamp(18px,3vw,38px)}
+    .view{min-width:0;display:grid;gap:24px}
+    .view-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+    .view-head h2{font-size:clamp(1.5rem,3vw,2rem);margin:0 0 5px}
+    .view-head p{margin:0;color:var(--muted)}
+    .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,205px),1fr));gap:16px}
+    .stat-card,.panel,.table-card{
+      min-width:0;background:var(--card);border:1px solid rgba(122,59,28,.1);
+      border-radius:18px;box-shadow:var(--shadow)
+    }
+    .stat-card{padding:18px;border-top:4px solid var(--earth)}
+    .stat-card.green{border-top-color:var(--green)}
+    .stat-card.gold{border-top-color:var(--amber)}
+    .stat-card.red{border-top-color:var(--red)}
+    .stat-card.earth{border-top-color:var(--earth)}
+    .stat-label{color:var(--muted);font-size:.84rem;font-weight:700}
+    .stat-value{margin:9px 0 4px;color:var(--red);font-size:clamp(1.5rem,2.4vw,2rem);font-weight:800;letter-spacing:-.03em;overflow-wrap:anywhere}
+    .stat-hint{color:#8D7D6E;font-size:.78rem}
+    .overview-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(260px,.85fr);gap:18px;align-items:start}
+    .panel{padding:20px}
+    .panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+    .panel-head h3{margin:0;font-size:1.25rem}
+    .chart{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px;align-items:end;min-height:230px;padding:15px 4px 0}
+    .chart-day{min-width:0;height:210px;display:grid;grid-template-rows:minmax(0,1fr) auto;gap:8px;text-align:center}
+    .chart-track{height:100%;display:flex;align-items:flex-end;justify-content:center;border-bottom:1px solid var(--line);background:linear-gradient(to top,rgba(234,214,178,.22),transparent)}
+    .chart-bar{width:min(38px,72%);min-height:3px;border-radius:9px 9px 2px 2px;background:linear-gradient(180deg,#F2A623,#C8102E);position:relative}
+    .chart-bar span{position:absolute;left:50%;top:-23px;transform:translateX(-50%);white-space:nowrap;color:#81533A;font-size:.68rem;font-weight:700}
+    .chart-label{color:var(--muted);font-size:.72rem}
+    .rank-list,.attention-list,.recent-list{display:grid;gap:10px}
+    .rank-row,.attention-row,.recent-row{
+      min-width:0;display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:11px 12px;border-radius:12px;background:#FBF4E9
+    }
+    .rank-name,.recent-name{min-width:0;overflow-wrap:anywhere;font-weight:700}
+    .rank-value{flex:0 0 auto;color:var(--red);font-weight:800}
+    .attention-row{align-items:flex-start;color:#684B36;font-size:.88rem}
+    .attention-count{flex:0 0 auto;color:var(--red);font-weight:800}
+    .toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    .toolbar input{flex:1 1 220px}
+    .toolbar select{flex:0 1 190px}
+    .table-card{overflow:hidden}
+    .table-scroll{width:100%;max-width:100%;overflow-x:auto;overscroll-behavior-x:contain}
+    table{width:100%;border-collapse:collapse;min-width:700px}
+    th,td{padding:13px 15px;border-bottom:1px solid #EFE4D5;text-align:left;vertical-align:middle}
+    th{background:#F9F1E5;color:#745A42;font-size:.76rem;text-transform:uppercase;letter-spacing:.07em;white-space:nowrap}
+    td{font-size:.88rem}
+    tr:last-child td{border-bottom:0}
+    .table-primary{font-weight:800;color:var(--brown)}
+    .table-secondary{display:block;margin-top:3px;color:var(--muted);font-size:.78rem;overflow-wrap:anywhere}
+    .money{color:var(--red);font-weight:800;white-space:nowrap}
+    .badge{display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border-radius:999px;background:#F2E7D7;color:#654A31;font-size:.74rem;font-weight:800;white-space:nowrap}
+    .badge.green{background:#E4F1E5;color:#286537}
+    .badge.red{background:#FBE5E7;color:#A11428}
+    .badge.amber{background:#FFF0CB;color:#7A4A00}
+    .actions{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+    .switch{position:relative;display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-size:.82rem;font-weight:700}
+    .switch input{position:absolute;opacity:0;width:1px;height:1px}
+    .switch-track{width:42px;height:24px;border-radius:999px;background:#C8B9A7;position:relative;transition:background .16s ease;flex:0 0 auto}
+    .switch-track::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:white;transition:transform .16s ease}
+    .switch input:checked + .switch-track{background:var(--green)}
+    .switch input:checked + .switch-track::after{transform:translateX(18px)}
+    .switch input:focus-visible + .switch-track{outline:3px solid rgba(122,59,28,.3)}
+    .empty-state{padding:30px 18px;text-align:center;color:var(--muted)}
+    .empty-state strong{display:block;margin-bottom:5px;color:var(--brown);font-family:"Playfair Display",serif;font-size:1.2rem}
+    .inline-hint{font-size:.8rem;color:var(--muted);line-height:1.5}
+    .status-select{min-width:132px;min-height:44px;padding:6px 9px;border:1px solid #DFCFBA;border-radius:9px;background:#fff;color:var(--ink)}
+    .settings-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,310px),1fr));gap:16px}
+    .settings-card{min-width:0;padding:20px;border-radius:18px;background:var(--card);border:1px solid rgba(122,59,28,.1);box-shadow:var(--shadow)}
+    .settings-card h3{margin:0 0 8px;font-size:1.25rem}
+    .settings-card p{margin:0 0 16px;color:var(--muted);font-size:.88rem;line-height:1.55}
+    .settings-actions{display:flex;flex-wrap:wrap;gap:9px}
+    .dialog{
+      width:min(680px,calc(100vw - 24px));max-width:680px;max-height:min(90dvh,900px);padding:0;
+      border:0;border-radius:20px;background:transparent;color:var(--ink);overflow:visible
+    }
+    .dialog::backdrop{background:rgba(35,16,7,.6);backdrop-filter:blur(3px)}
+    .dialog-card{max-height:min(90dvh,900px);overflow-y:auto;padding:clamp(18px,4vw,28px);border-radius:20px;background:var(--card);box-shadow:0 24px 80px rgba(21,8,2,.35)}
+    .dialog-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:18px}
+    .dialog-head h2{margin:0;font-size:1.55rem}
+    .dialog-close{width:44px;height:44px;border:1px solid var(--line);border-radius:12px;background:white;color:var(--brown);font-size:1.2rem}
+    .dialog-actions{display:flex;justify-content:flex-end;gap:9px;flex-wrap:wrap;margin-top:20px}
+    .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+    .span-2{grid-column:1/-1}
+    .check-row{display:flex;align-items:center;gap:9px;min-height:44px;font-weight:700}
+    .check-row input{width:20px;height:20px;accent-color:var(--red)}
+    .order-detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:16px}
+    .detail-box{min-width:0;padding:11px;border-radius:11px;background:#F8F0E4;overflow-wrap:anywhere}
+    .detail-box small{display:block;color:var(--muted);margin-bottom:4px}
+    .detail-items{min-width:0;display:grid;gap:8px}
+    .detail-item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+    .detail-item:last-child{border-bottom:0}
+    .toast-region{position:fixed;z-index:1000;right:16px;top:16px;display:grid;gap:9px;width:min(380px,calc(100vw - 32px));pointer-events:none}
+    .toast{padding:13px 15px;border-radius:13px;background:#3D1A0A;color:#FFF5E4;box-shadow:0 14px 36px rgba(45,18,6,.22);font-size:.9rem;font-weight:700;animation:toast-in .18s ease-out}
+    .toast.error{background:#9E1428}
+    .toast.success{background:#286537}
+    .kitchen-print{display:none}
+    @keyframes toast-in{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+    @media(max-width:1100px){
+      .app-shell{grid-template-columns:218px minmax(0,1fr)}
+      .overview-grid{grid-template-columns:minmax(0,1fr)}
+    }
+    @media(max-width:899.98px){
+      .app-shell{display:block;padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+      .sidebar{
+        position:fixed;z-index:50;left:0;right:0;bottom:0;top:auto;width:100%;height:auto;
+        padding:7px 8px calc(7px + env(safe-area-inset-bottom));border-radius:17px 17px 0 0;
+        box-shadow:0 -8px 26px rgba(42,17,8,.2)
+      }
+      .brand,.sidebar-foot{display:none}
+      .nav-list{grid-template-columns:repeat(6,minmax(0,1fr));gap:2px}
+      .nav-link{min-height:56px;display:grid;justify-items:center;align-content:center;gap:2px;padding:5px 2px;text-align:center}
+      .nav-icon{font-size:1.05rem;width:auto}
+      .nav-label{font-size:.6rem;line-height:1.1;overflow-wrap:anywhere}
+      .nav-badge{position:absolute;transform:translate(18px,-14px);padding:2px 5px;min-width:18px;font-size:.62rem}
+      .main-panel{min-height:100vh}
+    }
+    @media(max-width:560px){
+      .topbar{align-items:flex-start;flex-direction:column;padding:17px 16px;gap:12px}
+      .top-actions{width:100%;justify-content:space-between}
+      .storage-note{font-size:.72rem}
+      .content{padding:18px 12px 26px}
+      .view{gap:17px}
+      .stat-card{padding:15px}
+      .panel,.settings-card{padding:16px}
+      .panel-head{align-items:flex-start}
+      .chart{gap:5px;padding-left:0;padding-right:0}
+      .chart-day{height:190px}
+      .chart-bar span{font-size:.61rem}
+      .form-grid{grid-template-columns:minmax(0,1fr)}
+      .span-2{grid-column:auto}
+      .dialog-actions .button{flex:1 1 140px}
+      .order-detail-grid{grid-template-columns:minmax(0,1fr)}
+      .view-head>.button{width:100%}
+      .toolbar>*{flex:1 1 100%!important}
+    }
+    @media(max-width:380px){
+      .nav-list{gap:0}
+      .nav-link{padding-left:0;padding-right:0}
+      .nav-label{font-size:.56rem}
+      .nav-icon{font-size:.98rem}
+      .content{padding-left:10px;padding-right:10px}
+      .storage-note{max-width:210px}
+    }
+    @media(prefers-reduced-motion:reduce){
+      *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+    }
+    @media print{
+      body *{visibility:hidden!important}
+      #kitchen-print,#kitchen-print *{visibility:visible!important}
+      #kitchen-print{display:block;position:absolute;left:0;top:0;width:100%;padding:20px;font:18px "DM Sans",sans-serif;color:#000}
+      #kitchen-print h1{font:700 22px "DM Sans",sans-serif;color:#000}
+      #kitchen-print li{padding:9px 0;border-bottom:1px solid #aaa}
+    }
+  </style>
+</head>
+<body>
+  <!-- Đăng nhập -->
+  <main class="login-screen" id="login-screen">
+    <section class="login-card" aria-labelledby="login-title">
+      <div class="login-mark" aria-hidden="true">🔥</div>
+      <div class="eyebrow" style="margin-top:20px">Burger King · Quản trị</div>
+      <h1 id="login-title">Chào mừng trở lại</h1>
+      <p class="muted">Đăng nhập để quản lý thực đơn và đơn hàng.</p>
+      <form class="form-stack" id="login-form" novalidate>
+        <div class="field">
+          <label for="login-email">Email quản trị</label>
+          <input id="login-email" type="email" autocomplete="username" inputmode="email" required>
+        </div>
+        <div class="field">
+          <label for="login-password">Mật khẩu</label>
+          <input id="login-password" type="password" autocomplete="current-password" required>
+        </div>
+        <div class="login-error" id="login-error" role="alert" aria-live="assertive"></div>
+        <button class="button button-primary" type="submit" id="login-submit">Đăng nhập</button>
+      </form>
+      <p class="login-note">Phiên đăng nhập được lưu trong tab này và tự hết hạn sau 2 giờ.</p>
+    </section>
+  </main>
+
+  <!-- Khung quản trị -->
+  <div class="app-shell" id="admin-app" hidden>
+    <aside class="sidebar" aria-label="Điều hướng quản trị">
+      <a class="brand" href="#" aria-label="Burger King quản trị">
+        <span class="brand-icon" aria-hidden="true">🔥</span>
+        <span><strong>BURGER KING</strong><small>TRUNG TÂM QUẢN TRỊ</small></span>
+      </a>
+      <nav class="nav-list" id="admin-nav">
+        <button class="nav-link active" type="button" data-view="overview" aria-current="page"><span class="nav-icon" aria-hidden="true">⌂</span><span class="nav-label">Tổng quan</span></button>
+        <button class="nav-link" type="button" data-view="menu"><span class="nav-icon" aria-hidden="true">🍔</span><span class="nav-label">Món ăn</span></button>
+        <button class="nav-link" type="button" data-view="orders"><span class="nav-icon" aria-hidden="true">🔔</span><span class="nav-label">Đơn hàng</span><span class="nav-badge" id="new-order-badge" hidden></span></button>
+        <button class="nav-link" type="button" data-view="customers"><span class="nav-icon" aria-hidden="true">♙</span><span class="nav-label">Khách hàng</span></button>
+        <button class="nav-link" type="button" data-view="coupons"><span class="nav-icon" aria-hidden="true">％</span><span class="nav-label">Mã giảm giá</span></button>
+        <button class="nav-link" type="button" data-view="settings"><span class="nav-icon" aria-hidden="true">⚙</span><span class="nav-label">Cài đặt</span></button>
+      </nav>
+      <div class="sidebar-foot">Dữ liệu đang lưu trong trình duyệt này.<br>Không đồng bộ sang thiết bị khác.</div>
+    </aside>
+
+    <div class="main-panel">
+      <header class="topbar">
+        <div>
+          <div class="eyebrow">Bếp lửa đang đỏ</div>
+          <h1 id="page-title">Tổng quan</h1>
+        </div>
+        <div class="top-actions">
+          <span class="storage-note"><span class="storage-dot" aria-hidden="true"></span>Dữ liệu lưu trong trình duyệt này</span>
+          <button type="button" class="button button-outline button-small" data-action="logout">Đăng xuất</button>
+        </div>
+      </header>
+
+      <main class="content">
+        <section class="view" id="view-overview" aria-labelledby="page-title">
+          <div class="view-head"><div><h2>Nhịp bếp hôm nay</h2><p>Tóm tắt tình hình bán hàng và các việc cần xử lý.</p></div></div>
+          <div class="stats-grid" id="overview-stats"></div>
+          <div class="overview-grid">
+            <section class="panel" aria-labelledby="sales-heading">
+              <div class="panel-head"><h3 id="sales-heading">Doanh thu đã xác nhận · 7 ngày</h3><span class="badge green">Đã nhận tiền</span></div>
+              <div class="chart" id="sales-chart" aria-label="Biểu đồ doanh thu 7 ngày"></div>
+            </section>
+            <section class="panel" aria-labelledby="attention-heading">
+              <div class="panel-head"><h3 id="attention-heading">Cần chú ý</h3><span class="badge amber">Theo dõi</span></div>
+              <div class="attention-list" id="attention-list"></div>
+            </section>
+          </div>
+          <div class="overview-grid">
+            <section class="panel" aria-labelledby="top-items-heading">
+              <div class="panel-head"><h3 id="top-items-heading">5 món bán chạy</h3></div>
+              <div class="rank-list" id="top-items"></div>
+            </section>
+            <section class="panel" aria-labelledby="recent-heading">
+              <div class="panel-head"><h3 id="recent-heading">Đơn hàng gần đây</h3><button type="button" class="button button-outline button-small" data-view="orders">Xem tất cả</button></div>
+              <div class="recent-list" id="recent-orders"></div>
+            </section>
+          </div>
+        </section>
+
+        <section class="view" id="view-menu" aria-labelledby="page-title" hidden>
+          <div class="view-head">
+            <div><h2>Thực đơn</h2><p>Quản lý giá, danh mục, tình trạng bán và tồn kho.</p></div>
+            <button type="button" class="button button-primary" data-action="menu-add">＋ Thêm món</button>
+          </div>
+          <div class="toolbar">
+            <input id="menu-search" type="search" placeholder="Tìm tên món..." aria-label="Tìm tên món">
+            <select id="menu-category-filter" aria-label="Lọc danh mục"><option value="">Tất cả danh mục</option></select>
+            <span class="badge" id="menu-count"></span>
+          </div>
+          <div class="table-card"><div class="table-scroll">
+            <table><thead><tr><th>Món ăn</th><th>Danh mục</th><th>Giá</th><th>Tồn kho</th><th>Đang bán</th><th>Thao tác</th></tr></thead><tbody id="menu-table"></tbody></table>
+          </div></div>
+          <p class="inline-hint">Tồn kho là trường tùy chọn. Khi tồn kho về 0, món tự chuyển sang tạm hết; bật bán lại khi đã bổ sung hàng.</p>
+        </section>
+
+        <section class="view" id="view-orders" aria-labelledby="page-title" hidden>
+          <div class="view-head">
+            <div><h2>Đơn hàng</h2><p>Đối chiếu sao kê và cập nhật tiến độ xử lý.</p></div>
+            <button type="button" class="button button-outline" data-action="orders-export">↓ Xuất CSV</button>
+          </div>
+          <div class="toolbar">
+            <input id="order-search" type="search" placeholder="Tìm mã đơn, email hoặc tên..." aria-label="Tìm đơn hàng">
+            <select id="order-status-filter" aria-label="Lọc trạng thái đơn"><option value="">Mọi trạng thái</option></select>
+            <select id="order-payment-filter" aria-label="Lọc trạng thái thanh toán">
+              <option value="">Mọi trạng thái tiền</option><option value="unverified">Chờ xác nhận tiền</option><option value="verified">Đã nhận tiền</option>
+            </select>
+          </div>
+          <div class="table-card"><div class="table-scroll">
+            <table><thead><tr><th>Mã đơn</th><th>Khách hàng</th><th>Thời gian</th><th>Tổng</th><th>Trạng thái</th><th>Thanh toán</th><th>Thao tác</th></tr></thead><tbody id="orders-table"></tbody></table>
+          </div></div>
+        </section>
+
+        <section class="view" id="view-customers" aria-labelledby="page-title" hidden>
+          <div class="view-head"><div><h2>Khách hàng</h2><p>Nhóm theo email từ các đơn hàng không bị hủy.</p></div></div>
+          <div class="toolbar"><input id="customer-search" type="search" placeholder="Tìm email hoặc tên..." aria-label="Tìm khách hàng"><span class="badge" id="customer-count"></span></div>
+          <div class="table-card"><div class="table-scroll">
+            <table><thead><tr><th>Khách hàng</th><th>Email</th><th>Số đơn</th><th>Tổng chi</th><th>Đơn gần nhất</th></tr></thead><tbody id="customers-table"></tbody></table>
+          </div></div>
+        </section>
+
+        <section class="view" id="view-coupons" aria-labelledby="page-title" hidden>
+          <div class="view-head">
+            <div><h2>Mã giảm giá</h2><p>Quản lý mã khuyến mãi được lưu trong trình duyệt này.</p></div>
+            <button type="button" class="button button-primary" data-action="coupon-add">＋ Tạo mã</button>
+          </div>
+          <div class="table-card"><div class="table-scroll">
+            <table><thead><tr><th>Mã</th><th>Ưu đãi</th><th>Hạn dùng</th><th>Trạng thái</th><th>Thao tác</th></tr></thead><tbody id="coupons-table"></tbody></table>
+          </div></div>
+          <p class="inline-hint">Mã được quản lý tại đây. Để áp dụng mã vào checkout của khách, cần tích hợp thêm ở trang bán hàng.</p>
+        </section>
+
+        <section class="view" id="view-settings" aria-labelledby="page-title" hidden>
+          <div class="view-head"><div><h2>Cài đặt</h2><p>Sao lưu và quản lý dữ liệu cục bộ của website.</p></div></div>
+          <div class="settings-grid">
+            <section class="settings-card">
+              <h3>Tỷ giá USD → VND</h3><p>Tỷ giá này dùng cho phần quản trị và dữ liệu mới. Tỷ giá thanh toán trên trang khách có cấu hình riêng.</p>
+              <form id="rate-form" class="form-stack">
+                <div class="field"><label for="rate-input">Số VND cho 1 USD</label><input id="rate-input" type="number" min="1" step="1" required></div>
+                <button class="button button-primary" type="submit">Lưu tỷ giá</button>
+              </form>
+            </section>
+            <section class="settings-card">
+              <h3>Sao lưu dữ liệu</h3><p>Xuất hoặc nhập menu, đơn hàng, tỷ giá và mã giảm giá. Tệp nhập tối đa 2 MB và được kiểm tra trước khi ghi.</p>
+              <div class="settings-actions">
+                <button type="button" class="button button-outline" data-action="backup-export">Xuất JSON</button>
+                <button type="button" class="button button-outline" data-action="backup-import">Nhập JSON</button>
+                <input type="file" id="backup-file" accept=".json,application/json" hidden>
+              </div>
+            </section>
+            <section class="settings-card">
+              <h3>Đơn hàng demo</h3><p>Tạo đơn thử để kiểm tra dashboard; đơn demo có cờ riêng và có thể xóa riêng.</p>
+              <div class="settings-actions">
+                <button type="button" class="button button-amber" data-action="demo-add">Tạo đơn demo</button>
+                <button type="button" class="button button-outline" data-action="demo-delete">Xóa đơn demo</button>
+              </div>
+            </section>
+            <section class="settings-card">
+              <h3>Khôi phục dữ liệu</h3><p>Các thao tác dưới đây không thể hoàn tác nếu chưa xuất bản sao lưu.</p>
+              <div class="settings-actions">
+                <button type="button" class="button button-danger" data-action="orders-clear">Xóa mọi đơn</button>
+                <button type="button" class="button button-outline" data-action="menu-restore">Khôi phục menu mặc định</button>
+              </div>
+            </section>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- Hộp thoại dùng chung; showModal() cung cấp focus trap và Esc đóng -->
+  <dialog class="dialog" id="app-dialog" aria-labelledby="dialog-title">
+    <div class="dialog-card">
+      <div class="dialog-head"><h2 id="dialog-title"></h2><button class="dialog-close" type="button" data-action="dialog-close" aria-label="Đóng">×</button></div>
+      <div id="dialog-content"></div>
+    </div>
+  </dialog>
+  <div class="toast-region" id="toast-region" aria-live="polite" aria-atomic="false"></div>
+  <div class="kitchen-print" id="kitchen-print" aria-hidden="true"></div>
+
+  <!-- JavaScript: xác thực, chuẩn hóa và trạng thái ứng dụng -->
+  <script>
+    'use strict';
+
+    const ADMIN_EMAIL = 'bduy.nina@gmail.com';
+    const ADMIN_HASH = '0286cfd47e73bd868b4088ca7029a6c5ccc6c97a24353d658185297d6a642594';
+    const SESSION_KEY = 'bk_admin_session';
+    const LOCK_KEY = 'bk_admin_lock';
+    const STORAGE_KEYS = {
+      menu: 'bk_menu',
+      orders: 'bk_orders',
+      settings: 'bk_settings',
+      coupons: 'bk_coupons',
+      lastSeen: 'bk_admin_lastseen'
+    };
+    const SESSION_MS = 2 * 60 * 60 * 1000;
+    const LOCK_MS = 30 * 1000;
+    const MAX_IMPORT_BYTES = 2 * 1024 * 1024;
+    const LOW_STOCK_THRESHOLD = 5;
+    const CATEGORIES = ['burgers','chicken','sides','drinks','desserts','combos','vegetarian'];
+    const CATEGORY_LABELS = {
+      burgers:'Burger', chicken:'Gà', sides:'Món ăn kèm', drinks:'Thức uống',
+      desserts:'Tráng miệng', combos:'Combo', vegetarian:'Món chay'
+    };
+    const ORDER_STATUSES = ['pending','preparing','ready','completed','cancelled'];
+    const ORDER_LABELS = {
+      pending:'Chờ xử lý', preparing:'Đang chuẩn bị', ready:'Sẵn sàng', completed:'Hoàn tất', cancelled:'Đã hủy'
+    };
+    const COLOR_PRESETS = [
+      'linear-gradient(135deg,#C8102E,#F25C54)',
+      'linear-gradient(135deg,#7A0E1F,#C8102E)',
+      'linear-gradient(135deg,#D64D00,#F25C54)',
+      'linear-gradient(135deg,#4F8A10,#9ED15D)',
+      'linear-gradient(135deg,#7A3B1C,#F2A623)',
+      'linear-gradient(135deg,#5A3D2B,#D6A75C)'
+    ];
+    const DEFAULT_MENU = [
+      {id:1,name:'Whopper',category:'burgers',price:5.49,emoji:'🍔',rating:4.8,color:COLOR_PRESETS[0],description:'Bò nướng lửa, cà chua tươi, xà lách giòn và sốt mayo.',available:true,stock:24},
+      {id:2,name:'Double Whopper',category:'burgers',price:7.29,emoji:'🍔',rating:4.9,color:COLOR_PRESETS[1],description:'Hai miếng bò nướng lửa cùng đầy đủ rau tươi và sốt.',available:true,stock:18},
+      {id:4,name:'Crispy Chicken Sandwich',category:'chicken',price:5.99,emoji:'🍗',rating:4.7,color:COLOR_PRESETS[2],description:'Gà giòn tẩm bột, dưa chua và sốt mayo.',available:true,stock:16},
+      {id:5,name:'Spicy Crispy Chicken',category:'chicken',price:6.49,emoji:'🌶️',rating:4.6,color:COLOR_PRESETS[2],description:'Gà giòn cay, nóng hổi và đậm vị.',available:true,stock:14},
+      {id:7,name:'BK Veggie Burger',category:'vegetarian',price:5.29,emoji:'🥬',rating:4.4,color:COLOR_PRESETS[3],description:'Burger chay với rau tươi và phần nhân thực vật.',available:true,stock:12},
+      {id:8,name:'Onion Rings',category:'sides',price:2.99,emoji:'🧅',rating:4.7,color:COLOR_PRESETS[4],description:'Hành tây tẩm bột vàng giòn.',available:true,stock:26},
+      {id:9,name:'Large Fries',category:'sides',price:2.49,emoji:'🍟',rating:4.8,color:COLOR_PRESETS[4],description:'Khoai tây chiên vàng, rắc muối vừa vị.',available:true,stock:30},
+      {id:10,name:'Chocolate Shake',category:'drinks',price:4.29,emoji:'🥤',rating:4.6,color:COLOR_PRESETS[5],description:'Sữa lắc chocolate sánh mịn.',available:true,stock:10},
+      {id:11,name:'Frozen Coke',category:'drinks',price:1.99,emoji:'🥤',rating:4.5,color:COLOR_PRESETS[5],description:'Coke đá xay mát lạnh.',available:true,stock:20},
+      {id:12,name:'Whopper Combo',category:'combos',price:9.49,emoji:'🍔',rating:4.9,color:COLOR_PRESETS[0],description:'Whopper kèm khoai tây chiên và thức uống.',available:true,stock:15},
+      {id:14,name:'Chocolate Brownie',category:'desserts',price:2.49,emoji:'🍫',rating:4.7,color:COLOR_PRESETS[5],description:'Brownie chocolate mềm ẩm, đậm vị.',available:true,stock:9}
+    ];
+
+    const state = {
+      menu:[],
+      orders:[],
+      settings:{usdToVnd:25000},
+      coupons:[],
+      activeView:'overview',
+      pendingConfirmation:null,
+      pendingImport:null,
+      storageWarnings:[]
+    };
+    let sessionExpiryTimer=0;
+
+    const $ = (selector, root=document) => root.querySelector(selector);
+    const $$ = (selector, root=document) => [...root.querySelectorAll(selector)];
+    const loginScreen = $('#login-screen');
+    const adminApp = $('#admin-app');
+    const loginForm = $('#login-form');
+    const loginEmail = $('#login-email');
+    const loginPassword = $('#login-password');
+    const loginError = $('#login-error');
+    const dialog = $('#app-dialog');
+    const dialogTitle = $('#dialog-title');
+    const dialogContent = $('#dialog-content');
+
+    function clone(value){ return JSON.parse(JSON.stringify(value)); }
+    function isPlainObject(value){ return Boolean(value) && typeof value === 'object' && !Array.isArray(value); }
+    function escapeHTML(value){
+      return String(value ?? '').replace(/[&<>"']/g, character => ({
+        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+      })[character]);
+    }
+    function notifyStorageWarning(key, error){
+      state.storageWarnings.push(key);
+      console.error(`Không thể đọc dữ liệu ${key}.`, error);
+    }
+    function readStored(key, fallback){
+      try{
+        const raw=localStorage.getItem(key);
+        if(raw===null)return {value:clone(fallback),exists:false,valid:true};
+        const value=JSON.parse(raw);
+        return {value,exists:true,valid:true};
+      }catch(error){
+        notifyStorageWarning(key,error);
+        return {value:clone(fallback),exists:true,valid:false};
+      }
+    }
+    function writeStored(key,value){
+      try{
+        localStorage.setItem(key,JSON.stringify(value));
+        return true;
+      }catch(error){
+        console.error(`Không thể lưu dữ liệu ${key}.`,error);
+        toast(`Không thể lưu dữ liệu vào trình duyệt: ${key}. Hãy kiểm tra dung lượng lưu trữ.`, 'error');
+        return false;
+      }
+    }
+    function toast(message,type=''){
+      const region=$('#toast-region');
+      const item=document.createElement('div');
+      item.className=`toast ${type}`.trim();
+      item.setAttribute('role',type==='error'?'alert':'status');
+      item.textContent=message;
+      region.append(item);
+      window.setTimeout(()=>item.remove(),4200);
+    }
+    function formatMoney(cents){
+      const amount=Number.isSafeInteger(cents)?cents:0;
+      return new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(amount/100);
+    }
+    function formatPrice(price){return formatMoney(Math.round(Number(price||0)*100));}
+    function formatDate(value,includeTime=true){
+      const time=Date.parse(value||'');
+      if(!Number.isFinite(time))return 'Chưa có thông tin';
+      return new Intl.DateTimeFormat('vi-VN',includeTime
+        ?{dateStyle:'medium',timeStyle:'short'}:{dateStyle:'medium'}).format(time);
+    }
+    function formatShortDate(value){
+      const time=Date.parse(value||'');
+      return Number.isFinite(time)?new Intl.DateTimeFormat('vi-VN',{day:'2-digit',month:'2-digit'}).format(time):'—';
+    }
+    function safeInteger(value,min=0,max=Number.MAX_SAFE_INTEGER){
+      const number=Number(value);
+      return Number.isSafeInteger(number)&&number>=min&&number<=max?number:null;
+    }
+    function isValidDateOnly(value){
+      if(typeof value!=='string'||! /^\d{4}-\d{2}-\d{2}$/.test(value))return false;
+      const date=new Date(`${value}T00:00:00Z`);
+      return Number.isFinite(date.getTime())&&date.toISOString().slice(0,10)===value;
+    }
+    function normalizeMenuItem(raw,index=0){
+      if(!isPlainObject(raw))return null;
+      const name=typeof raw.name==='string'?raw.name.trim().slice(0,120):'';
+      const price=Number(raw.price);
+      if(!name||!CATEGORIES.includes(raw.category)||!Number.isFinite(price)||price<0||price>10000)return null;
+      const id=(typeof raw.id==='number'&&Number.isFinite(raw.id))?raw.id:
+        (typeof raw.id==='string'&&raw.id.trim()?raw.id.trim().slice(0,80):`menu-${index+1}`);
+      const stock=raw.stock===undefined||raw.stock===null||raw.stock===''?undefined:safeInteger(raw.stock,0,10000000);
+      const rating=Number(raw.rating);
+      const item={
+        id,name,category:raw.category,price:Math.round(price*100)/100,
+        emoji:typeof raw.emoji==='string'&&raw.emoji.trim()?raw.emoji.trim().slice(0,16):'🍔',
+        rating:Number.isFinite(rating)?Math.min(5,Math.max(0,rating)):4.5,
+        color:COLOR_PRESETS.includes(raw.color)?raw.color:COLOR_PRESETS[0],
+        description:typeof raw.description==='string'?raw.description.slice(0,1000):'',
+        available:typeof raw.available==='boolean'?raw.available:true
+      };
+      if(stock!==undefined)item.stock=stock;
+      if(item.stock===0)item.available=false;
+      return item;
+    }
+    function normalizeOrder(raw,index=0){
+      if(!isPlainObject(raw))return null;
+      const items=Array.isArray(raw.items)?raw.items.map(item=>{
+        if(!isPlainObject(item))return null;
+        const name=typeof item.name==='string'?item.name.trim().slice(0,200):'';
+        const unitPriceCents=safeInteger(item.unitPriceCents,0);
+        const qty=safeInteger(item.qty,1,100000);
+        if(!name||unitPriceCents===null||qty===null)return null;
+        const lineTotalCents=unitPriceCents*qty;
+        if(!Number.isSafeInteger(lineTotalCents))return null;
+        return {name,unitPriceCents,qty,lineTotalCents};
+      }).filter(Boolean):[];
+      const subtotalCents=items.reduce((sum,item)=>sum+item.lineTotalCents,0);
+      if(!Number.isSafeInteger(subtotalCents))return null;
+      const requestedDiscount=safeInteger(raw.totals?.discountCents,0);
+      const discountCents=Math.min(subtotalCents,requestedDiscount??0);
+      const itemCount=items.reduce((sum,item)=>sum+item.qty,0);
+      const createdAt=typeof raw.createdAt==='string'&&Number.isFinite(Date.parse(raw.createdAt))?raw.createdAt:'';
+      const status=ORDER_STATUSES.includes(raw.status)?raw.status:'pending';
+      const paymentStatus=raw.paymentStatus==='verified'?'verified':'unverified';
+      const customer=isPlainObject(raw.customer)?raw.customer:{};
+      const payment=isPlainObject(raw.payment)?raw.payment:{};
+      const id=typeof raw.id==='string'&&raw.id.trim()?raw.id.trim().slice(0,100):`Đơn-${index+1}`;
+      const order={
+        id,createdAt,status,paymentStatus,lang:raw.lang==='en'?'en':'vi',
+        customer:{
+          name:typeof customer.name==='string'?customer.name.slice(0,160):'',
+          email:typeof customer.email==='string'?customer.email.slice(0,254):''
+        },
+        items,
+        totals:{itemCount,subtotalCents,discountCents,totalCents:subtotalCents-discountCents,currency:'USD'},
+        payment:{
+          method:typeof payment.method==='string'?payment.method.slice(0,80):'',
+          amountVnd:safeInteger(payment.amountVnd,0)??0,
+          transferNote:typeof payment.transferNote==='string'?payment.transferNote.slice(0,160):'',
+          paidClaimedAt:typeof payment.paidClaimedAt==='string'?payment.paidClaimedAt:'',
+          infoConfirmed:payment.infoConfirmed===true
+        }
+      };
+      if(raw.demo===true)order.demo=true;
+      return order;
+    }
+    function normalizeCoupon(raw,index=0){
+      if(!isPlainObject(raw))return null;
+      const code=typeof raw.code==='string'?raw.code.trim().toUpperCase().slice(0,30):'';
+      const value=Number(raw.value);
+      const expiresOn=typeof raw.expiresOn==='string'?raw.expiresOn:'';
+      if(!/^[A-Z0-9_-]{2,30}$/.test(code)||!['percent','amount'].includes(raw.type)||
+         !Number.isFinite(value)||value<=0||(raw.type==='percent'&&value>100)||value>10000||
+         (raw.expiresOn!==undefined&&typeof raw.expiresOn!=='string')||(expiresOn&&!isValidDateOnly(expiresOn)))return null;
+      return {id:typeof raw.id==='string'||typeof raw.id==='number'?raw.id:`coupon-${index+1}`,
+        code,type:raw.type,value:Math.round(value*100)/100,expiresOn,enabled:raw.enabled===true};
+    }
+    function loadState(){
+      const menuRecord=readStored(STORAGE_KEYS.menu,DEFAULT_MENU);
+      if(!Array.isArray(menuRecord.value)){
+        notifyStorageWarning(STORAGE_KEYS.menu,new TypeError('Menu phải là một mảng.'));
+        state.menu=clone(DEFAULT_MENU);
+      }else{
+        state.menu=menuRecord.value.map(normalizeMenuItem).filter(Boolean);
+        if(menuRecord.value.length!==state.menu.length)state.storageWarnings.push(`${STORAGE_KEYS.menu}:một số món lỗi`);
+      }
+      const orderRecord=readStored(STORAGE_KEYS.orders,[]);
+      if(!Array.isArray(orderRecord.value)){
+        notifyStorageWarning(STORAGE_KEYS.orders,new TypeError('Đơn hàng phải là một mảng.'));
+        state.orders=[];
+      }else{
+        state.orders=orderRecord.value.map(normalizeOrder).filter(Boolean);
+        if(orderRecord.value.length!==state.orders.length)state.storageWarnings.push(`${STORAGE_KEYS.orders}:một số đơn lỗi`);
+      }
+      const settingsRecord=readStored(STORAGE_KEYS.settings,{usdToVnd:25000});
+      const rate=Number(settingsRecord.value?.usdToVnd);
+      state.settings={usdToVnd:Number.isFinite(rate)&&rate>0?rate:25000};
+      if(settingsRecord.exists&&(!isPlainObject(settingsRecord.value)||!Number.isFinite(rate)||rate<=0)){
+        state.storageWarnings.push(`${STORAGE_KEYS.settings}:tỷ giá không hợp lệ`);
+      }
+      if(!settingsRecord.exists)writeStored(STORAGE_KEYS.settings,state.settings);
+
+      const couponRecord=readStored(STORAGE_KEYS.coupons,[]);
+      state.coupons=Array.isArray(couponRecord.value)?couponRecord.value.map(normalizeCoupon).filter(Boolean):[];
+      if(couponRecord.exists&&(!Array.isArray(couponRecord.value)||state.coupons.length!==couponRecord.value.length)){
+        state.storageWarnings.push(`${STORAGE_KEYS.coupons}:dữ liệu sai định dạng`);
+      }
+      $('#rate-input').value=String(state.settings.usdToVnd);
+    }
+    function saveMenu(){return writeStored(STORAGE_KEYS.menu,state.menu)}
+    function saveOrders(){return writeStored(STORAGE_KEYS.orders,state.orders)}
+    function saveSettings(){return writeStored(STORAGE_KEYS.settings,state.settings)}
+    function saveCoupons(){return writeStored(STORAGE_KEYS.coupons,state.coupons)}
+
+    function sessionIsValid(){
+      try{
+        const raw=sessionStorage.getItem(SESSION_KEY);
+        if(!raw)return false;
+        const session=JSON.parse(raw);
+        if(!session||session.email!==ADMIN_EMAIL||!Number.isFinite(session.expiresAt)||session.expiresAt<=Date.now()){
+          sessionStorage.removeItem(SESSION_KEY);
+          return false;
+        }
+        return true;
+      }catch(error){
+        console.error('Không thể đọc phiên quản trị.',error);
+        return false;
+      }
+    }
+    function showAuthenticatedApp(){
+      loginScreen.hidden=true;
+      adminApp.hidden=false;
+      scheduleSessionExpiry();
+      loadState();
+      renderAll();
+      renderNewOrderBadge();
+      if(state.storageWarnings.length)toast('Một số dữ liệu lưu bị thiếu hoặc sai định dạng; trang đã dùng giá trị an toàn để tiếp tục.','error');
+    }
+    function logout(){
+      window.clearTimeout(sessionExpiryTimer);
+      try{sessionStorage.removeItem(SESSION_KEY)}catch(error){console.error('Không thể xóa phiên đăng nhập.',error)}
+      adminApp.hidden=true;
+      loginScreen.hidden=false;
+      loginForm.reset();
+      loginError.textContent='';
+      loginEmail.focus();
+    }
+    function scheduleSessionExpiry(){
+      window.clearTimeout(sessionExpiryTimer);
+      try{
+        const session=JSON.parse(sessionStorage.getItem(SESSION_KEY)||'null');
+        const remaining=Number(session?.expiresAt)-Date.now();
+        if(!Number.isFinite(remaining)||remaining<=0){logout();return}
+        sessionExpiryTimer=window.setTimeout(logout,remaining);
+      }catch(error){
+        console.error('Không thể lập lịch hết hạn phiên.',error);
+        logout();
+      }
+    }
+    async function sha256Hex(value){
+      if(!window.crypto?.subtle||!window.TextEncoder)throw new Error('Trình duyệt không hỗ trợ xác minh SHA-256 trên kết nối này.');
+      const bytes=new TextEncoder().encode(value);
+      const hash=await crypto.subtle.digest('SHA-256',bytes);
+      return [...new Uint8Array(hash)].map(byte=>byte.toString(16).padStart(2,'0')).join('');
+    }
+    function getLoginLockUntil(){
+      try{
+        const lock=Number(sessionStorage.getItem(LOCK_KEY)||0);
+        if(lock>Date.now())return lock;
+        if(lock)sessionStorage.removeItem(LOCK_KEY);
+      }catch(error){console.error('Không thể kiểm tra thời gian khóa đăng nhập.',error)}
+      return 0;
+    }
+    loginForm.addEventListener('submit',async event=>{
+      event.preventDefault();
+      loginError.textContent='';
+      const lockUntil=getLoginLockUntil();
+      if(lockUntil){
+        loginError.textContent=`Bạn thử quá nhiều lần. Vui lòng đợi ${Math.ceil((lockUntil-Date.now())/1000)} giây.`;
+        return;
+      }
+      const email=loginEmail.value.trim().toLowerCase();
+      const password=loginPassword.value.replace(/\s/g,'');
+      if(!email||!password){loginError.textContent='Vui lòng nhập email và mật khẩu.';return}
+      const submit=$('#login-submit');
+      submit.disabled=true;
+      try{
+        const digest=await sha256Hex(`${email}:${password}`);
+        if(email===ADMIN_EMAIL&&digest===ADMIN_HASH){
+          sessionStorage.setItem(SESSION_KEY,JSON.stringify({email,expiresAt:Date.now()+SESSION_MS}));
+          sessionStorage.removeItem(LOCK_KEY);
+          sessionStorage.removeItem('bk_admin_attempts');
+          showAuthenticatedApp();
+          loginPassword.value='';
+          return;
+        }
+        let attempts=0;
+        try{attempts=Number(sessionStorage.getItem('bk_admin_attempts')||0)}catch(error){console.error('Không thể đọc số lần đăng nhập sai.',error)}
+        attempts=Number.isSafeInteger(attempts)&&attempts>=0?attempts+1:1;
+        if(attempts>=5){
+          sessionStorage.setItem(LOCK_KEY,String(Date.now()+LOCK_MS));
+          sessionStorage.removeItem('bk_admin_attempts');
+          loginError.textContent='Sai thông tin đăng nhập 5 lần. Tài khoản bị khóa trong 30 giây.';
+        }else{
+          sessionStorage.setItem('bk_admin_attempts',String(attempts));
+          loginError.textContent=`Email hoặc mật khẩu không chính xác. Còn ${5-attempts} lần thử.`;
+        }
+      }catch(error){
+        console.error('Không thể xác minh thông tin đăng nhập.',error);
+        loginError.textContent=error.message||'Không thể xác minh đăng nhập.';
+      }finally{
+        submit.disabled=false;
+      }
+    });
+
+    // JavaScript: giao diện tổng quan
+    function activeOrders(){return state.orders.filter(order=>order.status!=='cancelled')}
+    function verifiedOrders(){return state.orders.filter(order=>order.status!=='cancelled'&&order.paymentStatus==='verified')}
+    function getRevenueCents(orders){return orders.reduce((sum,order)=>sum+order.totals.totalCents,0)}
+    function renderOverview(){
+      const orders=activeOrders();
+      const verified=verifiedOrders();
+      const revenue=getRevenueCents(verified);
+      const pending=state.orders.filter(order=>order.status!=='cancelled'&&order.paymentStatus!=='verified').length;
+      const average=orders.length?Math.round(orders.reduce((sum,order)=>sum+order.totals.totalCents,0)/orders.length):0;
+      $('#overview-stats').innerHTML=`
+        <article class="stat-card green"><div class="stat-label">Doanh thu đã nhận tiền</div><div class="stat-value">${escapeHTML(formatMoney(revenue))}</div><div class="stat-hint">${verified.length} đơn đã đối chiếu</div></article>
+        <article class="stat-card gold"><div class="stat-label">Tổng đơn hàng</div><div class="stat-value">${orders.length}</div><div class="stat-hint">Không tính đơn đã hủy</div></article>
+        <article class="stat-card red"><div class="stat-label">Chờ xác nhận tiền</div><div class="stat-value">${pending}</div><div class="stat-hint">Cần đối chiếu sao kê</div></article>
+        <article class="stat-card earth"><div class="stat-label">Giá trị trung bình / đơn</div><div class="stat-value">${escapeHTML(formatMoney(average))}</div><div class="stat-hint">Tính trên đơn không bị hủy</div></article>`;
+      renderSalesChart();
+      renderAttention();
+      renderTopItems();
+      renderRecentOrders();
+    }
+    function renderSalesChart(){
+      const today=new Date();
+      const days=[];
+      for(let offset=6;offset>=0;offset--){
+        const date=new Date(today.getFullYear(),today.getMonth(),today.getDate()-offset);
+        const key=`${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+        const cents=verifiedOrders().filter(order=>{
+          const parsed=Date.parse(order.createdAt);
+          if(!Number.isFinite(parsed))return false;
+          const day=new Date(parsed);
+          return day.getFullYear()===date.getFullYear()&&day.getMonth()===date.getMonth()&&day.getDate()===date.getDate();
+        }).reduce((sum,order)=>sum+order.totals.totalCents,0);
+        days.push({date,key,cents});
+      }
+      const max=Math.max(1,...days.map(day=>day.cents));
+      $('#sales-chart').innerHTML=days.map(day=>{
+        const height=day.cents?Math.max(4,Math.round(day.cents/max*100)):0;
+        const label=new Intl.DateTimeFormat('vi-VN',{weekday:'short'}).format(day.date);
+        return `<div class="chart-day" aria-label="${escapeHTML(label)}: ${escapeHTML(formatMoney(day.cents))}">
+          <div class="chart-track"><div class="chart-bar" style="height:${height}%">${day.cents?`<span>${escapeHTML(formatMoney(day.cents))}</span>`:''}</div></div>
+          <span class="chart-label">${escapeHTML(label)}</span></div>`;
+      }).join('');
+    }
+    function renderAttention(){
+      const items=[];
+      const pending=state.orders.filter(order=>order.status!=='cancelled'&&order.paymentStatus!=='verified').length;
+      if(pending)items.push({text:'Đơn đang chờ xác nhận thanh toán',count:pending});
+      const lowStock=state.menu.filter(item=>Number.isSafeInteger(item.stock)&&item.stock<LOW_STOCK_THRESHOLD);
+      if(lowStock.length)items.push({text:`Món sắp hết hàng (ngưỡng ${LOW_STOCK_THRESHOLD})`,count:lowStock.length});
+      const newOrders=getNewOrderCount();
+      if(newOrders)items.push({text:'Đơn mới từ lần xem gần nhất',count:newOrders});
+      $('#attention-list').innerHTML=items.length?items.map(item=>`<div class="attention-row"><span>${escapeHTML(item.text)}</span><strong class="attention-count">${item.count}</strong></div>`).join(''):
+        '<div class="empty-state"><strong>Bếp đang ổn</strong>Không có việc cần chú ý lúc này.</div>';
+    }
+    function renderTopItems(){
+      const quantities=new Map();
+      for(const order of activeOrders()){
+        for(const item of order.items)quantities.set(item.name,(quantities.get(item.name)||0)+item.qty);
+      }
+      const best=[...quantities.entries()].sort((a,b)=>b[1]-a[1]).slice(0,5);
+      $('#top-items').innerHTML=best.length?best.map(([name,qty],index)=>`<div class="rank-row"><span class="rank-name">${index+1}. ${escapeHTML(name)}</span><span class="rank-value">${qty} phần</span></div>`).join(''):
+        '<div class="empty-state"><strong>Chưa có dữ liệu</strong>Đơn hàng sẽ hiện ở đây khi phát sinh.</div>';
+    }
+    function renderRecentOrders(){
+      const recent=[...state.orders].sort((a,b)=>(Date.parse(b.createdAt)||0)-(Date.parse(a.createdAt)||0)).slice(0,5);
+      $('#recent-orders').innerHTML=recent.length?recent.map(order=>`<div class="recent-row">
+        <span class="recent-name">${escapeHTML(order.id)}<span class="table-secondary">${escapeHTML(order.customer.email||'Chưa có email')}</span></span>
+        <span class="money">${escapeHTML(formatMoney(order.totals.totalCents))}</span>
+      </div>`).join(''):'<div class="empty-state"><strong>Chưa có đơn hàng</strong>Đơn mới sẽ xuất hiện tại đây.</div>';
+    }
+
+    // JavaScript: thực đơn
+    function renderCategoryFilters(){
+      const select=$('#menu-category-filter');
+      const current=select.value;
+      select.innerHTML='<option value="">Tất cả danh mục</option>'+CATEGORIES.map(category=>`<option value="${category}">${CATEGORY_LABELS[category]}</option>`).join('');
+      if(CATEGORIES.includes(current))select.value=current;
+    }
+    function renderMenu(){
+      renderCategoryFilters();
+      const query=$('#menu-search').value.trim().toLocaleLowerCase('vi');
+      const category=$('#menu-category-filter').value;
+      const filtered=state.menu.map((item,index)=>({item,index})).filter(({item})=>
+        (!category||item.category===category)&&(!query||item.name.toLocaleLowerCase('vi').includes(query)));
+      $('#menu-count').textContent=`${filtered.length} / ${state.menu.length} món`;
+      $('#menu-table').innerHTML=filtered.length?filtered.map(({item,index})=>`<tr>
+        <td><span class="table-primary">${escapeHTML(item.emoji)} ${escapeHTML(item.name)}</span><span class="table-secondary">${escapeHTML(item.description||'Chưa có mô tả')}</span></td>
+        <td>${CATEGORY_LABELS[item.category]}</td>
+        <td class="money">${escapeHTML(formatPrice(item.price))}</td>
+        <td>${item.stock===undefined?'<span class="muted">Không theo dõi</span>':item.stock===0?'<span class="badge red">Hết hàng</span>':item.stock<LOW_STOCK_THRESHOLD?`<span class="badge amber">${item.stock} · Sắp hết</span>`:`${item.stock}`}</td>
+        <td><label class="switch"><input type="checkbox" data-action="menu-toggle" data-index="${index}" ${item.available?'checked':''} ${item.stock===0?'disabled':''} aria-label="Đang bán ${escapeHTML(item.name)}"><span class="switch-track"></span><span>${item.available?'Đang bán':'Tạm hết'}</span></label></td>
+        <td><div class="actions"><button type="button" class="button button-outline button-small" data-action="menu-edit" data-index="${index}">Sửa</button><button type="button" class="button button-danger button-small" data-action="menu-delete" data-index="${index}">Xóa</button></div></td>
+      </tr>`).join(''):'<tr><td colspan="6"><div class="empty-state"><strong>Chưa có món phù hợp</strong>Thử đổi từ khóa hoặc thêm món mới.</div></td></tr>';
+    }
+    function openMenuForm(index=null){
+      const item=index===null?{name:'',category:'burgers',price:'',emoji:'🍔',rating:4.5,color:COLOR_PRESETS[0],description:'',available:true,stock:''}:state.menu[index];
+      if(!item){toast('Không tìm thấy món ăn.','error');return}
+      const selectedColor=COLOR_PRESETS.includes(item.color)?item.color:COLOR_PRESETS[0];
+      showDialog(index===null?'Thêm món ăn':'Chỉnh sửa món ăn',`
+        <form id="menu-form" class="form-grid" novalidate>
+          <div class="field span-2"><label for="menu-name">Tên món</label><input id="menu-name" name="name" maxlength="120" required value="${escapeHTML(item.name)}"></div>
+          <div class="field"><label for="menu-category">Danh mục</label><select id="menu-category" name="category">${CATEGORIES.map(category=>`<option value="${category}" ${item.category===category?'selected':''}>${CATEGORY_LABELS[category]}</option>`).join('')}</select></div>
+          <div class="field"><label for="menu-price">Giá (USD)</label><input id="menu-price" name="price" type="number" min="0" max="10000" step="0.01" required value="${escapeHTML(item.price)}"></div>
+          <div class="field"><label for="menu-emoji">Biểu tượng</label><input id="menu-emoji" name="emoji" maxlength="16" value="${escapeHTML(item.emoji)}"></div>
+          <div class="field"><label for="menu-rating">Đánh giá</label><input id="menu-rating" name="rating" type="number" min="0" max="5" step="0.1" value="${escapeHTML(item.rating)}"></div>
+          <div class="field span-2"><label for="menu-color">Màu thẻ</label><select id="menu-color" name="color">${COLOR_PRESETS.map((color,colorIndex)=>`<option value="${escapeHTML(color)}" ${selectedColor===color?'selected':''}>Tông màu ${colorIndex+1}</option>`).join('')}</select></div>
+          <div class="field span-2"><label for="menu-description">Mô tả</label><textarea id="menu-description" name="description" maxlength="1000">${escapeHTML(item.description)}</textarea></div>
+          <div class="field"><label for="menu-stock">Tồn kho (để trống nếu không theo dõi)</label><input id="menu-stock" name="stock" type="number" min="0" max="10000000" step="1" value="${item.stock===undefined?'':escapeHTML(item.stock)}"></div>
+          <label class="check-row"><input type="checkbox" name="available" ${item.available?'checked':''} ${item.stock===0?'disabled':''}> Đang bán</label>
+          <p class="form-error span-2" id="menu-form-error" aria-live="polite"></p>
+          <div class="dialog-actions span-2"><button type="button" class="button button-outline" data-action="dialog-close">Hủy</button><button type="submit" class="button button-primary">Lưu món</button></div>
+        </form>`);
+      $('#menu-form').dataset.editIndex=index===null?'':String(index);
+      $('#menu-name').focus();
+    }
+    function saveMenuForm(form){
+      const data=new FormData(form);
+      const name=String(data.get('name')||'').trim();
+      const category=String(data.get('category')||'');
+      const price=Number(data.get('price'));
+      const stockText=String(data.get('stock')||'').trim();
+      const stock=stockText===''?undefined:safeInteger(stockText,0,10000000);
+      const rating=Number(data.get('rating'));
+      const editIndex=form.dataset.editIndex===''?null:Number(form.dataset.editIndex);
+      const error=$('#menu-form-error');
+      error.textContent='';
+      if(!name||name.length>120||!CATEGORIES.includes(category)||!Number.isFinite(price)||price<0||price>10000||!Number.isFinite(rating)||rating<0||rating>5||!COLOR_PRESETS.includes(String(data.get('color')))||(stockText!==''&&stock===null)){
+        error.textContent='Kiểm tra lại tên, danh mục, giá, đánh giá và tồn kho.';
+        return;
+      }
+      const duplicate=state.menu.some((item,index)=>index!==editIndex&&item.name.trim().toLocaleLowerCase('vi')===name.toLocaleLowerCase('vi'));
+      if(duplicate){error.textContent='Tên món đã tồn tại. Vui lòng chọn tên khác.';return}
+      const original=editIndex===null?null:state.menu[editIndex];
+      if(editIndex!==null&&!original){error.textContent='Không tìm thấy món cần sửa.';return}
+      const item={
+        id:original?original.id:nextMenuId(),name,category,price:Math.round(price*100)/100,
+        emoji:String(data.get('emoji')||'🍔').trim().slice(0,16)||'🍔',
+        rating:Math.round(rating*10)/10,color:String(data.get('color')),
+        description:String(data.get('description')||'').trim().slice(0,1000),
+        available:stock===0?false:form.elements.available.checked
+      };
+      if(stock!==undefined)item.stock=stock;
+      if(editIndex===null)state.menu.unshift(item);else state.menu[editIndex]=item;
+      if(!saveMenu())return;
+      closeDialog();renderAll();toast(editIndex===null?'Đã thêm món mới.':'Đã cập nhật món ăn.','success');
+    }
+    function nextMenuId(){
+      const numbers=state.menu.map(item=>Number(item.id)).filter(Number.isSafeInteger);
+      return (numbers.length?Math.max(...numbers):0)+1;
+    }
+
+    // JavaScript: đơn hàng, khách hàng, mã giảm giá
+    function statusBadge(status){
+      const tone=status==='completed'?'green':status==='cancelled'?'red':status==='ready'?'amber':'';
+      return `<span class="badge ${tone}">${ORDER_LABELS[status]||ORDER_LABELS.pending}</span>`;
+    }
+    function paymentBadge(order){
+      return order.paymentStatus==='verified'?'<span class="badge green">Đã nhận tiền</span>':'<span class="badge amber">Chờ xác nhận</span>';
+    }
+    function renderStatusOptions(selected){
+      return ORDER_STATUSES.map(status=>`<option value="${status}" ${status===selected?'selected':''}>${ORDER_LABELS[status]}</option>`).join('');
+    }
+    function renderOrders(){
+      const query=$('#order-search').value.trim().toLocaleLowerCase('vi');
+      const status=$('#order-status-filter').value;
+      const payment=$('#order-payment-filter').value;
+      const filtered=state.orders.map((order,index)=>({order,index})).filter(({order})=>{
+        const haystack=`${order.id} ${order.customer.email} ${order.customer.name}`.toLocaleLowerCase('vi');
+        return (!query||haystack.includes(query))&&(!status||order.status===status)&&(!payment||order.paymentStatus===payment);
+      }).sort((a,b)=>(Date.parse(b.order.createdAt)||0)-(Date.parse(a.order.createdAt)||0));
+      $('#orders-table').innerHTML=filtered.length?filtered.map(({order,index})=>`<tr>
+        <td><button class="button button-outline button-small" type="button" data-action="order-detail" data-index="${index}">${escapeHTML(order.id)}</button>${order.demo?'<span class="table-secondary">Đơn demo</span>':''}</td>
+        <td><span class="table-primary">${escapeHTML(order.customer.name||'Khách hàng')}</span><span class="table-secondary">${escapeHTML(order.customer.email||'Chưa có email')}</span></td>
+        <td>${escapeHTML(formatDate(order.createdAt))}</td>
+        <td class="money">${escapeHTML(formatMoney(order.totals.totalCents))}</td>
+        <td><select class="status-select" data-action="order-status" data-index="${index}" aria-label="Trạng thái đơn ${escapeHTML(order.id)}">${renderStatusOptions(order.status)}</select></td>
+        <td><button type="button" class="button ${order.paymentStatus==='verified'?'button-dark':'button-amber'} button-small" data-action="payment-toggle" data-index="${index}" aria-pressed="${order.paymentStatus==='verified'}">${order.paymentStatus==='verified'?'Đã nhận tiền':'Xác nhận tiền'}</button></td>
+        <td><div class="actions"><button type="button" class="button button-outline button-small" data-action="order-detail" data-index="${index}">Chi tiết</button><button type="button" class="button button-danger button-small" data-action="order-delete" data-index="${index}">Xóa</button></div></td>
+      </tr>`).join(''):'<tr><td colspan="7"><div class="empty-state"><strong>Không có đơn hàng phù hợp</strong>Hãy đổi bộ lọc hoặc từ khóa tìm kiếm.</div></td></tr>';
+    }
+    function openOrderDetails(index){
+      const order=state.orders[index];
+      if(!order){toast('Không tìm thấy đơn hàng.','error');return}
+      showDialog(`Chi tiết ${order.id}`,`
+        <div class="order-detail-grid">
+          <div class="detail-box"><small>Khách hàng</small><strong>${escapeHTML(order.customer.name||'Chưa có tên')}</strong></div>
+          <div class="detail-box"><small>Email</small><strong>${escapeHTML(order.customer.email||'Chưa có email')}</strong></div>
+          <div class="detail-box"><small>Ngày đặt</small><strong>${escapeHTML(formatDate(order.createdAt))}</strong></div>
+          <div class="detail-box"><small>Mã đơn</small><strong>${escapeHTML(order.id)}</strong></div>
+          <div class="detail-box"><small>Phương thức thanh toán</small><strong>${escapeHTML(order.payment.method==='bank_transfer_qr'?'Chuyển khoản QR':order.payment.method||'Chưa có thông tin')}</strong></div>
+          <div class="detail-box"><small>Số tiền chuyển khoản</small><strong>${order.payment.amountVnd?`${new Intl.NumberFormat('vi-VN').format(order.payment.amountVnd)} ₫`:'Chưa có thông tin'}</strong></div>
+          <div class="detail-box"><small>Nội dung chuyển khoản</small><strong>${escapeHTML(order.payment.transferNote||'Chưa có thông tin')}</strong></div>
+          <div class="detail-box"><small>Thời điểm khách tự khai</small><strong>${escapeHTML(formatDate(order.payment.paidClaimedAt))}</strong></div>
+          <div class="detail-box"><small>Trạng thái</small><select class="status-select" data-action="order-status" data-index="${index}" aria-label="Trạng thái đơn">${renderStatusOptions(order.status)}</select></div>
+          <div class="detail-box"><small>Thanh toán</small><button type="button" class="button ${order.paymentStatus==='verified'?'button-dark':'button-amber'} button-small" data-action="payment-toggle" data-index="${index}" aria-pressed="${order.paymentStatus==='verified'}">${order.paymentStatus==='verified'?'Đã nhận tiền · bật/tắt':'Chờ xác nhận · bật/tắt'}</button></div>
+        </div>
+        <h3>Chi tiết món</h3>
+        <div class="detail-items">${order.items.length?order.items.map(item=>`<div class="detail-item"><span>${escapeHTML(item.name)} <span class="muted">× ${item.qty}</span></span><strong class="money">${escapeHTML(formatMoney(item.lineTotalCents))}</strong></div>`).join(''):'<p class="muted">Đơn này không có chi tiết món.</p>'}</div>
+        <div class="detail-box" style="margin-top:14px"><small>Tổng thanh toán</small><strong class="money">${escapeHTML(formatMoney(order.totals.totalCents))}</strong></div>
+        <div class="dialog-actions"><button type="button" class="button button-outline" data-action="print-kitchen" data-index="${index}">In phiếu bếp</button><button type="button" class="button button-danger" data-action="order-delete" data-index="${index}">Xóa đơn</button><button type="button" class="button button-primary" data-action="dialog-close">Đóng</button></div>`);
+    }
+    function getLastSeen(){
+      try{
+        const value=Number(localStorage.getItem(STORAGE_KEYS.lastSeen)||0);
+        return Number.isFinite(value)&&value>=0?value:0;
+      }catch(error){console.error('Không thể đọc thời điểm xem đơn gần nhất.',error);return 0}
+    }
+    function getNewOrderCount(){
+      const lastSeen=getLastSeen();
+      return state.orders.filter(order=>Date.parse(order.createdAt)>lastSeen).length;
+    }
+    function renderNewOrderBadge(){
+      const badge=$('#new-order-badge');
+      const count=getNewOrderCount();
+      badge.hidden=count===0;
+      badge.textContent=count>99?'99+':String(count);
+      badge.setAttribute('aria-label',`${count} đơn mới`);
+    }
+    function markOrdersSeen(){
+      try{localStorage.setItem(STORAGE_KEYS.lastSeen,String(Date.now()))}
+      catch(error){console.error('Không thể cập nhật thời điểm xem đơn.',error);toast('Không lưu được trạng thái đã xem đơn mới.','error')}
+      renderNewOrderBadge();
+    }
+    function renderCustomers(){
+      const query=$('#customer-search').value.trim().toLocaleLowerCase('vi');
+      const groups=new Map();
+      for(const order of activeOrders()){
+        const email=order.customer.email.trim().toLocaleLowerCase('vi');
+        if(!email)continue;
+        const customer=groups.get(email)||{email,name:order.customer.name,orders:[],spentCents:0,lastAt:''};
+        customer.orders.push(order);
+        if(order.paymentStatus==='verified')customer.spentCents+=order.totals.totalCents;
+        if(Date.parse(order.createdAt)>Date.parse(customer.lastAt||'')||!customer.lastAt){
+          customer.lastAt=order.createdAt;
+          if(order.customer.name)customer.name=order.customer.name;
+        }
+        groups.set(email,customer);
+      }
+      const rows=[...groups.values()].filter(customer=>`${customer.name} ${customer.email}`.toLocaleLowerCase('vi').includes(query))
+        .sort((a,b)=>b.spentCents-a.spentCents);
+      $('#customer-count').textContent=`${rows.length} khách`;
+      $('#customers-table').innerHTML=rows.length?rows.map(customer=>`<tr>
+        <td class="table-primary">${escapeHTML(customer.name||'Khách hàng')}</td><td>${escapeHTML(customer.email)}</td>
+        <td>${customer.orders.length}</td><td class="money">${escapeHTML(formatMoney(customer.spentCents))}</td>
+        <td>${escapeHTML(formatDate(customer.lastAt))}</td></tr>`).join(''):
+        '<tr><td colspan="5"><div class="empty-state"><strong>Chưa có khách hàng</strong>Khách được tổng hợp từ email trong đơn hàng.</div></td></tr>';
+    }
+    function renderCoupons(){
+      $('#coupons-table').innerHTML=state.coupons.length?state.coupons.map((coupon,index)=>`<tr>
+        <td class="table-primary">${escapeHTML(coupon.code)}</td>
+        <td>${coupon.type==='percent'?`${coupon.value}%`:`${escapeHTML(formatPrice(coupon.value))}`}</td>
+        <td>${coupon.expiresOn?escapeHTML(formatDate(`${coupon.expiresOn}T23:59:59`,false)):'Không giới hạn'}</td>
+        <td><label class="switch"><input type="checkbox" data-action="coupon-toggle" data-index="${index}" ${coupon.enabled?'checked':''} aria-label="Bật mã ${escapeHTML(coupon.code)}"><span class="switch-track"></span><span>${coupon.enabled?'Đang bật':'Đang tắt'}</span></label></td>
+        <td><div class="actions"><button type="button" class="button button-outline button-small" data-action="coupon-edit" data-index="${index}">Sửa</button><button type="button" class="button button-danger button-small" data-action="coupon-delete" data-index="${index}">Xóa</button></div></td>
+      </tr>`).join(''):'<tr><td colspan="5"><div class="empty-state"><strong>Chưa có mã giảm giá</strong>Tạo mã để quản lý chương trình khuyến mãi.</div></td></tr>';
+    }
+    function openCouponForm(index=null){
+      const coupon=index===null?{code:'',type:'percent',value:'',expiresOn:'',enabled:true}:state.coupons[index];
+      if(!coupon){toast('Không tìm thấy mã giảm giá.','error');return}
+      showDialog(index===null?'Tạo mã giảm giá':'Chỉnh sửa mã giảm giá',`
+        <form id="coupon-form" class="form-grid" novalidate>
+          <div class="field span-2"><label for="coupon-code">Mã (chữ và số)</label><input id="coupon-code" name="code" maxlength="30" required value="${escapeHTML(coupon.code)}"></div>
+          <div class="field"><label for="coupon-type">Loại ưu đãi</label><select id="coupon-type" name="type"><option value="percent" ${coupon.type==='percent'?'selected':''}>Phần trăm (%)</option><option value="amount" ${coupon.type==='amount'?'selected':''}>Số tiền (USD)</option></select></div>
+          <div class="field"><label for="coupon-value">Mức giảm</label><input id="coupon-value" name="value" type="number" min="0.01" step="0.01" required value="${escapeHTML(coupon.value)}"></div>
+          <div class="field span-2"><label for="coupon-expiry">Ngày hết hạn (để trống nếu không giới hạn)</label><input id="coupon-expiry" name="expiresOn" type="date" value="${escapeHTML(coupon.expiresOn)}"></div>
+          <label class="check-row span-2"><input name="enabled" type="checkbox" ${coupon.enabled?'checked':''}> Bật mã giảm giá</label>
+          <p class="inline-hint span-2">Mã giảm theo số tiền được tính bằng USD. Giá trị phần trăm tối đa 100%.</p>
+          <p class="form-error span-2" id="coupon-form-error" aria-live="polite"></p>
+          <div class="dialog-actions span-2"><button type="button" class="button button-outline" data-action="dialog-close">Hủy</button><button type="submit" class="button button-primary">Lưu mã</button></div>
+        </form>`);
+      $('#coupon-form').dataset.editIndex=index===null?'':String(index);
+      $('#coupon-code').focus();
+    }
+    function saveCouponForm(form){
+      const data=new FormData(form);
+      const code=String(data.get('code')||'').trim().toUpperCase();
+      const type=String(data.get('type')||'');
+      const value=Number(data.get('value'));
+      const expiresOn=String(data.get('expiresOn')||'');
+      const index=form.dataset.editIndex===''?null:Number(form.dataset.editIndex);
+      const error=$('#coupon-form-error');
+      error.textContent='';
+      if(!/^[A-Z0-9_-]{2,30}$/.test(code)||!['percent','amount'].includes(type)||!Number.isFinite(value)||value<=0||value>10000||(type==='percent'&&value>100)){
+        error.textContent='Kiểm tra mã, loại ưu đãi và mức giảm.';
+        return;
+      }
+      if(expiresOn&&!isValidDateOnly(expiresOn)){error.textContent='Ngày hết hạn không hợp lệ.';return}
+      if(state.coupons.some((coupon,couponIndex)=>couponIndex!==index&&coupon.code===code)){error.textContent='Mã này đã tồn tại.';return}
+      const original=index===null?null:state.coupons[index];
+      const coupon={id:original?.id??`coupon-${Date.now()}`,code,type,value:Math.round(value*100)/100,expiresOn,enabled:form.elements.enabled.checked};
+      if(index===null)state.coupons.unshift(coupon);else state.coupons[index]=coupon;
+      if(!saveCoupons())return;
+      closeDialog();renderAll();toast('Đã lưu mã giảm giá.','success');
+    }
+
+    // JavaScript: cài đặt, sao lưu và phục hồi
+    function safeCsvCell(value){
+      let text=String(value??'');
+      if(/^[\s\u0000-\u001f]*[=+\-@]/.test(text))text="'"+text;
+      return `"${text.replace(/"/g,'""')}"`;
+    }
+    function exportOrdersCsv(){
+      const query=$('#order-search').value.trim().toLocaleLowerCase('vi');
+      const status=$('#order-status-filter').value;
+      const payment=$('#order-payment-filter').value;
+      const rows=state.orders.filter(order=>{
+        const haystack=`${order.id} ${order.customer.email} ${order.customer.name}`.toLocaleLowerCase('vi');
+        return (!query||haystack.includes(query))&&(!status||order.status===status)&&(!payment||order.paymentStatus===payment);
+      });
+      const header=['Mã đơn','Ngày tạo','Trạng thái','Thanh toán','Tên khách','Email','Món','Số lượng','Tạm tính USD','Giảm giá USD','Tổng USD'];
+      const lines=[header,...rows.map(order=>[
+        order.id,order.createdAt,ORDER_LABELS[order.status],order.paymentStatus==='verified'?'Đã nhận tiền':'Chờ xác nhận',
+        order.customer.name,order.customer.email,order.items.map(item=>item.name).join(' | '),
+        order.totals.itemCount,(order.totals.subtotalCents/100).toFixed(2),
+        (order.totals.discountCents/100).toFixed(2),(order.totals.totalCents/100).toFixed(2)
+      ])].map(row=>row.map(safeCsvCell).join(',')).join('\r\n');
+      const blob=new Blob(['\uFEFF',lines],{type:'text/csv;charset=utf-8'});
+      const url=URL.createObjectURL(blob);
+      const link=document.createElement('a');
+      link.href=url;link.download=`burgerking-don-hang-${new Date().toISOString().slice(0,10)}.csv`;
+      document.body.append(link);link.click();link.remove();URL.revokeObjectURL(url);
+      toast(`Đã xuất ${rows.length} đơn hàng.`, 'success');
+    }
+    function exportBackup(){
+      const backup={
+        version:1,exportedAt:new Date().toISOString(),
+        bk_menu:state.menu,bk_orders:state.orders,bk_settings:state.settings,bk_coupons:state.coupons
+      };
+      const blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json;charset=utf-8'});
+      const url=URL.createObjectURL(blob);
+      const link=document.createElement('a');
+      link.href=url;link.download=`burgerking-sao-luu-${new Date().toISOString().slice(0,10)}.json`;
+      document.body.append(link);link.click();link.remove();URL.revokeObjectURL(url);
+      toast('Đã tạo tệp sao lưu JSON.','success');
+    }
+    function validateImportedMenu(value){
+      if(!Array.isArray(value))throw new TypeError('bk_menu phải là một mảng.');
+      return value.map((raw,index)=>{
+        if(!isPlainObject(raw)||!['string','number'].includes(typeof raw.id)||typeof raw.name!=='string'||
+          typeof raw.category!=='string'||typeof raw.price!=='number'||typeof raw.emoji!=='string'||
+          typeof raw.rating!=='number'||typeof raw.color!=='string'||typeof raw.description!=='string'||
+          typeof raw.available!=='boolean'){
+          throw new TypeError(`Món thứ ${index+1} thiếu trường bắt buộc hoặc sai kiểu.`);
+        }
+        const item=normalizeMenuItem(raw,index);
+        if(!item)throw new TypeError(`Món thứ ${index+1} có dữ liệu không hợp lệ.`);
+        if(raw.stock!==undefined&&safeInteger(raw.stock,0,10000000)===null)throw new TypeError(`Tồn kho món thứ ${index+1} không hợp lệ.`);
+        if(raw.color!==undefined&&!COLOR_PRESETS.includes(raw.color))throw new TypeError(`Màu món thứ ${index+1} không hợp lệ.`);
+        return item;
+      }).filter((item,index,array)=>{
+        if(array.findIndex(other=>other.name.toLocaleLowerCase('vi')===item.name.toLocaleLowerCase('vi'))!==index){
+          throw new TypeError(`Tên món “${item.name}” bị trùng trong tệp.`);
+        }
+        return true;
+      });
+    }
+    function validateImportedOrders(value){
+      if(!Array.isArray(value))throw new TypeError('bk_orders phải là một mảng.');
+      return value.map((raw,index)=>{
+        if(!isPlainObject(raw)||typeof raw.id!=='string'||!/^BK-\d{8}-[A-Z0-9]{4}$/.test(raw.id))throw new TypeError(`Mã đơn thứ ${index+1} không hợp lệ.`);
+        if(typeof raw.createdAt!=='string'||!Number.isFinite(Date.parse(raw.createdAt)))throw new TypeError(`Ngày tạo đơn thứ ${index+1} không hợp lệ.`);
+        if(!ORDER_STATUSES.includes(raw.status))throw new TypeError(`Trạng thái đơn thứ ${index+1} không hợp lệ.`);
+        if(!['verified','unverified'].includes(raw.paymentStatus))throw new TypeError(`Trạng thái thanh toán đơn thứ ${index+1} không hợp lệ.`);
+        if(!isPlainObject(raw.customer)||typeof raw.customer.email!=='string'||typeof raw.customer.name!=='string')throw new TypeError(`Thông tin khách của đơn thứ ${index+1} không hợp lệ.`);
+        if(!Array.isArray(raw.items)||raw.items.length===0)throw new TypeError(`Đơn thứ ${index+1} cần có ít nhất một món.`);
+        for(const item of raw.items){
+          if(!isPlainObject(item)||typeof item.name!=='string'||!Number.isSafeInteger(item.unitPriceCents)||item.unitPriceCents<0||
+            !Number.isSafeInteger(item.qty)||item.qty<1||item.qty>100000||!Number.isSafeInteger(item.lineTotalCents)||item.lineTotalCents<0){
+            throw new TypeError(`Chi tiết món trong đơn thứ ${index+1} không hợp lệ.`);
+          }
+          if(item.unitPriceCents*item.qty!==item.lineTotalCents)throw new TypeError(`Thành tiền món trong đơn thứ ${index+1} không khớp.`);
+        }
+        if(raw.lang!=='vi'&&raw.lang!=='en')throw new TypeError(`Ngôn ngữ đơn thứ ${index+1} không hợp lệ.`);
+        if(raw.demo!==undefined&&typeof raw.demo!=='boolean')throw new TypeError(`Cờ demo đơn thứ ${index+1} không hợp lệ.`);
+        if(!isPlainObject(raw.payment)||typeof raw.payment.method!=='string'||
+          !Number.isSafeInteger(raw.payment.amountVnd)||raw.payment.amountVnd<0||
+          typeof raw.payment.transferNote!=='string'||typeof raw.payment.paidClaimedAt!=='string'||
+          typeof raw.payment.infoConfirmed!=='boolean'){
+          throw new TypeError(`Thông tin thanh toán đơn thứ ${index+1} không hợp lệ.`);
+        }
+        const order=normalizeOrder(raw,index);
+        if(!order||order.items.length!==raw.items.length)throw new TypeError(`Không thể chuẩn hóa đơn thứ ${index+1}.`);
+        const totals=raw.totals;
+        if(!isPlainObject(totals)||!Number.isSafeInteger(totals.itemCount)||totals.itemCount!==order.totals.itemCount||
+          !Number.isSafeInteger(totals.subtotalCents)||totals.subtotalCents!==order.totals.subtotalCents||
+          !Number.isSafeInteger(totals.discountCents)||totals.discountCents!==order.totals.discountCents||
+          !Number.isSafeInteger(totals.totalCents)||totals.totalCents!==order.totals.totalCents||totals.currency!=='USD'){
+          throw new TypeError(`Tổng tiền đơn thứ ${index+1} không hợp lệ.`);
+        }
+        return order;
+      });
+    }
+    function validateBackup(data){
+      if(!isPlainObject(data))throw new TypeError('Tệp JSON phải chứa một đối tượng.');
+      if(!Array.isArray(data.bk_menu)||!Array.isArray(data.bk_orders)||!isPlainObject(data.bk_settings))throw new TypeError('Tệp cần có bk_menu, bk_orders và bk_settings đúng kiểu.');
+      const menu=validateImportedMenu(data.bk_menu);
+      const orders=validateImportedOrders(data.bk_orders);
+      const rate=data.bk_settings.usdToVnd;
+      if(!Number.isFinite(rate)||rate<=0||rate>100000000)throw new TypeError('Tỷ giá USD→VND không hợp lệ.');
+      const coupons=data.bk_coupons===undefined?[]:data.bk_coupons;
+      if(!Array.isArray(coupons))throw new TypeError('bk_coupons phải là một mảng.');
+      const normalizedCoupons=coupons.map((coupon,index)=>{
+        if(!isPlainObject(coupon)||typeof coupon.code!=='string'||!['percent','amount'].includes(coupon.type)||
+          typeof coupon.value!=='number'||typeof coupon.expiresOn!=='string'||typeof coupon.enabled!=='boolean'||
+          (coupon.id!==undefined&&!['string','number'].includes(typeof coupon.id))){
+          throw new TypeError(`Mã giảm giá thứ ${index+1} thiếu trường bắt buộc hoặc sai kiểu.`);
+        }
+        return normalizeCoupon(coupon,index);
+      });
+      if(normalizedCoupons.some(coupon=>!coupon))throw new TypeError('Có mã giảm giá không hợp lệ trong tệp.');
+      return {menu,orders,settings:{usdToVnd:rate},coupons:normalizedCoupons};
+    }
+    async function readBackupFile(file){
+      if(!file)return;
+      if(file.size>MAX_IMPORT_BYTES){toast('Tệp sao lưu vượt quá giới hạn 2 MB.','error');return}
+      try{
+        const text=await file.text();
+        const parsed=JSON.parse(text);
+        const backup=validateBackup(parsed);
+        state.pendingImport=backup;
+        showConfirmation('Nhập bản sao lưu',`Thay thế menu (${backup.menu.length} món), đơn hàng (${backup.orders.length} đơn), tỷ giá và mã giảm giá hiện tại bằng dữ liệu trong tệp?`,'import');
+      }catch(error){
+        console.error('Tệp sao lưu không hợp lệ.',error);
+        toast(error.message||'Không thể đọc tệp sao lưu JSON.','error');
+      }finally{
+        $('#backup-file').value='';
+      }
+    }
+    function commitImport(){
+      const backup=state.pendingImport;
+      if(!backup)return;
+      const keys=[STORAGE_KEYS.menu,STORAGE_KEYS.orders,STORAGE_KEYS.settings,STORAGE_KEYS.coupons];
+      const previous=new Map();
+      try{
+        for(const key of keys)previous.set(key,localStorage.getItem(key));
+        localStorage.setItem(STORAGE_KEYS.menu,JSON.stringify(backup.menu));
+        localStorage.setItem(STORAGE_KEYS.orders,JSON.stringify(backup.orders));
+        localStorage.setItem(STORAGE_KEYS.settings,JSON.stringify(backup.settings));
+        localStorage.setItem(STORAGE_KEYS.coupons,JSON.stringify(backup.coupons));
+      }catch(error){
+        for(const [key,value] of previous){
+          try{if(value===null)localStorage.removeItem(key);else localStorage.setItem(key,value)}
+          catch(restoreError){console.error(`Không thể khôi phục ${key} sau lỗi nhập.`,restoreError)}
+        }
+        console.error('Không thể ghi bản sao lưu.',error);
+        state.pendingImport=null;
+        closeDialog();toast('Không thể ghi bản sao lưu vào trình duyệt. Dữ liệu cũ đã được giữ lại nếu có thể.','error');
+        return;
+      }
+      state.menu=backup.menu;state.orders=backup.orders;state.settings=backup.settings;state.coupons=backup.coupons;
+      state.pendingImport=null;
+      $('#rate-input').value=String(state.settings.usdToVnd);
+      closeDialog();renderAll();renderNewOrderBadge();toast('Đã nhập bản sao lưu.','success');
+    }
+    function createDemoOrder(){
+      if(!state.menu.length){toast('Hãy thêm ít nhất một món trước khi tạo đơn demo.','error');return}
+      const item=state.menu[0];
+      const qty=2;
+      const unitPriceCents=Math.round(item.price*100);
+      const createdAt=new Date().toISOString();
+      const date=createdAt.slice(0,10).replace(/-/g,'');
+      let id='';
+      do{id=`BK-${date}-${Math.random().toString(36).slice(2,6).toUpperCase().padEnd(4,'0')}`}while(state.orders.some(order=>order.id===id));
+      state.orders.unshift({
+        id,createdAt,status:'pending',paymentStatus:'unverified',lang:'vi',demo:true,
+        customer:{name:'Khách dùng thử',email:`demo-${Date.now()}@example.test`},
+        items:[{name:item.name,unitPriceCents,qty,lineTotalCents:unitPriceCents*qty}],
+        totals:{itemCount:qty,subtotalCents:unitPriceCents*qty,discountCents:0,totalCents:unitPriceCents*qty,currency:'USD'},
+        payment:{method:'bank_transfer_qr',amountVnd:Math.round((unitPriceCents*qty/100)*state.settings.usdToVnd/1000)*1000,transferNote:id,paidClaimedAt:'',infoConfirmed:false}
+      });
+      if(saveOrders()){renderAll();renderNewOrderBadge();toast('Đã tạo đơn demo.','success')}
+    }
+    function showConfirmation(title,message,action,index=null){
+      state.pendingConfirmation={action,index};
+      showDialog(title,`<p>${escapeHTML(message)}</p><div class="dialog-actions"><button type="button" class="button button-outline" data-action="confirm-cancel">Quay lại</button><button type="button" class="button button-danger" data-action="confirm-yes">Xác nhận</button></div>`);
+      $('[data-action="confirm-cancel"]',dialog).focus();
+    }
+    function confirmPendingAction(){
+      const pending=state.pendingConfirmation;
+      state.pendingConfirmation=null;
+      if(!pending)return;
+      const index=pending.index;
+      if(pending.action==='menu-delete'&&Number.isInteger(index)&&state.menu[index]){
+        state.menu.splice(index,1);if(saveMenu()){closeDialog();renderAll();toast('Đã xóa món ăn.','success')}
+      }else if(pending.action==='order-delete'&&Number.isInteger(index)&&state.orders[index]){
+        state.orders.splice(index,1);if(saveOrders()){closeDialog();renderAll();renderNewOrderBadge();toast('Đã xóa đơn hàng.','success')}
+      }else if(pending.action==='coupon-delete'&&Number.isInteger(index)&&state.coupons[index]){
+        state.coupons.splice(index,1);if(saveCoupons()){closeDialog();renderAll();toast('Đã xóa mã giảm giá.','success')}
+      }else if(pending.action==='demo-delete'){
+        const before=state.orders.length;state.orders=state.orders.filter(order=>!order.demo);
+        if(saveOrders()){closeDialog();renderAll();renderNewOrderBadge();toast(`Đã xóa ${before-state.orders.length} đơn demo.`,'success')}
+      }else if(pending.action==='orders-clear'){
+        state.orders=[];if(saveOrders()){closeDialog();renderAll();renderNewOrderBadge();toast('Đã xóa toàn bộ đơn hàng.','success')}
+      }else if(pending.action==='menu-restore'){
+        state.menu=clone(DEFAULT_MENU);if(saveMenu()){closeDialog();renderAll();toast('Đã khôi phục menu mặc định.','success')}
+      }else if(pending.action==='import'){
+        commitImport();
+      }
+    }
+    function printKitchen(index){
+      const order=state.orders[index];
+      if(!order){toast('Không tìm thấy đơn để in.','error');return}
+      $('#kitchen-print').innerHTML=`<h1>Phiếu bếp</h1><ul>${order.items.map(item=>`<li>${escapeHTML(item.name)} × ${item.qty}</li>`).join('')}</ul>`;
+      window.print();
+    }
+    function renderAll(){
+      renderOverview();renderMenu();renderOrders();renderCustomers();renderCoupons();
+    }
+
+    // JavaScript: điều hướng và sự kiện
+    const VIEW_TITLES={overview:'Tổng quan',menu:'Món ăn',orders:'Đơn hàng',customers:'Khách hàng',coupons:'Mã giảm giá',settings:'Cài đặt'};
+    function showView(name){
+      if(!Object.prototype.hasOwnProperty.call(VIEW_TITLES,name))return;
+      state.activeView=name;
+      $$('.view').forEach(section=>{section.hidden=section.id!==`view-${name}`});
+      $$('.nav-link').forEach(button=>{
+        const active=button.dataset.view===name;
+        button.classList.toggle('active',active);
+        if(active)button.setAttribute('aria-current','page');else button.removeAttribute('aria-current');
+      });
+      $('#page-title').textContent=VIEW_TITLES[name];
+      if(name==='orders'){markOrdersSeen();renderOrders();renderAttention()}
+    }
+    function showDialog(title,content){
+      dialogTitle.textContent=title;
+      dialogContent.innerHTML=content;
+      if(!dialog.open)dialog.showModal();
+      requestAnimationFrame(()=>{
+        const focusable=dialog.querySelector('input:not([type=hidden]),select,textarea,button');
+        if(focusable)focusable.focus();
+      });
+    }
+    function closeDialog(){
+      state.pendingConfirmation=null;
+      if(dialog.open)dialog.close();
+    }
+    function getIndex(element,collection){
+      const index=Number(element.dataset.index);
+      return Number.isInteger(index)&&index>=0&&index<collection.length?index:null;
+    }
+    function updateOrderStatus(element){
+      const index=getIndex(element,state.orders);
+      if(index===null||!ORDER_STATUSES.includes(element.value))return;
+      const shouldReopen=dialog.open&&dialogTitle.textContent.startsWith('Chi tiết');
+      state.orders[index].status=element.value;
+      if(saveOrders()){
+        renderAll();renderNewOrderBadge();
+        if(shouldReopen)openOrderDetails(index);
+        toast('Đã cập nhật trạng thái đơn.','success');
+      }
+    }
+    function togglePayment(index){
+      const order=state.orders[index];
+      if(!order)return;
+      order.paymentStatus=order.paymentStatus==='verified'?'unverified':'verified';
+      if(saveOrders()){
+        const shouldReopen=dialog.open&&dialogTitle.textContent.startsWith('Chi tiết');
+        renderAll();renderNewOrderBadge();
+        if(shouldReopen)openOrderDetails(index);
+        toast(order.paymentStatus==='verified'?'Đã ghi nhận đã nhận tiền.':'Đã chuyển về chờ xác nhận tiền.','success');
+      }
+    }
+    document.addEventListener('click',event=>{
+      const viewButton=event.target.closest('[data-view]');
+      if(viewButton){showView(viewButton.dataset.view);return}
+      const button=event.target.closest('[data-action]');
+      if(!button)return;
+      const action=button.dataset.action;
+      if(action==='logout'){logout();return}
+      if(action==='dialog-close'||action==='confirm-cancel'){closeDialog();return}
+      if(action==='confirm-yes'){confirmPendingAction();return}
+      if(action==='menu-add'){openMenuForm();return}
+      if(action==='menu-edit'){const index=getIndex(button,state.menu);if(index!==null)openMenuForm(index);return}
+      if(action==='menu-delete'){const index=getIndex(button,state.menu);if(index!==null)showConfirmation('Xóa món ăn',`Bạn có chắc muốn xóa “${state.menu[index].name}” khỏi menu?`,'menu-delete',index);return}
+      if(action==='order-detail'){const index=getIndex(button,state.orders);if(index!==null)openOrderDetails(index);return}
+      if(action==='order-delete'){const index=getIndex(button,state.orders);if(index!==null)showConfirmation('Xóa đơn hàng',`Xóa đơn ${state.orders[index].id}? Thao tác này không thể hoàn tác.`,'order-delete',index);return}
+      if(action==='payment-toggle'){const index=getIndex(button,state.orders);if(index!==null)togglePayment(index);return}
+      if(action==='print-kitchen'){const index=getIndex(button,state.orders);if(index!==null)printKitchen(index);return}
+      if(action==='orders-export'){exportOrdersCsv();return}
+      if(action==='coupon-add'){openCouponForm();return}
+      if(action==='coupon-edit'){const index=getIndex(button,state.coupons);if(index!==null)openCouponForm(index);return}
+      if(action==='coupon-delete'){const index=getIndex(button,state.coupons);if(index!==null)showConfirmation('Xóa mã giảm giá',`Bạn có chắc muốn xóa mã ${state.coupons[index].code}?`,'coupon-delete',index);return}
+      if(action==='backup-export'){exportBackup();return}
+      if(action==='backup-import'){$('#backup-file').click();return}
+      if(action==='demo-add'){createDemoOrder();return}
+      if(action==='demo-delete'){showConfirmation('Xóa đơn demo','Chỉ xóa các đơn có cờ demo; đơn thật được giữ nguyên.','demo-delete');return}
+      if(action==='orders-clear'){showConfirmation('Xóa mọi đơn','Bạn có chắc muốn xóa toàn bộ đơn hàng? Hãy xuất sao lưu trước nếu cần.','orders-clear');return}
+      if(action==='menu-restore'){showConfirmation('Khôi phục menu','Thay toàn bộ menu hiện tại bằng danh sách món mặc định?','menu-restore');return}
+    });
+    document.addEventListener('change',event=>{
+      const target=event.target;
+      if(target.matches('[data-action="menu-toggle"]')){
+        const index=getIndex(target,state.menu);
+        if(index===null)return;
+        if(state.menu[index].stock===0){target.checked=false;toast('Món hết hàng chưa thể bật bán.','error');return}
+        state.menu[index].available=target.checked;
+        if(saveMenu()){renderAll();toast(target.checked?'Đã bật bán món ăn.':'Đã tạm ngừng bán món ăn.','success')}
+      }else if(target.matches('[data-action="coupon-toggle"]')){
+        const index=getIndex(target,state.coupons);if(index===null)return;
+        state.coupons[index].enabled=target.checked;
+        if(saveCoupons()){renderCoupons();toast(target.checked?'Đã bật mã giảm giá.':'Đã tắt mã giảm giá.','success')}
+      }else if(target.matches('[data-action="order-status"]')){
+        updateOrderStatus(target);
+      }else if(target.id==='backup-file'){
+        readBackupFile(target.files?.[0]);
+      }
+    });
+    document.addEventListener('submit',event=>{
+      if(event.target.id==='menu-form'){event.preventDefault();saveMenuForm(event.target)}
+      else if(event.target.id==='coupon-form'){event.preventDefault();saveCouponForm(event.target)}
+    });
+    $('#menu-search').addEventListener('input',renderMenu);
+    $('#menu-category-filter').addEventListener('change',renderMenu);
+    $('#order-search').addEventListener('input',renderOrders);
+    $('#order-status-filter').innerHTML='<option value="">Mọi trạng thái</option>'+ORDER_STATUSES.map(status=>`<option value="${status}">${ORDER_LABELS[status]}</option>`).join('');
+    $('#order-status-filter').addEventListener('change',renderOrders);
+    $('#order-payment-filter').addEventListener('change',renderOrders);
+    $('#customer-search').addEventListener('input',renderCustomers);
+    $('#rate-form').addEventListener('submit',event=>{
+      event.preventDefault();
+      const rate=Number($('#rate-input').value);
+      if(!Number.isFinite(rate)||rate<=0||rate>100000000){toast('Tỷ giá phải là số lớn hơn 0.','error');return}
+      state.settings.usdToVnd=rate;
+      if(saveSettings())toast('Đã lưu tỷ giá.','success');
+    });
+    dialog.addEventListener('click',event=>{if(event.target===dialog)closeDialog()});
+    dialog.addEventListener('cancel',event=>{event.preventDefault();closeDialog()});
+    document.addEventListener('keydown',event=>{if(event.key==='Escape'&&dialog.open){event.preventDefault();closeDialog()}});
+    dialog.addEventListener('close',()=>{dialogContent.replaceChildren();state.pendingConfirmation=null});
+    window.addEventListener('storage',event=>{
+      if(!Object.values(STORAGE_KEYS).includes(event.key))return;
+      if(event.key===STORAGE_KEYS.orders){
+        const record=readStored(STORAGE_KEYS.orders,[]);
+        state.orders=Array.isArray(record.value)?record.value.map(normalizeOrder).filter(Boolean):[];
+        renderAll();renderNewOrderBadge();
+      }else if(event.key===STORAGE_KEYS.menu){
+        const record=readStored(STORAGE_KEYS.menu,[]);
+        state.menu=Array.isArray(record.value)?record.value.map(normalizeMenuItem).filter(Boolean):[];
+        renderAll();
+      }else if(event.key===STORAGE_KEYS.coupons){
+        const record=readStored(STORAGE_KEYS.coupons,[]);
+        state.coupons=Array.isArray(record.value)?record.value.map(normalizeCoupon).filter(Boolean):[];
+        renderCoupons();
+      }else if(event.key===STORAGE_KEYS.settings){
+        const record=readStored(STORAGE_KEYS.settings,{usdToVnd:25000});
+        const rate=Number(record.value?.usdToVnd);
+        state.settings.usdToVnd=Number.isFinite(rate)&&rate>0?rate:25000;
+        $('#rate-input').value=String(state.settings.usdToVnd);
+      }
+    });
+    document.addEventListener('visibilitychange',()=>{
+      if(!adminApp.hidden&&!sessionIsValid())logout();
+    });
+
+    if(sessionIsValid())showAuthenticatedApp();
+    else loginEmail.focus();
+  </script>
+</body>
+</html>

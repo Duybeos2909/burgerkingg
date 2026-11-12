@@ -1843,6 +1843,7 @@
     <a href="#stores" data-i18n="nav.stores">Find a Store</a>
     <a href="#rewards" data-i18n="nav.rewards">Rewards</a>
     <a href="#app" data-i18n="nav.app">App</a>
+    <button class="btn btn--ghost" id="mobile-auth-btn" type="button" data-i18n="nav.signIn">SIGN IN</button>
     <a href="#menu" class="btn btn--primary" data-i18n="nav.order">ORDER NOW</a>
   </div>
 
@@ -2385,6 +2386,7 @@
       { id: 12, name: 'Whopper Combo', category: 'Combos', price: 9.49, rating: 4.9, description: 'Whopper + Fries + Drink — the classic trio', is_featured: true },
       { id: 14, name: 'Chocolate Brownie', category: 'Desserts', price: 2.49, rating: 4.7, description: 'Warm, fudgy, dangerously good', is_featured: false }
     ];
+    const ADMIN_MENU_COLOR_PATTERN = /^linear-gradient\(135deg,#[0-9a-f]{6},#[0-9a-f]{6}\)$/i;
 
     const FALLBACK_DEALS = [
       { id: 1, title: 'Double Down Deal', offer: '2 Whoppers + 2 Large Fries for $12', tag: '🔥 Flash Sale', promo_code: 'DOUBLE12', seconds_remaining: 6 * 3600, is_app_only: false },
@@ -2411,6 +2413,7 @@
     };
 
     let menuItems = [];
+    let usesLocalAdminMenu = false;
     let filteredMenuItems = [];
     let deals = [];
     let stores = [];
@@ -2443,6 +2446,7 @@
     const formError = document.getElementById('form-error');
     const apiBanner = document.getElementById('api-banner');
     const authBtn = document.getElementById('auth-btn');
+    const mobileAuthBtn = document.getElementById('mobile-auth-btn');
     const userBadge = document.getElementById('user-badge');
     const userBadgeText = document.getElementById('user-badge-text');
     const storeSearchInput = document.getElementById('store-search');
@@ -2537,38 +2541,44 @@
     function getVisualForItem(item) {
       const category = normalizeCategoryKey(item.category);
       const lowerName = (item.name || '').toLowerCase();
+      const withAdminVisual = (visual) => ({
+        emoji: typeof item.emoji === 'string' && item.emoji.length <= 16 ? item.emoji : visual.emoji,
+        color: typeof item.color === 'string' && ADMIN_MENU_COLOR_PATTERN.test(item.color)
+          ? item.color
+          : visual.color
+      });
 
       if (lowerName.includes('veggie') || category === 'vegetarian') {
-        return { emoji: '🥬', color: 'linear-gradient(135deg,#4F8A10,#9ED15D)' };
+        return withAdminVisual({ emoji: '🥬', color: 'linear-gradient(135deg,#4F8A10,#9ED15D)' });
       }
       if (category === 'burgers') {
         return item.is_featured
-          ? { emoji: '🍔', color: 'linear-gradient(135deg,#C8102E,#F25C54)' }
-          : { emoji: '🍔', color: 'linear-gradient(135deg,#7A0E1F,#C8102E)' };
+          ? withAdminVisual({ emoji: '🍔', color: 'linear-gradient(135deg,#C8102E,#F25C54)' })
+          : withAdminVisual({ emoji: '🍔', color: 'linear-gradient(135deg,#7A0E1F,#C8102E)' });
       }
       if (category === 'chicken') {
         return lowerName.includes('spicy')
-          ? { emoji: '🌶️', color: 'linear-gradient(135deg,#D64D00,#F25C54)' }
-          : { emoji: '🍗', color: 'linear-gradient(135deg,#F2A623,#F5C45C)' };
+          ? withAdminVisual({ emoji: '🌶️', color: 'linear-gradient(135deg,#D64D00,#F25C54)' })
+          : withAdminVisual({ emoji: '🍗', color: 'linear-gradient(135deg,#F2A623,#F5C45C)' });
       }
       if (category === 'sides') {
         return lowerName.includes('onion')
-          ? { emoji: '🧅', color: 'linear-gradient(135deg,#AD7C3A,#E0B36A)' }
-          : { emoji: '🍟', color: 'linear-gradient(135deg,#F2A623,#FFD86B)' };
+          ? withAdminVisual({ emoji: '🧅', color: 'linear-gradient(135deg,#AD7C3A,#E0B36A)' })
+          : withAdminVisual({ emoji: '🍟', color: 'linear-gradient(135deg,#F2A623,#FFD86B)' });
       }
       if (category === 'drinks') {
         return lowerName.includes('shake')
-          ? { emoji: '🥤', color: 'linear-gradient(135deg,#5B2C23,#9A5E48)' }
-          : { emoji: '🥶', color: 'linear-gradient(135deg,#2563EB,#60A5FA)' };
+          ? withAdminVisual({ emoji: '🥤', color: 'linear-gradient(135deg,#5B2C23,#9A5E48)' })
+          : withAdminVisual({ emoji: '🥶', color: 'linear-gradient(135deg,#2563EB,#60A5FA)' });
       }
       if (category === 'desserts') {
-        return { emoji: '🍫', color: 'linear-gradient(135deg,#3E2723,#795548)' };
+        return withAdminVisual({ emoji: '🍫', color: 'linear-gradient(135deg,#3E2723,#795548)' });
       }
       if (category === 'combos') {
-        return { emoji: '👑', color: 'linear-gradient(135deg,#C8102E,#F2A623)' };
+        return withAdminVisual({ emoji: '👑', color: 'linear-gradient(135deg,#C8102E,#F2A623)' });
       }
 
-      return { emoji: '🍔', color: 'linear-gradient(135deg,#C8102E,#F2A623)' };
+      return withAdminVisual({ emoji: '🍔', color: 'linear-gradient(135deg,#C8102E,#F2A623)' });
     }
 
     async function apiFetch(path, options = {}) {
@@ -2600,8 +2610,75 @@
       apiBanner.style.borderColor = healthy ? 'rgba(51,178,73,.2)' : 'rgba(255,255,255,.1)';
     }
 
+    function readLocalAdminMenu() {
+      let raw;
+      try {
+        raw = localStorage.getItem('bk_menu');
+      } catch (error) {
+        console.error('Could not read the locally managed menu.', error);
+        return null;
+      }
+      if (raw === null) return null;
+
+      let storedMenu;
+      try {
+        storedMenu = JSON.parse(raw);
+      } catch (error) {
+        console.error('The locally managed menu is not valid JSON.', error);
+        return null;
+      }
+      if (!Array.isArray(storedMenu)) {
+        console.error('The locally managed menu must be an array.');
+        return null;
+      }
+
+      const categories = {
+        burgers: 'Burgers',
+        chicken: 'Chicken',
+        sides: 'Sides',
+        drinks: 'Drinks',
+        desserts: 'Desserts',
+        combos: 'Combos',
+        vegetarian: 'Vegetarian'
+      };
+      return storedMenu.flatMap((item, index) => {
+        if (!item || typeof item !== 'object' || Array.isArray(item)) {
+          console.error(`Skipped invalid locally managed menu item at index ${index}.`);
+          return [];
+        }
+        const id = Number(item.id);
+        const price = Number(item.price);
+        const rating = Number(item.rating);
+        if (!Number.isSafeInteger(id) || id < 0 || typeof item.name !== 'string' ||
+            !item.name.trim() || !categories[item.category] || !Number.isFinite(price) ||
+            price < 0 || typeof item.available !== 'boolean') {
+          console.error(`Skipped incomplete locally managed menu item at index ${index}.`);
+          return [];
+        }
+        if (typeof item.emoji !== 'string' || typeof item.color !== 'string' ||
+            typeof item.description !== 'string' || !Number.isFinite(rating)) {
+          console.error(`Skipped locally managed menu item with invalid fields at index ${index}.`);
+          return [];
+        }
+        return [{
+          id,
+          name: item.name.trim().slice(0, 120),
+          category: categories[item.category],
+          price,
+          emoji: item.emoji.slice(0, 16),
+          rating: Math.min(5, Math.max(0, rating)),
+          color: ADMIN_MENU_COLOR_PATTERN.test(item.color) ? item.color : '',
+          description: item.description.slice(0, 1000),
+          available: item.available,
+          is_featured: false
+        }];
+      });
+    }
+
     async function bootstrap() {
       promoCodeInput.value = activePromoCode;
+      const localAdminMenu = readLocalAdminMenu();
+      usesLocalAdminMenu = localAdminMenu !== null;
 
       try {
         const [menuRes, dealsRes, storesRes] = await Promise.all([
@@ -2613,18 +2690,20 @@
         const hasLiveMenu = Array.isArray(menuRes.items) && menuRes.items.length > 0;
         const hasLiveDeals = Array.isArray(dealsRes.deals) && dealsRes.deals.length > 0;
         const hasLiveStores = Array.isArray(storesRes.stores) && storesRes.stores.length > 0;
-        menuItems = hasLiveMenu ? menuRes.items : FALLBACK_MENU;
+        menuItems = usesLocalAdminMenu ? localAdminMenu : hasLiveMenu ? menuRes.items : FALLBACK_MENU;
         deals = hasLiveDeals ? dealsRes.deals : FALLBACK_DEALS;
         stores = hasLiveStores ? storesRes.stores : FALLBACK_STORES;
         setApiBanner(
-          hasLiveMenu && hasLiveDeals && hasLiveStores
+          usesLocalAdminMenu
+            ? 'Menu được quản lý trong trình duyệt này'
+            : hasLiveMenu && hasLiveDeals && hasLiveStores
             ? 'Connected to https://burgerking-backend.onrender.com/api'
             : 'Connected; showing demo content where database data is empty',
           true
         );
       } catch (error) {
         console.warn('API bootstrap failed. Using fallback data.', error);
-        menuItems = FALLBACK_MENU;
+        menuItems = usesLocalAdminMenu ? localAdminMenu : FALLBACK_MENU;
         deals = FALLBACK_DEALS;
         stores = FALLBACK_STORES;
         setApiBanner('Backend not reachable. Showing fallback demo data.', false);
@@ -2643,7 +2722,7 @@
 
       if (authToken) {
         try {
-          await Promise.all([loadMe(), loadCartFromServer(), loadRewardsProfile()]);
+          await Promise.all([loadMe(), loadCartForCurrentMenu(), loadRewardsProfile()]);
         } catch (error) {
           console.warn('Session restore failed:', error);
           logout(false);
@@ -2689,28 +2768,38 @@
     }
 
     function renderMenu() {
-      if (!Array.isArray(menuItems) || menuItems.length === 0) {
+      if (!Array.isArray(menuItems) || (menuItems.length === 0 && !usesLocalAdminMenu)) {
         menuItems = FALLBACK_MENU;
       }
+      const availableItems = menuItems.filter((item) => item.available !== false);
       const filtered = activeMenuCategory === 'all'
-        ? menuItems
-        : menuItems.filter((item) => normalizeCategoryKey(item.category) === activeMenuCategory);
+        ? availableItems
+        : availableItems.filter((item) => normalizeCategoryKey(item.category) === activeMenuCategory);
 
       filteredMenuItems = filtered;
 
       menuGrid.innerHTML = filtered.map((item) => {
         const visual = getVisualForItem(item);
+        const localized = i18n.localizeMenuItem(item);
+        const defaultItem = FALLBACK_MENU.find((entry) =>
+          String(entry.id) === String(item.id) && entry.name === item.name
+        );
+        const hasCustomAdminDescription = usesLocalAdminMenu &&
+          (!defaultItem || item.description !== defaultItem.description);
+        const description = hasCustomAdminDescription
+          ? item.description
+          : localized.description || item.description || 'Flame-grilled and made fresh.';
         return `
           <article class="menu-card" data-category="${escapeHtml(normalizeCategoryKey(item.category))}">
-            <div class="menu-media" style="background:${visual.color}" aria-hidden="true">${visual.emoji}</div>
+            <div class="menu-media" style="background:${visual.color}" aria-hidden="true">${escapeHtml(visual.emoji)}</div>
             <div class="menu-body">
-              <span class="badge">${escapeHtml(i18n.localizeMenuItem(item).category || titleCase(String(item.category).trim()))}</span>
+              <span class="badge">${escapeHtml(localized.category || titleCase(String(item.category).trim()))}</span>
               <h3 class="menu-name">${escapeHtml(item.name)}</h3>
-              <p class="menu-desc">${escapeHtml(i18n.localizeMenuItem(item).description || item.description || 'Flame-grilled and made fresh.')}</p>
+              <p class="menu-desc">${escapeHtml(description)}</p>
               <div class="menu-meta">
                 <span class="price">${formatCurrency(item.price)}</span>
                 <span class="rating">⭐ ${Number(item.rating || 4.6).toFixed(1)}</span>
-                <button class="add-btn" data-add-menu-id="${item.id}">${t('cart.add')}</button>
+                <button class="add-btn" data-add-menu-id="${escapeHtml(item.id)}">${t('cart.add')}</button>
               </div>
             </div>
           </article>
@@ -2812,6 +2901,14 @@
       return cart;
     }
 
+    async function loadCartForCurrentMenu() {
+      if (usesLocalAdminMenu) {
+        restoreGuestCart();
+        return cart;
+      }
+      return loadCartFromServer();
+    }
+
     function saveGuestCart() {
       localStorage.setItem(STORAGE_KEYS.guestCart, JSON.stringify(cart));
     }
@@ -2868,10 +2965,10 @@
       if (requireSignInForOrdering()) return;
 
       const item = menuItems.find((entry) => Number(entry.id) === Number(menuItemId));
-      if (!item) return;
+      if (!item || item.available === false) return;
 
       try {
-        if (authToken) {
+        if (authToken && !usesLocalAdminMenu) {
           const data = await apiFetch('/cart/add', {
             method: 'POST',
             body: JSON.stringify({ menu_item_id: Number(menuItemId), qty: 1 })
@@ -2901,7 +2998,7 @@
 
     async function changeQty(menuItemId, delta) {
       try {
-        if (authToken) {
+        if (authToken && !usesLocalAdminMenu) {
           const existing = cart.find((entry) => Number(entry.menu_item_id) === Number(menuItemId));
           if (!existing) return;
           const nextQty = Number(existing.qty) + Number(delta);
@@ -2973,6 +3070,7 @@
     function updateAuthUI() {
       const isLoggedIn = Boolean(authToken && currentUser);
       userBadge.classList.toggle('hidden', !isLoggedIn);
+      mobileAuthBtn.textContent = isLoggedIn ? t('auth.logout') : t('nav.signIn');
       if (isLoggedIn) {
         authBtn.textContent = t('auth.logout');
         userBadgeText.textContent = `${currentUser.first_name} · ${currentUser.tier || 'Member'}`;
@@ -3051,7 +3149,12 @@
       updateAuthUI();
       restoreGuestCart();
       updateCartUI();
-      setApiBanner(apiHealthy ? 'Connected to https://burgerking-backend.onrender.com/api' : 'Backend not reachable. Showing fallback demo data.', apiHealthy);
+      setApiBanner(
+        usesLocalAdminMenu
+          ? 'Menu được quản lý trong trình duyệt này'
+          : apiHealthy ? 'Connected to https://burgerking-backend.onrender.com/api' : 'Backend not reachable. Showing fallback demo data.',
+        apiHealthy
+      );
     }
 
     async function handleRegister(event) {
@@ -3088,9 +3191,14 @@
 
         saveAuthSession(data.token, data.user);
         rewardsForm.reset();
-        await Promise.all([loadCartFromServer(), loadRewardsProfile()]);
+        await Promise.all([loadCartForCurrentMenu(), loadRewardsProfile()]);
         updateCartUI();
-        setApiBanner('Connected to https://burgerking-backend.onrender.com/api · account created', true);
+        setApiBanner(
+          usesLocalAdminMenu
+            ? 'Menu được quản lý trong trình duyệt này'
+            : 'Connected to https://burgerking-backend.onrender.com/api · account created',
+          true
+        );
       } catch (error) {
         showError(formError, error.message || 'Could not create account.');
       }
@@ -3134,9 +3242,14 @@
 
         saveAuthSession(data.token, data.user);
         closeAuthModal();
-        await Promise.all([loadCartFromServer(), loadRewardsProfile()]);
+        await Promise.all([loadCartForCurrentMenu(), loadRewardsProfile()]);
         updateCartUI();
-        setApiBanner('Connected to https://burgerking-backend.onrender.com/api · signed in', true);
+        setApiBanner(
+          usesLocalAdminMenu
+            ? 'Menu được quản lý trong trình duyệt này'
+            : 'Connected to https://burgerking-backend.onrender.com/api · signed in',
+          true
+        );
       } catch (error) {
         showError(loginError, error.message || 'Could not sign in.');
       }
@@ -3483,7 +3596,7 @@
       try {
         const order = createOrder(checkoutEmailInput.value, checkoutNameInput.value, checkoutOrderId);
         saveOrder(order);
-        if (authToken) {
+        if (authToken && !usesLocalAdminMenu) {
           try {
             await apiFetch('/cart/clear', { method: 'DELETE' });
           } catch (error) {
@@ -3724,6 +3837,15 @@
 
     const hamburger = document.getElementById('hamburger');
     const mobileNav = document.getElementById('mobile-nav');
+    mobileAuthBtn.addEventListener('click', () => {
+      mobileNav.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+      if (authToken) {
+        logout();
+      } else {
+        openAuthModal();
+      }
+    });
     hamburger.addEventListener('click', () => {
       mobileNav.classList.toggle('open');
       const expanded = mobileNav.classList.contains('open');
