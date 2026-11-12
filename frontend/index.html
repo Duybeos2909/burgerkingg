@@ -3,83 +3,86 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Burger King — Flame-Grilled, Your Way</title>
+  <title data-i18n="page.title">Burger King — Flame-Grilled, Your Way</title>
   <meta name="description" content="A high-converting Burger King landing experience with live menu, deals, stores, rewards, auth, and checkout backed by Express + SQLite." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
-<a href="#home" class="skip-link">Skip to content</a>
+<a href="#home" class="skip-link" data-i18n="skip.content">Skip to content</a>
 
-  <header class="nav" id="main-nav" aria-label="Main navigation">
+  <header class="nav" id="main-nav" aria-label="Main navigation" data-i18n-aria-label="nav.main">
     <div class="container nav-inner">
       <a href="#home" class="brand" aria-label="Burger King home">
         <span class="flame" aria-hidden="true">🔥</span>
         <span>BURGER KING</span>
       </a>
 
-      <nav class="nav-links" aria-label="Primary">
-        <a class="nav-link" href="#menu">Menu</a>
-        <a class="nav-link" href="#deals">Deals</a>
-        <a class="nav-link" href="#stores">Find a Store</a>
-        <a class="nav-link" href="#rewards">Rewards</a>
-        <a class="nav-link" href="#app">App</a>
+      <nav class="nav-links" aria-label="Primary" data-i18n-aria-label="nav.primary">
+        <a class="nav-link" href="#menu" data-i18n="nav.menu">Menu</a>
+        <a class="nav-link" href="#deals" data-i18n="nav.deals">Deals</a>
+        <a class="nav-link" href="#stores" data-i18n="nav.stores">Find a Store</a>
+        <a class="nav-link" href="#rewards" data-i18n="nav.rewards">Rewards</a>
+        <a class="nav-link" href="#app" data-i18n="nav.app">App</a>
       </nav>
 
       <div style="display:flex;align-items:center;gap:10px;">
-        <button class="btn btn--ghost nav-cta" id="auth-btn" type="button">SIGN IN</button>
+        <button class="btn btn--ghost nav-cta" id="auth-btn" type="button" data-i18n="nav.signIn">SIGN IN</button>
         <div class="user-badge hidden" id="user-badge"><span class="status-dot"></span><span id="user-badge-text">Guest</span></div>
-        <a href="#menu" class="btn btn--primary nav-cta">ORDER NOW</a>
-        <button class="hamburger" id="hamburger" aria-label="Open menu" aria-controls="mobile-nav" aria-expanded="false">☰</button>
+        <a href="#menu" class="btn btn--primary nav-cta" data-i18n="nav.order">ORDER NOW</a>
+        <button class="language-toggle" id="language-toggle" type="button" aria-label="Switch language">
+          <span data-lang-code="en">EN</span> <span aria-hidden="true">|</span> <span data-lang-code="vi">VI</span>
+        </button>
+        <button class="hamburger" id="hamburger" aria-label="Open menu" data-i18n-aria-label="nav.openMenu" aria-controls="mobile-nav" aria-expanded="false">☰</button>
       </div>
     </div>
   </header>
 
-  <div class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
-    <a href="#home">Home</a>
-    <a href="#menu">Menu</a>
-    <a href="#deals">Deals</a>
-    <a href="#stores">Find a Store</a>
-    <a href="#rewards">Rewards</a>
-    <a href="#app">App</a>
-    <a href="#menu" class="btn btn--primary">ORDER NOW</a>
+  <div class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation" data-i18n-aria-label="nav.primary">
+    <a href="#home" data-i18n="nav.home">Home</a>
+    <a href="#menu" data-i18n="nav.menu">Menu</a>
+    <a href="#deals" data-i18n="nav.deals">Deals</a>
+    <a href="#stores" data-i18n="nav.stores">Find a Store</a>
+    <a href="#rewards" data-i18n="nav.rewards">Rewards</a>
+    <a href="#app" data-i18n="nav.app">App</a>
+    <a href="#menu" class="btn btn--primary" data-i18n="nav.order">ORDER NOW</a>
   </div>
 
-  <a href="#menu" class="btn btn--primary floating-order">Order Now</a>
+  <a href="#menu" class="btn btn--primary floating-order" data-i18n="hero.order">Order Now</a>
 
-  <button class="cart-fab" id="cart-toggle" aria-label="Open cart">
+  <button class="cart-fab" id="cart-toggle" aria-label="Shopping cart" data-i18n-aria-label="cart.label">
     👜
     <span class="cart-count" id="cart-count">0</span>
   </button>
 
   <div class="backdrop" id="backdrop" aria-hidden="true"></div>
 
-  <aside class="cart-sidebar" id="cart-sidebar" aria-label="Shopping cart" aria-hidden="true">
+  <aside class="cart-sidebar" id="cart-sidebar" aria-label="Shopping cart" data-i18n-aria-label="cart.label" aria-hidden="true">
     <div class="cart-header">
-      <h3>Your Bag</h3>
-      <button class="icon-btn" id="close-cart" aria-label="Close cart">✕</button>
+      <h3 data-i18n="cart.title">Your Bag</h3>
+      <button class="icon-btn" id="close-cart" aria-label="Close cart" data-i18n-aria-label="cart.close">✕</button>
     </div>
     <div class="cart-items" id="cart-items">
       <div class="cart-empty" id="cart-empty">
         <p style="font-size:2rem;margin:0 0 10px;">🍔</p>
-        <p style="margin:0;">Your bag is empty. Add something flame-grilled.</p>
+        <p style="margin:0;" data-i18n="cart.empty">Your bag is empty. Add something flame-grilled.</p>
       </div>
     </div>
     <div class="cart-footer">
       <div class="cart-total">
-        <span>Subtotal</span>
+        <span data-i18n="cart.subtotal">Subtotal</span>
         <span id="cart-total">$0.00</span>
       </div>
       <div class="cart-meta">
         <div class="selected-store-pill" id="selected-store-label">📍 Pickup store: choose a store below</div>
-        <input class="cart-mini-input" id="promo-code-input" type="text" placeholder="Promo code (optional)" />
+        <input class="cart-mini-input" id="promo-code-input" type="text" placeholder="Promo code (optional)" data-i18n-placeholder="feature.promo" />
         <div class="cart-helper">
           <span id="cart-mode-label">Guest checkout</span>
           <span id="cart-points-label">Sign in to earn points</span>
         </div>
       </div>
-      <button class="btn btn--primary" id="checkout-btn">Checkout</button>
+      <button class="btn btn--primary" id="checkout-btn" data-i18n="cart.checkout">Checkout</button>
     </div>
   </aside>
 
@@ -89,29 +92,29 @@
       <div class="container hero-grid">
         <div class="hero-copy animate-on-scroll">
           <div class="hero-banner">
-            <span>🔥 LIMITED TIME: Double Whopper for $5.99 — Today Only</span>
+            <span data-i18n="hero.banner">🔥 LIMITED TIME: Double Whopper for $5.99 — Today Only</span>
             <span id="hero-timer">06:00:00</span>
           </div>
 
-          <div class="eyebrow">Flame-Grilled Since 1953</div>
-          <h1 class="hero-title">Have It<br>Your Way.</h1>
-          <p class="hero-desc">
+          <div class="eyebrow" data-i18n="hero.eyebrow">Flame-Grilled Since 1953</div>
+          <h1 class="hero-title" data-i18n="hero.title">Have It<br>Your Way.</h1>
+          <p class="hero-desc" data-i18n="hero.description">
             100% beef. Flame-grilled to perfection. No freezers. No shortcuts. Ever.
           </p>
 
           <div class="hero-actions">
-            <a href="#menu" class="btn btn--primary">ORDER NOW</a>
-            <a href="#menu" class="btn btn--ghost">SEE MENU</a>
+            <a href="#menu" class="btn btn--primary" data-i18n="hero.order">ORDER NOW</a>
+            <a href="#menu" class="btn btn--ghost" data-i18n="hero.seeMenu">SEE MENU</a>
           </div>
 
           <div class="ticker" aria-label="Social proof ticker">
             <div class="ticker-track">
-              <span>⭐ 4.7/5 from 2.3M reviews</span>
-              <span>🍔 12,000+ restaurants worldwide</span>
-              <span>📱 #1 Fast Food App 2024</span>
-              <span>⭐ 4.7/5 from 2.3M reviews</span>
-              <span>🍔 12,000+ restaurants worldwide</span>
-              <span>📱 #1 Fast Food App 2024</span>
+              <span data-i18n="hero.tickerReviews">⭐ 4.7/5 from 2.3M reviews</span>
+              <span data-i18n="hero.tickerStores">🍔 12,000+ restaurants worldwide</span>
+              <span data-i18n="hero.tickerApp">📱 #1 Fast Food App 2024</span>
+              <span data-i18n="hero.tickerReviews">⭐ 4.7/5 from 2.3M reviews</span>
+              <span data-i18n="hero.tickerStores">🍔 12,000+ restaurants worldwide</span>
+              <span data-i18n="hero.tickerApp">📱 #1 Fast Food App 2024</span>
             </div>
           </div>
         </div>
@@ -128,9 +131,9 @@
               />
             </div>
             <div class="hero-badge">
-              <div style="font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;">Fresh off the flame</div>
-              <strong>Made to order</strong>
-              <div style="margin-top:6px;color:#5c554e;font-size:.92rem;">Editorial food styling meets fast-food urgency.</div>
+              <div style="font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;" data-i18n="hero.badgeFresh">Fresh off the flame</div>
+              <strong data-i18n="hero.badgeOrder">Made to order</strong>
+              <div style="margin-top:6px;color:#5c554e;font-size:.92rem;" data-i18n="hero.badgeDescription">Editorial food styling meets fast-food urgency.</div>
             </div>
           </div>
         </div>
@@ -140,22 +143,22 @@
     <section id="menu" class="section section--light">
       <div class="container">
         <div class="section-head animate-on-scroll">
-          <div class="eyebrow">The Menu</div>
-          <h2 class="section-title">Built Different.</h2>
-          <p class="section-copy" style="margin-inline:auto;">
+          <div class="eyebrow" data-i18n="menu.eyebrow">The Menu</div>
+          <h2 class="section-title" data-i18n="menu.title">Built Different.</h2>
+          <p class="section-copy" style="margin-inline:auto;" data-i18n="menu.description">
             Browse the full menu, filter by craving, and add your favourites to the bag in a tap.
           </p>
         </div>
 
-        <div class="filter-bar animate-on-scroll" id="menu-filters" aria-label="Menu category filters">
-          <button class="pill active filter-pill" data-category="all">All</button>
-          <button class="pill filter-pill" data-category="burgers">Burgers</button>
-          <button class="pill filter-pill" data-category="chicken">Chicken</button>
-          <button class="pill filter-pill" data-category="sides">Sides</button>
-          <button class="pill filter-pill" data-category="drinks">Drinks</button>
-          <button class="pill filter-pill" data-category="desserts">Desserts</button>
-          <button class="pill filter-pill" data-category="combos">Combos</button>
-          <button class="pill filter-pill" data-category="vegetarian">Vegetarian</button>
+        <div class="filter-bar animate-on-scroll" id="menu-filters" aria-label="Menu category filters" data-i18n-aria-label="menu.filterLabel">
+          <button class="pill active filter-pill" data-category="all" data-i18n="category.all">All</button>
+          <button class="pill filter-pill" data-category="burgers" data-i18n="category.burgers">Burgers</button>
+          <button class="pill filter-pill" data-category="chicken" data-i18n="category.chicken">Chicken</button>
+          <button class="pill filter-pill" data-category="sides" data-i18n="category.sides">Sides</button>
+          <button class="pill filter-pill" data-category="drinks" data-i18n="category.drinks">Drinks</button>
+          <button class="pill filter-pill" data-category="desserts" data-i18n="category.desserts">Desserts</button>
+          <button class="pill filter-pill" data-category="combos" data-i18n="category.combos">Combos</button>
+          <button class="pill filter-pill" data-category="vegetarian" data-i18n="category.vegetarian">Vegetarian</button>
         </div>
 
         <div class="menu-grid animate-on-scroll" id="menu-grid" aria-live="polite"></div>
@@ -165,9 +168,9 @@
     <section id="deals" class="section section--dark">
       <div class="container">
         <div class="section-head animate-on-scroll">
-          <div class="eyebrow">Hot Right Now</div>
-          <h2 class="section-title">Deals That Hit Different.</h2>
-          <p class="section-copy" style="margin-inline:auto;">
+          <div class="eyebrow" data-i18n="deals.eyebrow">Hot Right Now</div>
+          <h2 class="section-title" data-i18n="deals.title">Deals That Hit Different.</h2>
+          <p class="section-copy" style="margin-inline:auto;" data-i18n="deals.description">
             App-exclusive offers, meal combos, and daily specials — always fresh, always urgent.
           </p>
         </div>
@@ -179,23 +182,23 @@
     <section id="stores" class="section section--light">
       <div class="container">
         <div class="section-head animate-on-scroll">
-          <div class="eyebrow">Find Us</div>
-          <h2 class="section-title">12,000 Reasons to Never Cook Again.</h2>
+          <div class="eyebrow" data-i18n="stores.eyebrow">Find Us</div>
+          <h2 class="section-title" data-i18n="stores.title">12,000 Reasons to Never Cook Again.</h2>
         </div>
 
         <div class="stores-grid">
           <div class="animate-on-scroll">
             <div class="search-row">
-              <input id="store-search" class="search-input" type="text" placeholder="🔍 Enter your city or postcode..." aria-label="Search stores by city or postcode" />
-              <button class="btn btn--light-outline" id="use-location">Use My Location</button>
+              <input id="store-search" class="search-input" type="text" placeholder="🔍 Enter your city or postcode..." data-i18n-placeholder="stores.search" aria-label="Search stores by city or postcode" data-i18n-aria-label="stores.searchLabel" />
+              <button class="btn btn--light-outline" id="use-location" data-i18n="stores.location">Use My Location</button>
             </div>
 
-            <div class="filter-bar" id="store-filters" aria-label="Store filters">
-              <button class="pill active store-pill" data-storefilter="all">All</button>
-              <button class="pill store-pill" data-storefilter="Drive-Thru">Drive-Thru</button>
-              <button class="pill store-pill" data-storefilter="Open Now">Open Now</button>
-              <button class="pill store-pill" data-storefilter="Delivery">Delivery</button>
-              <button class="pill store-pill" data-storefilter="Dine-In">Dine-In</button>
+            <div class="filter-bar" id="store-filters" aria-label="Store filters" data-i18n-aria-label="stores.filterLabel">
+              <button class="pill active store-pill" data-storefilter="all" data-i18n="category.all">All</button>
+              <button class="pill store-pill" data-storefilter="Drive-Thru" data-i18n="feature.driveThru">Drive-Thru</button>
+              <button class="pill store-pill" data-storefilter="Open Now" data-i18n="stores.open">Open Now</button>
+              <button class="pill store-pill" data-storefilter="Delivery" data-i18n="feature.delivery">Delivery</button>
+              <button class="pill store-pill" data-storefilter="Dine-In" data-i18n="feature.dineIn">Dine-In</button>
             </div>
 
             <div class="store-list" id="store-list" aria-live="polite"></div>
@@ -204,8 +207,8 @@
           <div class="map-box animate-on-scroll">
             <div>
               <span>📍</span>
-              <strong style="font-size:1.5rem;display:block;margin-bottom:10px;">Interactive Map</strong>
-              <div>In production: integrate Google Maps API with store pins</div>
+              <strong style="font-size:1.5rem;display:block;margin-bottom:10px;" data-i18n="stores.map">Interactive Map</strong>
+              <div data-i18n="stores.mapNote">In production: integrate Google Maps API with store pins</div>
             </div>
           </div>
         </div>
@@ -216,66 +219,66 @@
       <div class="container">
         <div class="rewards-grid">
           <div class="rewards-copy animate-on-scroll">
-            <h2 class="section-title">Earn While<br>You Eat.</h2>
-            <p class="section-copy" style="color:rgba(255,255,255,.86);">
+            <h2 class="section-title" data-i18n="rewards.title">Earn While<br>You Eat.</h2>
+            <p class="section-copy" style="color:rgba(255,255,255,.86);" data-i18n="rewards.description">
               Join BK Rewards and earn points on every order. Redeem for free food, exclusive deals, and member-only surprises.
             </p>
 
             <div class="value-list">
-              <div class="value-item"><span>🍔</span><div>Earn <strong>10pts</strong> per $1 spent</div></div>
-              <div class="value-item"><span>🎁</span><div>Free Whopper at <strong>500 points</strong></div></div>
-              <div class="value-item"><span>👑</span><div>Exclusive member deals <strong>every week</strong></div></div>
+              <div class="value-item"><span>🍔</span><div data-i18n="rewards.earn">Earn <strong>10pts</strong> per $1 spent</div></div>
+              <div class="value-item"><span>🎁</span><div data-i18n="rewards.freeWhopper">Free Whopper at <strong>500 points</strong></div></div>
+              <div class="value-item"><span>👑</span><div data-i18n="rewards.memberDeals">Exclusive member deals <strong>every week</strong></div></div>
             </div>
           </div>
 
           <div class="form-card animate-on-scroll">
-            <h3>Join Free — Takes 30 Seconds</h3>
+            <h3 data-i18n="rewards.join">Join Free — Takes 30 Seconds</h3>
 
             <form id="rewards-form" novalidate>
               <div class="form-grid">
                 <div class="field">
-                  <label for="firstName">First Name</label>
+                  <label for="firstName" data-i18n="form.firstName">First Name</label>
                   <input id="firstName" name="firstName" type="text" required />
                 </div>
 
                 <div class="field">
-                  <label for="email">Email Address</label>
+                  <label for="email" data-i18n="form.email">Email Address</label>
                   <input id="email" name="email" type="email" required />
                 </div>
 
                 <div class="field">
-                  <label for="password">Password</label>
-                  <input id="password" name="password" type="password" minlength="8" placeholder="Minimum 8 characters" required />
+                  <label for="password" data-i18n="form.password">Password</label>
+                  <input id="password" name="password" type="password" minlength="8" placeholder="Minimum 8 characters" data-i18n-placeholder="form.passwordHint" required />
                 </div>
 
                 <div class="field">
-                  <label for="dob">Date of Birth</label>
+                  <label for="dob" data-i18n="form.dob">Date of Birth</label>
                   <input id="dob" name="dob" type="date" required />
                 </div>
 
                 <div class="field">
-                  <label for="postcode">Postcode / ZIP</label>
+                  <label for="postcode" data-i18n="form.postcode">Postcode / ZIP</label>
                   <input id="postcode" name="postcode" type="text" required />
                 </div>
 
                 <label class="checkbox">
                   <input id="offers" type="checkbox" />
-                  <span>I'd like exclusive BK deals by email</span>
+                  <span data-i18n="form.emailDeals">I'd like exclusive BK deals by email</span>
                 </label>
 
                 <div class="form-error" id="form-error"></div>
 
-                <button class="btn btn--primary" type="submit" style="width:100%;">CREATE MY ACCOUNT →</button>
+                <button class="btn btn--primary" type="submit" style="width:100%;" data-i18n="form.createAccount">CREATE MY ACCOUNT →</button>
 
                 <div class="auth-links">
-                  <p class="form-note">By joining you agree to our Terms. Unsubscribe anytime.</p>
-                  <button class="text-btn" type="button" id="open-login">Already a member? Sign in</button>
+                  <p class="form-note" data-i18n="form.terms">By joining you agree to our Terms. Unsubscribe anytime.</p>
+                  <button class="text-btn" type="button" id="open-login" data-i18n="form.signIn">Already a member? Sign in</button>
                 </div>
               </div>
             </form>
 
             <div class="success-box" id="rewards-success">
-              🎉 You're in. Your BK Rewards account is ready and your session is now active.
+              <span data-i18n="form.success">🎉 You're in. Your BK Rewards account is ready and your session is now active.</span>
             </div>
 
             <div class="profile-box" id="rewards-profile"></div>
@@ -302,23 +305,23 @@
     <section id="app" class="section">
       <div class="container app-grid">
         <div class="animate-on-scroll">
-          <div class="eyebrow">The BK App</div>
-          <h2 class="section-title">Order. Earn.<br>Rule.</h2>
-          <p class="section-copy">
+          <div class="eyebrow" data-i18n="app.eyebrow">The BK App</div>
+          <h2 class="section-title" data-i18n="app.title">Order. Earn.<br>Rule.</h2>
+          <p class="section-copy" data-i18n="app.description">
             Skip the queue. Unlock app-only deals. Earn points on every order. Available on iOS and Android — free, always.
           </p>
 
           <div class="feature-list">
-            <div>📱 Order ahead — skip the queue</div>
-            <div>🎁 App-exclusive deals every week</div>
-            <div>👑 BK Rewards built in</div>
-            <div>📍 Find your nearest restaurant instantly</div>
-            <div>🔔 Flash sale push notifications</div>
+            <div data-i18n="app.orderAhead">📱 Order ahead — skip the queue</div>
+            <div data-i18n="app.exclusive">🎁 App-exclusive deals every week</div>
+            <div data-i18n="app.rewards">👑 BK Rewards built in</div>
+            <div data-i18n="app.nearest">📍 Find your nearest restaurant instantly</div>
+            <div data-i18n="app.notifications">🔔 Flash sale push notifications</div>
           </div>
 
           <div class="store-badges">
-            <a href="#" class="btn btn--dark">🍎 Download on App Store</a>
-            <a href="#" class="btn btn--dark">▶ Get it on Google Play</a>
+            <a href="#" class="btn btn--dark" data-i18n="app.store">🍎 Download on App Store</a>
+            <a href="#" class="btn btn--dark" data-i18n="app.google">▶ Get it on Google Play</a>
           </div>
         </div>
 
@@ -327,24 +330,24 @@
             <div class="phone-screen">
               <div class="app-header">
                 <div>🔥 BK</div>
-                <div>Good Morning</div>
+                <div data-i18n="app.goodMorning">Good Morning</div>
               </div>
 
               <div class="app-content">
                 <div class="promo-card">
-                  <div style="font-weight:800;text-transform:uppercase;letter-spacing:.08em;font-size:.8rem;">Today's deal</div>
+                  <div style="font-weight:800;text-transform:uppercase;letter-spacing:.08em;font-size:.8rem;" data-i18n="app.todayDeal">Today's deal</div>
                   <strong>Whopper<br>Combo $7.99</strong>
-                  <div style="margin-top:12px;font-weight:700;">Tap to redeem in-app</div>
+                  <div style="margin-top:12px;font-weight:700;" data-i18n="app.redeem">Tap to redeem in-app</div>
                 </div>
 
                 <div class="mini-card">
-                  <div style="font-weight:800;margin-bottom:6px;">Rewards</div>
-                  <div style="color:#555;">You have <strong>420 points</strong> — almost a free Whopper.</div>
+                  <div style="font-weight:800;margin-bottom:6px;" data-i18n="app.rewardsTitle">Rewards</div>
+                  <div style="color:#555;" data-i18n="app.points">You have <strong>420 points</strong> — almost a free Whopper.</div>
                 </div>
 
                 <div class="mini-card">
-                  <div style="font-weight:800;margin-bottom:6px;">Nearest restaurant</div>
-                  <div style="color:#555;">BK Midtown · 0.8 mi away · Pickup in 14 min</div>
+                  <div style="font-weight:800;margin-bottom:6px;" data-i18n="app.nearestTitle">Nearest restaurant</div>
+                  <div style="color:#555;" data-i18n="app.pickup">BK Midtown · 0.8 mi away · Pickup in 14 min</div>
                 </div>
               </div>
 
@@ -352,7 +355,7 @@
                 <div>🏠<br>Home</div>
                 <div>🍔<br>Menu</div>
                 <div>🎁<br>Deals</div>
-                <div>👤<br>Account</div>
+                <div>👤<br><span data-i18n="app.account">Account</span></div>
               </div>
             </div>
           </div>
@@ -366,37 +369,37 @@
       <div class="footer-grid">
         <div class="footer-column">
           <h4>BURGER KING</h4>
-          <p>Est. 1953. Flame-grilled, not fried. Ever.</p>
+          <p data-i18n="footer.est">Est. 1953. Flame-grilled, not fried. Ever.</p>
         </div>
 
         <div class="footer-column">
-          <h4>MENU</h4>
+          <h4 data-i18n="footer.menu">MENU</h4>
           <div class="footer-links">
-            <a href="#menu">Burgers</a>
-            <a href="#menu">Chicken</a>
-            <a href="#menu">Sides</a>
-            <a href="#menu">Drinks</a>
-            <a href="#deals">Deals</a>
+            <a href="#menu" data-i18n="category.burgers">Burgers</a>
+            <a href="#menu" data-i18n="category.chicken">Chicken</a>
+            <a href="#menu" data-i18n="category.sides">Sides</a>
+            <a href="#menu" data-i18n="category.drinks">Drinks</a>
+            <a href="#deals" data-i18n="nav.deals">Deals</a>
           </div>
         </div>
 
         <div class="footer-column">
-          <h4>COMPANY</h4>
+          <h4 data-i18n="footer.company">COMPANY</h4>
           <div class="footer-links">
-            <a href="#">About Us</a>
-            <a href="#">Careers</a>
-            <a href="#">Press</a>
-            <a href="#">Franchising</a>
-            <a href="#">Sustainability</a>
+            <a href="#" data-i18n="footer.about">About Us</a>
+            <a href="#" data-i18n="footer.careers">Careers</a>
+            <a href="#" data-i18n="footer.press">Press</a>
+            <a href="#" data-i18n="footer.franchise">Franchising</a>
+            <a href="#" data-i18n="footer.sustainability">Sustainability</a>
           </div>
         </div>
 
         <div class="footer-column">
-          <h4>FOLLOW US</h4>
+          <h4 data-i18n="footer.follow">FOLLOW US</h4>
           <div class="footer-links">
             <a href="#">Instagram</a>
             <a href="#">TikTok</a>
-            <a href="#">Twitter/X</a>
+            <a href="#" data-i18n="footer.twitterX">Twitter/X</a>
             <a href="#">Facebook</a>
             <a href="#">YouTube</a>
           </div>
@@ -404,12 +407,12 @@
       </div>
 
       <div class="footer-bottom">
-        <div>🔥 © 2024 Burger King Corporation. All rights reserved.</div>
+        <div data-i18n="footer.copyright">🔥 © 2024 Burger King Corporation. All rights reserved.</div>
         <div class="footer-legal">
-          <a href="#">Privacy Policy</a>
-          <a href="#">Terms of Service</a>
-          <a href="#">Cookie Settings</a>
-          <a href="#">Accessibility</a>
+          <a href="#" data-i18n="footer.privacy">Privacy Policy</a>
+          <a href="#" data-i18n="footer.terms">Terms of Service</a>
+          <a href="#" data-i18n="footer.cookies">Cookie Settings</a>
+          <a href="#" data-i18n="footer.accessibility">Accessibility</a>
         </div>
       </div>
     </div>
@@ -417,12 +420,12 @@
 
   <div class="modal" id="exit-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="exit-title">
     <div class="modal-card">
-      <h3 id="exit-title">Wait — before you go! 🔥</h3>
-      <p>Use a real backend promo before the flame cools down. APP20 gives 20% off your first app-style order.</p>
+      <h3 id="exit-title" data-i18n="modal.title">Wait — before you go! 🔥</h3>
+      <p data-i18n="modal.description">Use a real backend promo before the flame cools down. APP20 gives 20% off your first app-style order.</p>
       <div class="promo-code">Code: APP20</div>
       <div class="modal-actions">
-        <a href="#menu" class="btn btn--primary" id="grab-deal">Grab the Deal</a>
-        <button class="btn btn--light-outline" id="close-modal">No thanks</button>
+        <a href="#menu" class="btn btn--primary" id="grab-deal" data-i18n="modal.grab">Grab the Deal</a>
+        <button class="btn btn--light-outline" id="close-modal" data-i18n="modal.noThanks">No thanks</button>
       </div>
     </div>
   </div>
@@ -433,23 +436,23 @@
 
   <div class="modal" id="auth-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="auth-title">
     <div class="modal-card">
-      <h3 id="auth-title">Welcome back 🔥</h3>
-      <p>Sign in to sync your cart, earn points, and redeem rewards.</p>
+      <h3 id="auth-title" data-i18n="auth.title">Welcome back 🔥</h3>
+      <p data-i18n="auth.description">Sign in to sync your cart, earn points, and redeem rewards.</p>
       <form id="login-form" class="form-grid" novalidate>
         <div class="field">
-          <label for="login-email">Email Address</label>
+          <label for="login-email" data-i18n="form.email">Email Address</label>
           <input id="login-email" type="email" required />
         </div>
         <div class="field">
-          <label for="login-password">Password</label>
+          <label for="login-password" data-i18n="form.password">Password</label>
           <input id="login-password" type="password" required />
         </div>
         <div class="form-error" id="login-error"></div>
-        <button class="btn btn--primary" type="submit" style="width:100%;">SIGN IN →</button>
+        <button class="btn btn--primary" type="submit" style="width:100%;" data-i18n="nav.signIn">SIGN IN →</button>
         <p class="form-note">Demo seeded account: jake@example.com / Customer123!</p>
       </form>
       <div class="modal-actions" style="margin-top:18px;">
-        <button class="btn btn--light-outline" id="close-auth-modal" type="button">Close</button>
+        <button class="btn btn--light-outline" id="close-auth-modal" type="button" data-i18n="modal.close">Close</button>
       </div>
     </div>
   </div>

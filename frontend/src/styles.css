@@ -195,6 +195,18 @@
       line-height:1;
       padding:6px;
     }
+    .language-toggle{
+      min-height:40px;
+      padding:8px 12px;
+      border:1px solid rgba(255,255,255,.3);
+      border-radius:999px;
+      background:transparent;
+      color:var(--cream);
+      font-size:.82rem;
+      font-weight:700;
+      white-space:nowrap;
+    }
+    .language-toggle .active{color:var(--amber)}
 
     .mobile-nav{
       position:fixed;

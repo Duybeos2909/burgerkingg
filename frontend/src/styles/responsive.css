@@ -1,0 +1,128 @@
+@media (min-width: 768px) and (max-width: 1023.98px) {
+  .nav-links {
+    display: none;
+  }
+
+  .nav-inner .hamburger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .nav-inner a.nav-cta {
+    display: none;
+  }
+
+  .nav-inner button.nav-cta {
+    display: inline-flex;
+  }
+
+  .hero-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, .9fr);
+    gap: 22px;
+  }
+
+  .hero-copy,
+  .hero-art,
+  .hero-visual {
+    min-width: 0;
+  }
+
+  .menu-grid,
+  .stores-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 380px) {
+  .container {
+    width: calc(100% - 20px);
+  }
+
+  .brand {
+    gap: 6px;
+    font-size: .92rem;
+  }
+
+  .nav-inner > div {
+    gap: 6px !important;
+  }
+
+  .hamburger {
+    padding: 4px;
+  }
+
+  .hero-title {
+    font-size: clamp(2.8rem, 14vw, 3.5rem);
+  }
+
+  .hero-banner {
+    width: 100%;
+    border-radius: 18px;
+  }
+}
+
+@media (max-width: 767.98px) {
+  #home > .hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    width: calc(100% - 32px);
+    min-width: 0;
+    flex: 0 1 auto;
+  }
+
+  #home .hero-copy,
+  #home .hero-art,
+  #home .hero-visual,
+  #home .ticker {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  #home .hero-art {
+    min-height: 0;
+  }
+
+  #stores .section-head,
+  #stores .stores-grid,
+  #stores .stores-grid > * {
+    min-width: 0;
+    width: 100%;
+  }
+
+  #stores .section-title {
+    font-size: clamp(2rem, 8vw, 3rem);
+    overflow-wrap: anywhere;
+  }
+
+  #stores .search-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  #stores .map-box {
+    min-height: clamp(220px, 70vw, 300px);
+    padding: 24px 18px;
+  }
+
+  #stores .map-box > div {
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  #stores .store-card {
+    min-width: 0;
+  }
+
+  #stores .store-action-row .selected-store-pill {
+    max-width: 100%;
+    white-space: normal;
+  }
+
+  .api-banner {
+    position: static;
+    margin: 16px 12px;
+    max-width: none;
+  }
+}

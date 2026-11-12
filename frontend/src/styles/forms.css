@@ -1,0 +1,40 @@
+.form-card,
+.modal-card,
+#login-form,
+#rewards-form,
+.form-grid,
+.field {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.field input,
+.cart-mini-input {
+  width: 100%;
+  min-width: 0;
+}
+
+@media (max-width: 767.98px) {
+  .form-card {
+    padding: clamp(18px, 5vw, 26px);
+  }
+
+  .form-card h3 {
+    font-size: clamp(1.15rem, 5vw, 1.35rem);
+  }
+
+  .modal {
+    padding: 12px;
+  }
+
+  .modal-card {
+    max-height: calc(100vh - 24px);
+    max-height: calc(100dvh - 24px);
+    overflow-y: auto;
+    padding: 22px 18px;
+  }
+
+  .modal-card h3 {
+    font-size: clamp(1.65rem, 8vw, 2rem);
+  }
+}

@@ -1,47 +1,15 @@
 import './styles.css';
-
-const API_BASE = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api').replace(/\/$/, '');
-    const API_LABEL = API_BASE;
-    const FALLBACK_MENU = [
-      { id: 1, name: 'Whopper', category: 'Burgers', price: 5.49, rating: 4.8, description: 'Flame-grilled beef, fresh tomatoes, crisp lettuce, creamy mayo', is_featured: true },
-      { id: 2, name: 'Double Whopper', category: 'Burgers', price: 7.29, rating: 4.9, description: 'Two flame-grilled patties, all the fixings, unstoppable', is_featured: true },
-      { id: 4, name: 'Crispy Chicken Sandwich', category: 'Chicken', price: 5.99, rating: 4.7, description: 'Crispy hand-breaded fillet, pickles, mayo on a brioche bun', is_featured: true },
-      { id: 5, name: 'Spicy Crispy Chicken', category: 'Chicken', price: 6.49, rating: 4.6, description: 'Extra heat, extra crunch — for the brave', is_featured: false },
-      { id: 7, name: 'BK Veggie Burger', category: 'Vegetarian', price: 5.29, rating: 4.4, description: 'Garden-fresh plant patty with all the classics', is_featured: false },
-      { id: 8, name: 'Onion Rings', category: 'Sides', price: 2.99, rating: 4.7, description: 'Golden, crispy, stacked high', is_featured: false },
-      { id: 9, name: 'Large Fries', category: 'Sides', price: 2.49, rating: 4.8, description: 'Salted golden perfection', is_featured: false },
-      { id: 10, name: 'Chocolate Shake', category: 'Drinks', price: 4.29, rating: 4.6, description: 'Thick, creamy, and non-negotiable', is_featured: false },
-      { id: 11, name: 'Frozen Coke', category: 'Drinks', price: 1.99, rating: 4.5, description: 'Icy, refreshing, iconic', is_featured: false },
-      { id: 12, name: 'Whopper Combo', category: 'Combos', price: 9.49, rating: 4.9, description: 'Whopper + Fries + Drink — the classic trio', is_featured: true },
-      { id: 14, name: 'Chocolate Brownie', category: 'Desserts', price: 2.49, rating: 4.7, description: 'Warm, fudgy, dangerously good', is_featured: false }
-    ];
-
-    const FALLBACK_DEALS = [
-      { id: 1, title: 'Double Down Deal', offer: '2 Whoppers + 2 Large Fries for $12', tag: '🔥 Flash Sale', promo_code: 'DOUBLE12', seconds_remaining: 6 * 3600, is_app_only: false },
-      { id: 2, title: 'Loyalty Bonus', offer: 'Earn 3x points on all orders this weekend', tag: '👑 Members', promo_code: null, seconds_remaining: 48 * 3600, is_app_only: false },
-      { id: 3, title: 'Free Fries Friday', offer: 'Free Large Fries with any burger purchase', tag: '🍟 Weekly', promo_code: 'FREEFRIES', seconds_remaining: 24 * 3600, is_app_only: false },
-      { id: 4, title: 'App Exclusive', offer: '20% off your first app order', tag: '📱 App Only', promo_code: 'APP20', seconds_remaining: 72 * 3600, is_app_only: true },
-      { id: 5, title: 'Combo King', offer: 'Any combo for $7.99 all day', tag: '🍔 Value', promo_code: 'COMBO799', seconds_remaining: 12 * 3600, is_app_only: false }
-    ];
-
-    const FALLBACK_STORES = [
-      { id: 1, name: 'BK Times Square', address: '1560 Broadway', city: 'New York', postcode: 'NY 10036', phone: '(212) 555-1001', hours: 'Open · Closes 2AM', is_open_now: true, features: ['Drive-Thru', 'Delivery'], distance_miles: 0.3 },
-      { id: 2, name: 'BK Midtown', address: '350 5th Ave', city: 'New York', postcode: 'NY 10118', phone: '(212) 555-1002', hours: 'Open · Closes 12AM', is_open_now: true, features: ['Dine-In', 'Delivery'], distance_miles: 0.8 },
-      { id: 3, name: 'BK Brooklyn', address: '490 Flatbush Ave', city: 'Brooklyn', postcode: 'NY 11225', phone: '(718) 555-1003', hours: 'Open 24hrs', is_open_now: true, features: ['Drive-Thru', '24H'], distance_miles: 2.1 },
-      { id: 4, name: 'BK Queens', address: '82-01 Queens Blvd', city: 'Queens', postcode: 'NY 11373', phone: '(718) 555-1004', hours: 'Open · Closes 11PM', is_open_now: true, features: ['Drive-Thru', 'Dine-In'], distance_miles: 3.4 },
-      { id: 5, name: 'BK Jersey City', address: '30 Journal Sq', city: 'Jersey City', postcode: 'NJ 07306', phone: '(201) 555-1005', hours: 'Open · Closes 1AM', is_open_now: true, features: ['Delivery', 'Dine-In'], distance_miles: 4.2 }
-    ];
-
-    const STORAGE_KEYS = {
-      token: 'bk_token',
-      user: 'bk_user',
-      guestCart: 'bk_guest_cart',
-      selectedStoreId: 'bk_selected_store_id',
-      promoCode: 'bk_promo_code'
-    };
+import './styles/forms.css';
+import './styles/responsive.css';
+import '../../i18n.js';
+import { createCatalogComponents } from './components/catalog.js';
+import { initializeNavigation } from './components/navigation.js';
+import { FALLBACK_DEALS, FALLBACK_MENU, FALLBACK_STORES, STORAGE_KEYS } from './data/fallbackData.js';
+import { createAuthForms } from './forms/authForms.js';
+import { API_LABEL, createApiClient } from './services/api.js';
+import { escapeHtml, formatCurrency, formatTime, parseJSON } from './utils/format.js';
 
     let menuItems = [];
-    let filteredMenuItems = [];
     let deals = [];
     let stores = [];
     let cart = [];
@@ -81,102 +49,8 @@ const API_BASE = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/ap
     const authModal = document.getElementById('auth-modal');
     const checkoutBtn = document.getElementById('checkout-btn');
 
-    function parseJSON(value, fallback) {
-      try {
-        return value ? JSON.parse(value) : fallback;
-      } catch {
-        return fallback;
-      }
-    }
-
-    function escapeHtml(text = '') {
-      return String(text)
-        .replace(/&/g, '&amp;')
-        .replace(/'/g, '&#39;')
-        .replace(/"/g, '&quot;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;');
-    }
-
-    function titleCase(text = '') {
-      return String(text).charAt(0).toUpperCase() + String(text).slice(1);
-    }
-
-    function normalizeCategoryKey(category = '') {
-      return String(category).trim().toLowerCase().replace(/[^a-z0-9]+/g, '');
-    }
-
-    function formatCurrency(value) {
-      return `$${Number(value || 0).toFixed(2)}`;
-    }
-
-    function formatTime(seconds) {
-      const remaining = Math.max(0, Number(seconds || 0));
-      const h = Math.floor(remaining / 3600);
-      const m = Math.floor((remaining % 3600) / 60);
-      const s = Math.floor(remaining % 60);
-      return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-    }
-
-    function getVisualForItem(item) {
-      const category = normalizeCategoryKey(item.category);
-      const lowerName = (item.name || '').toLowerCase();
-
-      if (lowerName.includes('veggie') || category === 'vegetarian') {
-        return { emoji: '🥬', color: 'linear-gradient(135deg,#4F8A10,#9ED15D)' };
-      }
-      if (category === 'burgers') {
-        return item.is_featured
-          ? { emoji: '🍔', color: 'linear-gradient(135deg,#C8102E,#F25C54)' }
-          : { emoji: '🍔', color: 'linear-gradient(135deg,#7A0E1F,#C8102E)' };
-      }
-      if (category === 'chicken') {
-        return lowerName.includes('spicy')
-          ? { emoji: '🌶️', color: 'linear-gradient(135deg,#D64D00,#F25C54)' }
-          : { emoji: '🍗', color: 'linear-gradient(135deg,#F2A623,#F5C45C)' };
-      }
-      if (category === 'sides') {
-        return lowerName.includes('onion')
-          ? { emoji: '🧅', color: 'linear-gradient(135deg,#AD7C3A,#E0B36A)' }
-          : { emoji: '🍟', color: 'linear-gradient(135deg,#F2A623,#FFD86B)' };
-      }
-      if (category === 'drinks') {
-        return lowerName.includes('shake')
-          ? { emoji: '🥤', color: 'linear-gradient(135deg,#5B2C23,#9A5E48)' }
-          : { emoji: '🥶', color: 'linear-gradient(135deg,#2563EB,#60A5FA)' };
-      }
-      if (category === 'desserts') {
-        return { emoji: '🍫', color: 'linear-gradient(135deg,#3E2723,#795548)' };
-      }
-      if (category === 'combos') {
-        return { emoji: '👑', color: 'linear-gradient(135deg,#C8102E,#F2A623)' };
-      }
-
-      return { emoji: '🍔', color: 'linear-gradient(135deg,#C8102E,#F2A623)' };
-    }
-
-    async function apiFetch(path, options = {}) {
-      const headers = { ...(options.headers || {}) };
-      if (!headers['Content-Type'] && options.body && !(options.body instanceof FormData)) {
-        headers['Content-Type'] = 'application/json';
-      }
-      if (authToken) {
-        headers.Authorization = `Bearer ${authToken}`;
-      }
-
-      const response = await fetch(`${API_BASE}${path}`, { ...options, headers });
-      const data = await response.json().catch(() => ({}));
-
-      if (!response.ok) {
-        const message = data.error || data.message || 'Request failed';
-        const error = new Error(message);
-        error.status = response.status;
-        error.payload = data;
-        throw error;
-      }
-
-      return data;
-    }
+    const apiFetch = createApiClient(() => authToken);
+    const i18n = window.BK_I18N;
 
     function setApiBanner(message, healthy = false) {
       apiHealthy = healthy;
@@ -238,7 +112,9 @@ const API_BASE = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/ap
       if (!topDeal) return;
       const banner = document.querySelector('.hero-banner span:first-child');
       if (banner) {
-        banner.textContent = `🔥 LIMITED TIME: ${topDeal.offer}${topDeal.promo_code ? ` — Code ${topDeal.promo_code}` : ''}`;
+        const localizedDeal = i18n.localizeDeal(topDeal);
+        const prefix = i18n.getLanguage() === 'vi' ? '🔥 ƯU ĐÃI CÓ HẠN: ' : '🔥 LIMITED TIME: ';
+        banner.textContent = `${prefix}${localizedDeal.offer}${topDeal.promo_code ? ` — Code ${topDeal.promo_code}` : ''}`;
       }
       startSingleCountdown(heroTimer, Number(topDeal.seconds_remaining || 0));
     }
@@ -262,114 +138,6 @@ const API_BASE = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/ap
         element.textContent = formatTime(remaining);
       }, 1000);
       countdownIntervals.push(interval);
-    }
-
-    function renderMenu() {
-      const filtered = activeMenuCategory === 'all'
-        ? menuItems
-        : menuItems.filter((item) => normalizeCategoryKey(item.category) === activeMenuCategory);
-
-      filteredMenuItems = filtered;
-
-      menuGrid.innerHTML = filtered.map((item) => {
-        const visual = getVisualForItem(item);
-        return `
-          <article class="menu-card" data-category="${escapeHtml(normalizeCategoryKey(item.category))}">
-            <div class="menu-media" style="background:${visual.color}" aria-hidden="true">${visual.emoji}</div>
-            <div class="menu-body">
-              <span class="badge">${escapeHtml(titleCase(String(item.category).trim()))}</span>
-              <h3 class="menu-name">${escapeHtml(item.name)}</h3>
-              <p class="menu-desc">${escapeHtml(item.description || 'Flame-grilled and made fresh.')}</p>
-              <div class="menu-meta">
-                <span class="price">${formatCurrency(item.price)}</span>
-                <span class="rating">⭐ ${Number(item.rating || 4.6).toFixed(1)}</span>
-                <button class="add-btn" data-add-menu-id="${item.id}">Add to bag +</button>
-              </div>
-            </div>
-          </article>
-        `;
-      }).join('');
-
-      observeAnimated();
-    }
-
-    function renderDeals() {
-      clearCountdowns();
-      dealsGrid.innerHTML = deals.map((deal) => `
-        <article class="deal-card animate-on-scroll">
-          <div class="deal-tag">${escapeHtml(deal.tag || 'Limited Time')}</div>
-          <div class="eyebrow">${deal.is_app_only ? 'App Exclusive' : 'Limited Time'}</div>
-          <h3>${escapeHtml(deal.title || deal.name || 'Hot Deal')}</h3>
-          <p>${escapeHtml(deal.offer || deal.description || 'Fresh offer available now.')}</p>
-          <div class="deal-meta">
-            <div class="timer" id="deal-timer-${deal.id}">${formatTime(deal.seconds_remaining)}</div>
-            ${deal.promo_code ? `<div class="deal-code">Code: ${escapeHtml(deal.promo_code)}</div>` : ''}
-            <button type="button" class="btn btn--primary deal-apply-btn" data-promo="${escapeHtml(deal.promo_code || '')}">
-              ${deal.promo_code ? 'Apply Code →' : 'See Deal →'}
-            </button>
-          </div>
-        </article>
-      `).join('');
-
-      deals.forEach((deal) => {
-        const el = document.getElementById(`deal-timer-${deal.id}`);
-        startSingleCountdown(el, Number(deal.seconds_remaining || 0));
-      });
-
-      observeAnimated();
-    }
-
-    function renderStores() {
-      const query = storeSearchInput.value.trim().toLowerCase();
-      let filtered = stores.filter((store) => {
-        const searchBlob = `${store.name} ${store.address} ${store.city} ${store.postcode}`.toLowerCase();
-        const matchesSearch = !query || searchBlob.includes(query);
-        const matchesFilter =
-          activeStoreFilter === 'all'
-            ? true
-            : activeStoreFilter === 'Open Now'
-              ? Boolean(store.is_open_now)
-              : Array.isArray(store.features) && store.features.includes(activeStoreFilter);
-        return matchesSearch && matchesFilter;
-      });
-
-      if (!filtered.length) {
-        storeList.innerHTML = `
-          <div class="store-card">
-            <h3>No stores found</h3>
-            <p>Try another city, postcode, or filter.</p>
-          </div>
-        `;
-        return;
-      }
-
-      storeList.innerHTML = filtered.map((store) => {
-        const isSelected = Number(store.id) === Number(selectedStoreId);
-        const address = [store.address, store.city, store.postcode].filter(Boolean).join(', ');
-        return `
-          <article class="store-card">
-            <div class="store-top">
-              <div>
-                <h3>${escapeHtml(store.name)}</h3>
-                <p>${escapeHtml(address)}</p>
-              </div>
-              <div class="distance">${store.distance_miles != null ? `${Number(store.distance_miles).toFixed(1)} mi` : 'Nearby'}</div>
-            </div>
-            <div class="hours">${escapeHtml(store.hours || (store.is_open_now ? 'Open now' : 'Closed'))}</div>
-            <div class="feature-tags">
-              ${(store.features || []).map((feature) => `<span class="feature-tag">${escapeHtml(feature)}</span>`).join('')}
-            </div>
-            <div class="store-action-row">
-              <button type="button" class="btn btn--primary select-store-btn" data-store-id="${store.id}">
-                ${isSelected ? 'Selected for Pickup ✓' : 'Use for Pickup →'}
-              </button>
-              ${isSelected ? `<div class="selected-store-pill">📍 Current pickup store</div>` : ''}
-            </div>
-          </article>
-        `;
-      }).join('');
-
-      observeAnimated();
     }
 
     function restoreGuestCart() {
@@ -397,7 +165,7 @@ const API_BASE = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/ap
         cartItemsElement.innerHTML = `
           <div class="cart-empty" id="cart-empty">
             <p style="font-size:2rem;margin:0 0 10px;">🍔</p>
-            <p style="margin:0;">Your bag is empty. Add something flame-grilled.</p>
+            <p style="margin:0;">${i18n.t('cart.empty')}</p>
           </div>
         `;
         cartTotalElement.textContent = '$0.00';
@@ -408,7 +176,7 @@ const API_BASE = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/ap
         <div class="cart-item">
           <div>
             <strong>${escapeHtml(item.name)}</strong>
-            <small>${formatCurrency(item.price)} each</small>
+            <small>${formatCurrency(item.price)} ${i18n.t('cart.each')}</small>
           </div>
           <div style="text-align:right;">
             <div style="font-weight:800;">${formatCurrency(Number(item.price) * Number(item.qty))}</div>
@@ -502,20 +270,20 @@ const API_BASE = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/ap
     function updateSelectedStoreUI() {
       const store = stores.find((entry) => Number(entry.id) === Number(selectedStoreId));
       if (store) {
-        selectedStoreLabel.textContent = `📍 Pickup store: ${store.name}`;
+        selectedStoreLabel.textContent = `${i18n.t('feature.pickupStore')}: ${store.name}`;
         localStorage.setItem(STORAGE_KEYS.selectedStoreId, String(store.id));
       } else {
-        selectedStoreLabel.textContent = '📍 Pickup store: choose a store below';
+        selectedStoreLabel.textContent = i18n.t('feature.selectedStore');
       }
     }
 
     function updateCartMeta() {
       if (currentUser) {
-        cartModeLabel.textContent = `Signed in as ${currentUser.first_name}`;
+        cartModeLabel.textContent = `${i18n.getLanguage() === 'vi' ? 'Đã đăng nhập với tên' : 'Signed in as'} ${currentUser.first_name}`;
         cartPointsLabel.textContent = `${currentUser.tier || 'Grillmaster'} · ${currentUser.points || 0} pts`;
       } else {
-        cartModeLabel.textContent = 'Guest checkout';
-        cartPointsLabel.textContent = 'Sign in to earn points';
+        cartModeLabel.textContent = i18n.t('feature.guestCheckout');
+        cartPointsLabel.textContent = i18n.t('feature.signInPoints');
       }
     }
 
@@ -533,10 +301,10 @@ const API_BASE = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/ap
       const isLoggedIn = Boolean(authToken && currentUser);
       userBadge.classList.toggle('hidden', !isLoggedIn);
       if (isLoggedIn) {
-        authBtn.textContent = 'LOG OUT';
+        authBtn.textContent = i18n.t('auth.logout');
         userBadgeText.textContent = `${currentUser.first_name} · ${currentUser.tier || 'Member'}`;
       } else {
-        authBtn.textContent = 'SIGN IN';
+        authBtn.textContent = i18n.t('nav.signIn');
       }
       updateCartMeta();
     }
@@ -611,94 +379,6 @@ const API_BASE = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/ap
       restoreGuestCart();
       updateCartUI();
       setApiBanner(apiHealthy ? `Connected to ${API_LABEL}` : 'Backend not reachable. Showing fallback demo data.', apiHealthy);
-    }
-
-    async function handleRegister(event) {
-      event.preventDefault();
-      formError.style.display = 'none';
-
-      const payload = {
-        first_name: document.getElementById('firstName').value.trim(),
-        email: document.getElementById('email').value.trim(),
-        password: document.getElementById('password').value.trim(),
-        dob: document.getElementById('dob').value,
-        postcode: document.getElementById('postcode').value.trim(),
-        marketing_emails: document.getElementById('offers').checked
-      };
-
-      if (!payload.first_name || !payload.email || !payload.password || !payload.dob || !payload.postcode) {
-        return showError(formError, 'Please complete all required fields.');
-      }
-
-      if (payload.password.length < 8) {
-        return showError(formError, 'Password must be at least 8 characters long.');
-      }
-
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(payload.email)) {
-        return showError(formError, 'Please enter a valid email address.');
-      }
-
-      try {
-        const data = await apiFetch('/auth/register', {
-          method: 'POST',
-          body: JSON.stringify(payload)
-        });
-
-        saveAuthSession(data.token, data.user);
-        rewardsForm.reset();
-        await Promise.all([loadCartFromServer(), loadRewardsProfile()]);
-        updateCartUI();
-        setApiBanner(`Connected to ${API_LABEL} · account created`, true);
-      } catch (error) {
-        showError(formError, error.message || 'Could not create account.');
-      }
-    }
-
-    function showError(element, message) {
-      element.style.display = 'block';
-      element.textContent = message;
-    }
-
-    function openAuthModal() {
-      loginError.style.display = 'none';
-      authModal.style.display = 'flex';
-      authModal.setAttribute('aria-hidden', 'false');
-      document.body.style.overflow = 'hidden';
-      setTimeout(() => document.getElementById('login-email').focus(), 20);
-    }
-
-    function closeAuthModal() {
-      authModal.style.display = 'none';
-      authModal.setAttribute('aria-hidden', 'true');
-      if (!cartSidebar.classList.contains('open')) document.body.style.overflow = '';
-    }
-
-    async function handleLogin(event) {
-      event.preventDefault();
-      loginError.style.display = 'none';
-
-      const email = document.getElementById('login-email').value.trim();
-      const password = document.getElementById('login-password').value.trim();
-
-      if (!email || !password) {
-        return showError(loginError, 'Please enter your email and password.');
-      }
-
-      try {
-        const data = await apiFetch('/auth/login', {
-          method: 'POST',
-          body: JSON.stringify({ email, password })
-        });
-
-        saveAuthSession(data.token, data.user);
-        closeAuthModal();
-        await Promise.all([loadCartFromServer(), loadRewardsProfile()]);
-        updateCartUI();
-        setApiBanner(`Connected to ${API_LABEL} · signed in`, true);
-      } catch (error) {
-        showError(loginError, error.message || 'Could not sign in.');
-      }
     }
 
     async function handleCheckout() {
@@ -793,6 +473,43 @@ const API_BASE = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/ap
       document.querySelectorAll('.animate-on-scroll').forEach((el) => observer.observe(el));
     }
 
+    const { renderMenu, renderDeals, renderStores } = createCatalogComponents({
+      menuGrid,
+      dealsGrid,
+      storeList,
+      storeSearchInput,
+      getState: () => ({
+        menuItems,
+        deals,
+        stores,
+        activeMenuCategory,
+        activeStoreFilter,
+        selectedStoreId,
+        clearCountdowns
+      }),
+      observeAnimated,
+      startSingleCountdown
+    });
+
+    const authForms = createAuthForms({
+      apiFetch,
+      saveAuthSession,
+      loginForm,
+      rewardsForm,
+      loginError,
+      formError,
+      authModal,
+      cartSidebar,
+      loginEmail: document.getElementById('login-email'),
+      loginPassword: document.getElementById('login-password'),
+      onAuthenticated: async (status) => {
+        await Promise.all([loadCartFromServer(), loadRewardsProfile()]);
+        updateCartUI();
+        setApiBanner(`Connected to ${API_LABEL} · ${status}`, true);
+      }
+    });
+    authForms.bind();
+
     document.querySelectorAll('.filter-pill').forEach((pill) => {
       pill.addEventListener('click', () => {
         const active = document.querySelector('#menu-filters .filter-pill.active');
@@ -863,36 +580,21 @@ const API_BASE = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/ap
       if (authToken) {
         logout();
       } else {
-        openAuthModal();
+        authForms.openAuthModal();
       }
     });
 
-    document.getElementById('open-login').addEventListener('click', openAuthModal);
-    document.getElementById('close-auth-modal').addEventListener('click', closeAuthModal);
-    authModal.addEventListener('click', (event) => {
-      if (event.target === authModal) closeAuthModal();
-    });
-    loginForm.addEventListener('submit', handleLogin);
-    rewardsForm.addEventListener('submit', handleRegister);
-
     const hamburger = document.getElementById('hamburger');
     const mobileNav = document.getElementById('mobile-nav');
-    hamburger.addEventListener('click', () => {
-      mobileNav.classList.toggle('open');
-      const expanded = mobileNav.classList.contains('open');
-      hamburger.setAttribute('aria-expanded', String(expanded));
-    });
+    initializeNavigation({ hamburger, mobileNav });
 
-    document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-      anchor.addEventListener('click', (event) => {
-        const targetId = anchor.getAttribute('href');
-        const target = document.querySelector(targetId);
-        if (!target) return;
-        event.preventDefault();
-        target.scrollIntoView({ behavior: 'smooth' });
-        mobileNav.classList.remove('open');
-        hamburger.setAttribute('aria-expanded', 'false');
-      });
+    document.addEventListener('bk-language-change', () => {
+      renderMenu();
+      renderDeals();
+      renderStores();
+      updateSelectedStoreUI();
+      updateCartMeta();
+      updateCartUI();
     });
 
     const exitModal = document.getElementById('exit-modal');
@@ -922,11 +624,6 @@ const API_BASE = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/ap
     });
     exitModal.addEventListener('click', (event) => {
       if (event.target === exitModal) closeModal();
-    });
-
-    const nav = document.getElementById('main-nav');
-    window.addEventListener('scroll', () => {
-      nav.classList.toggle('scrolled', window.scrollY > 60);
     });
 
     const flameField = document.getElementById('flame-field');
