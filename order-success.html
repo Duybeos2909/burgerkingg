@@ -180,6 +180,41 @@
       color:var(--muted);
       overflow-wrap:anywhere;
     }
+    .payment-status{
+      display:grid;
+      gap:12px;
+      min-width:0;
+      margin-bottom:24px;
+      padding:16px;
+      border:1px solid rgba(242,166,35,.4);
+      border-radius:16px;
+      background:rgba(242,166,35,.08);
+    }
+    .payment-status[hidden]{display:none}
+    .payment-status > p{
+      margin:0;
+      color:var(--amber);
+      font-weight:800;
+      overflow-wrap:anywhere;
+    }
+    .payment-status-details{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:12px;
+      min-width:0;
+    }
+    .payment-status-details > div{
+      display:grid;
+      gap:4px;
+      min-width:0;
+    }
+    .payment-status-details span{
+      color:var(--muted);
+      font-size:.82rem;
+    }
+    .payment-status-details strong{
+      overflow-wrap:anywhere;
+    }
     .actions{
       display:grid;
       grid-template-columns:repeat(3,minmax(0,1fr));
@@ -216,6 +251,7 @@
     @media(max-width:600px){
       .page-shell{width:min(100% - 24px,860px)}
       .order-meta{grid-template-columns:minmax(0,1fr)}
+      .payment-status-details{grid-template-columns:minmax(0,1fr)}
       .actions{grid-template-columns:minmax(0,1fr)}
       .invoice-table,.invoice-table tbody,.invoice-table tr,.invoice-table td{
         display:block;
@@ -261,6 +297,8 @@
       .receipt-card,.empty-card{padding:0;border:0;border-radius:0;background:#fff;box-shadow:none}
       .tick-circle{border-color:#ccc;background:#fff;color:#111}
       .success-header > p:last-child,.meta-item span,.invoice-table th,.total-row,.order-note{color:#333}
+      .payment-status{border-color:#ccc;background:#fff}
+      .payment-status > p,.payment-status-details span{color:#333}
       .meta-item,.invoice-table tr{background:#fff}
       .invoice-table,.invoice-table th,.invoice-table td,.meta-item,.total-row--grand{border-color:#ccc}
       .total-row--grand strong{color:#111}
@@ -309,6 +347,20 @@
           </div>
         </div>
 
+        <section class="payment-status" id="payment-status" aria-live="polite" hidden>
+          <p data-i18n="orderSuccess.paymentPending">Order awaiting payment confirmation</p>
+          <div class="payment-status-details">
+            <div>
+              <span data-i18n="orderSuccess.paymentMethod">Payment method</span>
+              <strong id="payment-method"></strong>
+            </div>
+            <div>
+              <span data-i18n="orderSuccess.paymentVnd">Transfer amount</span>
+              <strong id="payment-vnd"></strong>
+            </div>
+          </div>
+        </section>
+
         <h2 class="receipt-title" id="receipt-title" data-i18n="orderSuccess.items">Order details</h2>
         <div class="table-wrap">
           <table class="invoice-table">
@@ -349,7 +401,7 @@
     </article>
   </main>
 
-  <script src="./i18n.js?v=3"></script>
+  <script src="./i18n.js?v=5"></script>
   <script>
     const i18n = window.BK_I18N;
     let order = null;
@@ -450,6 +502,18 @@
       document.getElementById('order-item-count').textContent = String(totals.itemCount);
       document.getElementById('order-subtotal').textContent = formatMoney(totals.subtotalCents);
       document.getElementById('order-total').textContent = formatMoney(totals.totalCents);
+      const paymentStatus = document.getElementById('payment-status');
+      const payment = order.payment;
+      const hasPendingQrPayment = order.paymentStatus === 'unverified' &&
+        payment && payment.method === 'bank_transfer_qr' &&
+        Number.isSafeInteger(payment.amountVnd) && payment.amountVnd >= 0;
+      paymentStatus.hidden = !hasPendingQrPayment;
+      if (hasPendingQrPayment) {
+        document.getElementById('payment-method').textContent = i18n.t('orderSuccess.paymentMethodValue');
+        const locale = i18n.getLanguage() === 'vi' ? 'vi-VN' : 'en-US';
+        document.getElementById('payment-vnd').textContent =
+          `${new Intl.NumberFormat(locale).format(payment.amountVnd)} ₫`;
+      }
       emptyState.hidden = true;
       orderContent.hidden = false;
     }

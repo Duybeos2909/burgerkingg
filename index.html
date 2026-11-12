@@ -1139,6 +1139,32 @@
     .checkout-form .field{
       min-width:0;
     }
+    .checkout-modal-card{
+      max-width:900px;
+      max-height:calc(100vh - 40px);
+      max-height:calc(100dvh - 40px);
+      overflow-y:auto;
+    }
+    .checkout-modal-card h3{
+      overflow-wrap:anywhere;
+    }
+    .checkout-step-indicator{
+      margin:0 0 8px;
+      color:#8f5000;
+      font-size:.88rem;
+      font-weight:800;
+    }
+    .checkout-step[hidden]{
+      display:none;
+    }
+    .checkout-step{
+      display:grid;
+      gap:16px;
+      min-width:0;
+    }
+    .checkout-step > p{
+      margin:0;
+    }
     .checkout-form .field input{
       width:100%;
       min-width:0;
@@ -1177,7 +1203,193 @@
     }
     .checkout-form-actions .btn{
       min-width:0;
+      min-height:44px;
       white-space:normal;
+    }
+    .checkout-finish-wrap,
+    .checkout-finish-wrap .btn{
+      width:100%;
+      min-width:0;
+    }
+    .checkout-transfer-summary,
+    .checkout-confirmation-summary{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:12px;
+      min-width:0;
+    }
+    .checkout-transfer-box,
+    .checkout-confirmation-summary > div{
+      display:grid;
+      gap:6px;
+      min-width:0;
+      padding:14px;
+      border:1px solid rgba(0,0,0,.1);
+      border-radius:14px;
+      background:#faf7f2;
+      overflow-wrap:anywhere;
+    }
+    .checkout-transfer-box > span,
+    .checkout-confirmation-summary span{
+      color:#595959;
+      font-size:.84rem;
+    }
+    .checkout-transfer-value{
+      overflow-wrap:anywhere;
+    }
+    .checkout-copy-row{
+      display:flex;
+      align-items:center;
+      flex-wrap:wrap;
+      gap:8px;
+      min-width:0;
+    }
+    .checkout-copy-btn,
+    .checkout-qr-tabs button{
+      min-width:0;
+      min-height:44px;
+      padding:8px 12px;
+      border:1px solid rgba(0,0,0,.18);
+      border-radius:999px;
+      background:#fff;
+      color:var(--text-dark);
+      font-weight:700;
+      overflow-wrap:anywhere;
+    }
+    .checkout-qr-tabs{
+      display:flex;
+      gap:8px;
+      min-width:0;
+    }
+    .checkout-qr-tabs button{
+      flex:1;
+    }
+    .checkout-qr-tabs button[aria-selected="true"]{
+      border-color:var(--red);
+      background:var(--red);
+      color:#fff;
+    }
+    .checkout-qr-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:14px;
+      min-width:0;
+    }
+    .checkout-qr-card{
+      display:grid;
+      align-content:start;
+      gap:10px;
+      min-width:0;
+      padding:12px;
+      border:1px solid rgba(0,0,0,.12);
+      border-radius:16px;
+      background:#faf7f2;
+    }
+    .checkout-qr-card h4{
+      margin:0;
+      font-size:1rem;
+    }
+    .checkout-qr-zoom{
+      display:grid;
+      place-items:center;
+      width:100%;
+      min-width:0;
+      min-height:240px;
+      padding:8px;
+      border:0;
+      border-radius:12px;
+      background:#fff;
+    }
+    .checkout-qr-zoom img{
+      width:100%;
+      height:280px;
+      object-fit:contain;
+    }
+    .checkout-qr-download{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:44px;
+      padding:8px 12px;
+      border:1px solid rgba(0,0,0,.18);
+      border-radius:999px;
+      font-weight:700;
+      text-align:center;
+      overflow-wrap:anywhere;
+    }
+    .checkout-confirm-checkbox{
+      display:grid;
+      grid-template-columns:auto minmax(0,1fr);
+      align-items:start;
+      gap:10px;
+      min-width:0;
+      line-height:1.45;
+    }
+    .checkout-confirm-checkbox input{
+      width:20px;
+      height:20px;
+      margin:2px 0 0;
+    }
+    .checkout-finish-wrap button:disabled{
+      pointer-events:none;
+      opacity:.55;
+      cursor:not-allowed;
+    }
+    .checkout-live-message{
+      min-height:1.4em;
+      margin:0;
+      color:#8f5000;
+      font-size:.9rem;
+      font-weight:700;
+      overflow-wrap:anywhere;
+    }
+    .checkout-live-message:empty{
+      min-height:0;
+    }
+    .qr-lightbox{
+      position:fixed;
+      inset:0;
+      z-index:2400;
+      display:grid;
+      place-items:center;
+      padding:16px;
+      background:rgba(0,0,0,.82);
+    }
+    .qr-lightbox[hidden]{
+      display:none;
+    }
+    .qr-lightbox-card{
+      display:grid;
+      gap:12px;
+      width:min(100%,700px);
+      max-height:calc(100vh - 32px);
+      max-height:calc(100dvh - 32px);
+      min-width:0;
+      padding:16px;
+      border-radius:18px;
+      background:#fff;
+      color:var(--text-dark);
+    }
+    .qr-lightbox-heading{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      min-width:0;
+    }
+    .qr-lightbox-heading h4{
+      margin:0;
+      overflow-wrap:anywhere;
+    }
+    .qr-lightbox-heading button{
+      min-width:44px;
+      min-height:44px;
+    }
+    .qr-lightbox-card img{
+      width:100%;
+      height:min(72vh,720px);
+      height:min(72dvh,720px);
+      object-fit:contain;
     }
     .checkout-field-error,
     .checkout-submit-error{
@@ -1200,6 +1412,26 @@
     @media (max-width:380px){
       .checkout-form-actions{
         grid-template-columns:minmax(0,1fr);
+      }
+    }
+    @media (max-width:767.98px){
+      .checkout-qr-grid{
+        grid-template-columns:minmax(0,1fr);
+      }
+      .checkout-qr-card{
+        display:none;
+      }
+      .checkout-qr-card.is-active{
+        display:grid;
+      }
+      .checkout-transfer-summary,
+      .checkout-confirmation-summary{
+        grid-template-columns:minmax(0,1fr);
+      }
+    }
+    @media (min-width:768px){
+      .checkout-qr-tabs{
+        display:none;
       }
     }
 
@@ -1994,41 +2226,118 @@
 
   <div class="modal" id="checkout-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="checkout-title">
     <div class="modal-card checkout-modal-card">
-      <h3 id="checkout-title" data-i18n="checkout.title">Complete your order</h3>
+      <p class="checkout-step-indicator" id="checkout-step-indicator" aria-live="polite"></p>
+      <h3 id="checkout-title" tabindex="-1" data-i18n="checkout.title">Complete your order</h3>
       <form class="form-grid checkout-form" id="checkout-form" novalidate>
-        <div class="field">
-          <label for="checkout-email" data-i18n="checkout.email">Email address</label>
-          <input id="checkout-email" type="email" autocomplete="email" required aria-describedby="checkout-email-error" data-i18n-placeholder="checkout.emailPlaceholder" placeholder="you@example.com" />
-          <p class="checkout-field-error" id="checkout-email-error" role="alert" hidden></p>
-        </div>
-        <div class="field">
-          <label for="checkout-name">
-            <span data-i18n="checkout.name">Full name</span>
-            <span class="form-note" data-i18n="checkout.nameOptional">(optional)</span>
+        <section class="checkout-step" id="checkout-step-1">
+          <div class="field">
+            <label for="checkout-email" data-i18n="checkout.email">Email address</label>
+            <input id="checkout-email" type="email" autocomplete="email" required aria-describedby="checkout-email-error" data-i18n-placeholder="checkout.emailPlaceholder" placeholder="you@example.com" />
+            <p class="checkout-field-error" id="checkout-email-error" role="alert" hidden></p>
+          </div>
+          <div class="field">
+            <label for="checkout-name">
+              <span data-i18n="checkout.name">Full name</span>
+              <span class="form-note" data-i18n="checkout.nameOptional">(optional)</span>
+            </label>
+            <input id="checkout-name" type="text" autocomplete="name" />
+          </div>
+          <div class="checkout-summary" aria-live="polite">
+            <div class="checkout-summary-row">
+              <span data-i18n="checkout.itemCount">Number of items</span>
+              <strong id="checkout-item-count">0</strong>
+            </div>
+            <div class="checkout-summary-row checkout-summary-total">
+              <span data-i18n="checkout.total">Total to pay</span>
+              <strong id="checkout-total">$0.00</strong>
+            </div>
+          </div>
+          <div class="checkout-form-actions">
+            <button class="btn btn--light-outline" id="checkout-back" type="button" data-i18n="checkout.back">Back to cart</button>
+            <button class="btn btn--primary" id="checkout-confirm" type="submit" data-i18n="checkout.continue">Continue to payment</button>
+          </div>
+        </section>
+        <section class="checkout-step" id="checkout-step-2" hidden>
+          <p data-i18n="checkout.qrInstructions">Scan either QR code to transfer the exact amount, and include the order number as the transfer note.</p>
+          <div class="checkout-transfer-summary">
+            <div class="checkout-transfer-box">
+              <span data-i18n="checkout.amountToTransfer">Amount to transfer</span>
+              <div class="checkout-copy-row">
+                <strong class="checkout-transfer-value" id="checkout-transfer-amount"></strong>
+                <button class="checkout-copy-btn" id="checkout-copy-amount" type="button" data-i18n="checkout.copy">Copy</button>
+              </div>
+            </div>
+            <div class="checkout-transfer-box">
+              <span data-i18n="checkout.transferNote">Transfer note</span>
+              <div class="checkout-copy-row">
+                <strong class="checkout-transfer-value" id="checkout-transfer-note"></strong>
+                <button class="checkout-copy-btn" id="checkout-copy-note" type="button" data-i18n="checkout.copy">Copy</button>
+              </div>
+            </div>
+          </div>
+          <p class="checkout-live-message" id="checkout-copy-status" role="status" aria-live="polite"></p>
+          <div class="checkout-qr-tabs" role="tablist" data-i18n-aria-label="checkout.paymentProviders" aria-label="Payment providers">
+            <button id="checkout-tab-momo" type="button" role="tab" aria-controls="checkout-qr-momo" aria-selected="true" data-provider="momo" data-i18n="checkout.momo">MoMo</button>
+            <button id="checkout-tab-vpbank" type="button" role="tab" aria-controls="checkout-qr-vpbank" aria-selected="false" data-provider="vpbank" data-i18n="checkout.vpbank">VPBank</button>
+          </div>
+          <div class="checkout-qr-grid">
+            <section class="checkout-qr-card is-active" id="checkout-qr-momo" role="tabpanel" aria-labelledby="checkout-tab-momo" data-provider="momo">
+              <h4 data-i18n="checkout.momo">MoMo</h4>
+              <button class="checkout-qr-zoom" type="button" data-i18n-aria-label="checkout.zoomQr">
+                <img src="./assets/qr-momo.png" alt="MoMo payment QR code" data-i18n-alt="checkout.momoAlt" />
+              </button>
+              <a class="checkout-qr-download" href="./assets/qr-momo.png" download="qr-momo.png" data-i18n="checkout.downloadQr">Download QR image</a>
+            </section>
+            <section class="checkout-qr-card" id="checkout-qr-vpbank" role="tabpanel" aria-labelledby="checkout-tab-vpbank" data-provider="vpbank">
+              <h4 data-i18n="checkout.vpbank">VPBank</h4>
+              <button class="checkout-qr-zoom" type="button" data-i18n-aria-label="checkout.zoomQr">
+                <img src="./assets/qr-vpbank.png" alt="VPBank payment QR code" data-i18n-alt="checkout.vpbankAlt" />
+              </button>
+              <a class="checkout-qr-download" href="./assets/qr-vpbank.png" download="qr-vpbank.png" data-i18n="checkout.downloadQr">Download QR image</a>
+            </section>
+          </div>
+          <div class="checkout-form-actions">
+            <button class="btn btn--light-outline" id="checkout-back-step-2" type="button" data-i18n="checkout.previous">Back</button>
+            <button class="btn btn--primary" id="checkout-paid" type="button" data-i18n="checkout.iHavePaid">I have paid</button>
+          </div>
+        </section>
+        <section class="checkout-step" id="checkout-step-3" hidden>
+          <p data-i18n="checkout.reviewInstructions">Please review your order information before completing.</p>
+          <div class="checkout-confirmation-summary">
+            <div><span data-i18n="checkout.email">Email address</span><strong id="checkout-review-email"></strong></div>
+            <div><span data-i18n="checkout.name">Full name</span><strong id="checkout-review-name"></strong></div>
+            <div><span data-i18n="checkout.orderId">Order number</span><strong id="checkout-review-order-id"></strong></div>
+            <div><span data-i18n="checkout.amountToTransfer">Amount to transfer</span><strong id="checkout-review-amount"></strong></div>
+          </div>
+          <label class="checkout-confirm-checkbox" for="checkout-info-confirmed">
+            <input id="checkout-info-confirmed" type="checkbox" />
+            <span data-i18n="checkout.infoConfirmation">I have double-checked my information (email, amount, transfer note) and it is correct.</span>
           </label>
-          <input id="checkout-name" type="text" autocomplete="name" />
-        </div>
-        <div class="checkout-summary" aria-live="polite">
-          <div class="checkout-summary-row">
-            <span data-i18n="checkout.itemCount">Number of items</span>
-            <strong id="checkout-item-count">0</strong>
+          <p class="checkout-live-message" id="checkout-confirmation-message" role="status" aria-live="polite"></p>
+          <div class="checkout-form-actions">
+            <button class="btn btn--light-outline" id="checkout-back-step-3" type="button" data-i18n="checkout.previous">Back</button>
+            <div class="checkout-finish-wrap" id="checkout-finish-wrap">
+              <button class="btn btn--primary" id="checkout-finish" type="submit" disabled aria-disabled="true" data-i18n="checkout.finish">Finish</button>
+            </div>
           </div>
-          <div class="checkout-summary-row checkout-summary-total">
-            <span data-i18n="checkout.total">Total to pay</span>
-            <strong id="checkout-total">$0.00</strong>
-          </div>
-        </div>
+        </section>
         <p class="checkout-submit-error" id="checkout-submit-error" role="alert" hidden></p>
-        <div class="checkout-form-actions">
-          <button class="btn btn--light-outline" id="checkout-back" type="button" data-i18n="checkout.back">Back to cart</button>
-          <button class="btn btn--primary" id="checkout-confirm" type="submit" data-i18n="checkout.confirm">Confirm checkout</button>
-        </div>
       </form>
+    </div>
+    <div class="qr-lightbox" id="qr-lightbox" role="dialog" aria-modal="true" aria-labelledby="qr-lightbox-title" hidden>
+      <div class="qr-lightbox-card">
+        <div class="qr-lightbox-heading">
+          <h4 id="qr-lightbox-title"></h4>
+          <button id="qr-lightbox-close" type="button" data-i18n-aria-label="checkout.closeQr">Close</button>
+        </div>
+        <img id="qr-lightbox-image" alt="" />
+      </div>
     </div>
   </div>
 
-  <script src="./i18n.js?v=4"></script>
+  <script src="./i18n.js?v=5"></script>
   <script>
+    const PAYMENT_CONFIG = { usdToVnd: 25000, roundTo: 1000 };
     const i18n = window.BK_I18N;
     const t = i18n.t;
     const API_BASE = 'https://burgerking-backend.onrender.com/api';
@@ -2112,6 +2421,13 @@
     const checkoutBtn = document.getElementById('checkout-btn');
     const checkoutEmptyMessage = document.getElementById('checkout-empty-message');
     const checkoutModal = document.getElementById('checkout-modal');
+    const checkoutTitle = document.getElementById('checkout-title');
+    const checkoutStepIndicator = document.getElementById('checkout-step-indicator');
+    const checkoutSteps = [
+      document.getElementById('checkout-step-1'),
+      document.getElementById('checkout-step-2'),
+      document.getElementById('checkout-step-3')
+    ];
     const checkoutForm = document.getElementById('checkout-form');
     const checkoutEmailInput = document.getElementById('checkout-email');
     const checkoutNameInput = document.getElementById('checkout-name');
@@ -2121,6 +2437,25 @@
     const checkoutTotal = document.getElementById('checkout-total');
     const checkoutBackBtn = document.getElementById('checkout-back');
     const checkoutConfirmBtn = document.getElementById('checkout-confirm');
+    const checkoutBackStep2Btn = document.getElementById('checkout-back-step-2');
+    const checkoutBackStep3Btn = document.getElementById('checkout-back-step-3');
+    const checkoutPaidBtn = document.getElementById('checkout-paid');
+    const checkoutFinishBtn = document.getElementById('checkout-finish');
+    const checkoutFinishWrap = document.getElementById('checkout-finish-wrap');
+    const checkoutConfirmationInput = document.getElementById('checkout-info-confirmed');
+    const checkoutConfirmationMessage = document.getElementById('checkout-confirmation-message');
+    const checkoutCopyStatus = document.getElementById('checkout-copy-status');
+    const qrLightbox = document.getElementById('qr-lightbox');
+    const qrLightboxTitle = document.getElementById('qr-lightbox-title');
+    const qrLightboxImage = document.getElementById('qr-lightbox-image');
+    const qrLightboxClose = document.getElementById('qr-lightbox-close');
+    let activeCheckoutStep = 1;
+    let checkoutOrderId = '';
+    let checkoutPaymentAmountVnd = 0;
+    let activeQrProvider = 'momo';
+    let qrLightboxReturnFocus = null;
+    let checkoutCopyStatusKey = '';
+    let checkoutConfirmationMessageKey = '';
     let isSubmittingOrder = false;
     let checkoutEmailErrorKey = '';
     let checkoutSubmitErrorKey = '';
@@ -2152,6 +2487,12 @@
 
     function formatCurrency(value) {
       return `$${Number(value || 0).toFixed(2)}`;
+    }
+
+    function formatMoney(cents) {
+      if (!Number.isSafeInteger(cents)) throw new TypeError('Money amounts must be integer cents.');
+      const locale = i18n.getLanguage() === 'vi' ? 'vi-VN' : 'en-US';
+      return new Intl.NumberFormat(locale, { style: 'currency', currency: 'USD' }).format(cents / 100);
     }
 
     function formatTime(seconds) {
@@ -2792,7 +3133,147 @@
         throw new Error(t('checkout.invalidCart'));
       }
       checkoutItemCount.textContent = String(itemCount);
-      checkoutTotal.textContent = formatCurrency(subtotalCents / 100);
+      checkoutTotal.textContent = formatMoney(subtotalCents);
+      renderCheckoutPaymentDetails(subtotalCents);
+    }
+
+    function renderCheckoutPaymentDetails(subtotalCents) {
+      const totalUsd = subtotalCents / 100;
+      checkoutPaymentAmountVnd = Math.round(
+        totalUsd * PAYMENT_CONFIG.usdToVnd / PAYMENT_CONFIG.roundTo
+      ) * PAYMENT_CONFIG.roundTo;
+      if (!Number.isSafeInteger(checkoutPaymentAmountVnd)) {
+        throw new Error(t('checkout.invalidCart'));
+      }
+      const locale = i18n.getLanguage() === 'vi' ? 'vi-VN' : 'en-US';
+      const amountLabel = `${formatMoney(subtotalCents)} ≈ ${new Intl.NumberFormat(locale).format(checkoutPaymentAmountVnd)} ₫`;
+      document.getElementById('checkout-transfer-amount').textContent = amountLabel;
+      document.getElementById('checkout-transfer-note').textContent = checkoutOrderId;
+      document.getElementById('checkout-review-email').textContent = checkoutEmailInput.value.trim();
+      document.getElementById('checkout-review-name').textContent = checkoutNameInput.value.trim() || t('checkout.notProvided');
+      document.getElementById('checkout-review-order-id').textContent = checkoutOrderId;
+      document.getElementById('checkout-review-amount').textContent = amountLabel;
+    }
+
+    function renderCheckoutStepLabels() {
+      const titleKeys = ['checkout.title', 'checkout.paymentTitle', 'checkout.reviewTitle'];
+      checkoutTitle.textContent = t(titleKeys[activeCheckoutStep - 1]);
+      checkoutStepIndicator.textContent = t(`checkout.step${activeCheckoutStep}Indicator`);
+    }
+
+    function setCheckoutStep(step) {
+      activeCheckoutStep = step;
+      checkoutSteps.forEach((element, index) => {
+        element.hidden = index + 1 !== step;
+      });
+      renderCheckoutStepLabels();
+      if (step === 2) {
+        if (!checkoutOrderId) checkoutOrderId = generateOrderId();
+        try {
+          renderCheckoutSummary();
+        } catch (error) {
+          console.error('Could not render payment details.', error);
+          setCheckoutSubmitError('checkout.invalidCart');
+        }
+      }
+      if (step === 3) {
+        checkoutConfirmationInput.checked = false;
+        checkoutConfirmationMessageKey = '';
+        checkoutConfirmationMessage.textContent = '';
+        updateCheckoutFinishButton();
+        try {
+          renderCheckoutSummary();
+        } catch (error) {
+          console.error('Could not render checkout confirmation details.', error);
+          setCheckoutSubmitError('checkout.invalidCart');
+        }
+      }
+      requestAnimationFrame(() => checkoutTitle.focus());
+    }
+
+    function generateOrderId() {
+      const createdAt = new Date().toISOString();
+      const dateCode = createdAt.slice(0, 10).replace(/-/g, '');
+      const suffix = Math.random().toString(16).slice(2, 6).padEnd(4, '0').toUpperCase();
+      return `BK-${dateCode}-${suffix}`;
+    }
+
+    function updateCheckoutFinishButton() {
+      const disabled = !checkoutConfirmationInput.checked || isSubmittingOrder;
+      checkoutFinishBtn.disabled = disabled;
+      checkoutFinishBtn.setAttribute('aria-disabled', String(disabled));
+    }
+
+    function setCheckoutConfirmationMessage(key) {
+      checkoutConfirmationMessageKey = key;
+      checkoutConfirmationMessage.textContent = key ? t(key) : '';
+    }
+
+    function setActiveQrProvider(provider) {
+      activeQrProvider = provider;
+      document.querySelectorAll('.checkout-qr-tabs [role="tab"]').forEach((tab) => {
+        const selected = tab.dataset.provider === provider;
+        tab.setAttribute('aria-selected', String(selected));
+        tab.tabIndex = selected ? 0 : -1;
+      });
+      document.querySelectorAll('.checkout-qr-card').forEach((card) => {
+        card.classList.toggle('is-active', card.dataset.provider === provider);
+      });
+    }
+
+    function openQrLightbox(button) {
+      const image = button.querySelector('img');
+      if (!image) return;
+      qrLightboxReturnFocus = button;
+      qrLightboxImage.src = image.src;
+      qrLightboxImage.alt = image.alt;
+      qrLightboxTitle.textContent = t(image.dataset.i18nAlt);
+      qrLightbox.hidden = false;
+      qrLightboxClose.focus();
+    }
+
+    function closeQrLightbox() {
+      if (qrLightbox.hidden) return;
+      qrLightbox.hidden = true;
+      qrLightboxImage.removeAttribute('src');
+      if (qrLightboxReturnFocus && qrLightboxReturnFocus.isConnected) qrLightboxReturnFocus.focus();
+    }
+
+    async function copyCheckoutText(value) {
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          try {
+            await navigator.clipboard.writeText(value);
+          } catch {
+            copyWithExecCommand(value);
+          }
+        } else {
+          copyWithExecCommand(value);
+        }
+        checkoutCopyStatusKey = 'checkout.copied';
+        checkoutCopyStatus.textContent = t(checkoutCopyStatusKey);
+      } catch (error) {
+        console.error('Could not copy payment details.', error);
+        checkoutCopyStatusKey = 'checkout.copyFailed';
+        checkoutCopyStatus.textContent = t(checkoutCopyStatusKey);
+      }
+    }
+
+    function copyWithExecCommand(value) {
+      const input = document.createElement('textarea');
+      input.value = value;
+      input.setAttribute('readonly', '');
+      input.style.position = 'fixed';
+      input.style.opacity = '0';
+      document.body.appendChild(input);
+      let copied;
+      try {
+        input.select();
+        copied = document.execCommand('copy');
+      } finally {
+        input.remove();
+      }
+      if (!copied) throw new Error('Clipboard copy was not available.');
     }
 
     function setCheckoutEmailError(key) {
@@ -2824,10 +3305,22 @@
 
     function openCheckoutModal() {
       isSubmittingOrder = false;
+      checkoutOrderId = '';
+      checkoutPaymentAmountVnd = 0;
+      checkoutConfirmationInput.checked = false;
+      updateCheckoutFinishButton();
+      checkoutCopyStatusKey = '';
+      checkoutConfirmationMessageKey = '';
+      checkoutCopyStatus.textContent = '';
+      checkoutConfirmationMessage.textContent = '';
       checkoutConfirmBtn.disabled = false;
       checkoutBackBtn.disabled = false;
+      checkoutPaidBtn.disabled = false;
+      checkoutBackStep2Btn.disabled = false;
+      checkoutBackStep3Btn.disabled = false;
       setCheckoutEmailError('');
       setCheckoutSubmitError('');
+      setActiveQrProvider('momo');
       checkoutEmailInput.value = currentUser && currentUser.email ? String(currentUser.email) : '';
       checkoutNameInput.value = currentUser
         ? String(currentUser.name || [currentUser.first_name, currentUser.last_name].filter(Boolean).join(' '))
@@ -2841,18 +3334,24 @@
       checkoutModal.style.display = 'flex';
       checkoutModal.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
-      setTimeout(() => checkoutEmailInput.focus(), 20);
+      setCheckoutStep(1);
     }
 
     function closeCheckoutModal() {
       if (isSubmittingOrder) return;
+      closeQrLightbox();
       checkoutModal.style.display = 'none';
       checkoutModal.setAttribute('aria-hidden', 'true');
       checkoutConfirmBtn.disabled = false;
       checkoutBackBtn.disabled = false;
+      checkoutPaidBtn.disabled = false;
+      checkoutBackStep2Btn.disabled = false;
+      checkoutBackStep3Btn.disabled = false;
+      updateCheckoutFinishButton();
       if (!cartSidebar.classList.contains('open') && authModal.style.display !== 'flex') {
         document.body.style.overflow = '';
       }
+      checkoutBtn.focus();
     }
 
     function saveOrder(order) {
@@ -2872,18 +3371,33 @@
       }
     }
 
-    function createOrder(email, name) {
+    function createOrder(email, name, orderId) {
       const items = getOrderItemsFromCart();
       if (!items.length) throw new Error(t('checkout.invalidCart'));
       const createdAt = new Date().toISOString();
-      const dateCode = createdAt.slice(0, 10).replace(/-/g, '');
-      const suffix = Math.random().toString(16).slice(2, 6).padEnd(4, '0').toUpperCase();
       const subtotalCents = items.reduce((sum, item) => sum + item.lineTotalCents, 0);
       const itemCount = items.reduce((sum, item) => sum + item.qty, 0);
+      const amountVnd = Math.round(
+        (subtotalCents / 100) * PAYMENT_CONFIG.usdToVnd / PAYMENT_CONFIG.roundTo
+      ) * PAYMENT_CONFIG.roundTo;
+      if (!Number.isSafeInteger(subtotalCents) || !Number.isSafeInteger(amountVnd) ||
+          !orderId || !/^BK-\d{8}-[A-Z0-9]{4}$/.test(orderId)) {
+        throw new Error(t('checkout.invalidCart'));
+      }
       return {
-        id: `BK-${dateCode}-${suffix}`,
+        id: orderId,
         createdAt,
         status: 'pending',
+        paymentStatus: 'unverified',
+        payment: {
+          method: 'bank_transfer_qr',
+          providersShown: ['momo', 'vpbank'],
+          amountVnd,
+          usdToVnd: PAYMENT_CONFIG.usdToVnd,
+          transferNote: orderId,
+          paidClaimedAt: createdAt,
+          infoConfirmed: true
+        },
         lang: i18n.getLanguage() === 'vi' ? 'vi' : 'en',
         customer: { name: name.trim(), email: email.trim() },
         items,
@@ -2911,13 +3425,33 @@
       event.preventDefault();
       if (isSubmittingOrder) return;
       setCheckoutSubmitError('');
-      if (!validateCheckoutEmail()) return;
+      if (activeCheckoutStep === 1) {
+        if (!validateCheckoutEmail()) return;
+        try {
+          renderCheckoutSummary();
+        } catch (error) {
+          console.error('Could not validate checkout items.', error);
+          setCheckoutSubmitError('checkout.invalidCart');
+          return;
+        }
+        setCheckoutStep(2);
+        return;
+      }
+      if (activeCheckoutStep !== 3) return;
+      if (!checkoutConfirmationInput.checked) {
+        setCheckoutConfirmationMessage('checkout.confirmCheckRequired');
+        return;
+      }
       isSubmittingOrder = true;
-      checkoutConfirmBtn.disabled = true;
+      updateCheckoutFinishButton();
+      checkoutPaidBtn.disabled = true;
       checkoutBackBtn.disabled = true;
+      checkoutBackStep2Btn.disabled = true;
+      checkoutBackStep3Btn.disabled = true;
       let failureKey = 'checkout.saveFailed';
       try {
-        const order = createOrder(checkoutEmailInput.value, checkoutNameInput.value);
+        const order = createOrder(checkoutEmailInput.value, checkoutNameInput.value, checkoutOrderId);
+        saveOrder(order);
         if (authToken) {
           try {
             await apiFetch('/cart/clear', { method: 'DELETE' });
@@ -2926,7 +3460,6 @@
             throw error;
           }
         }
-        saveOrder(order);
         cart = [];
         saveGuestCart();
         updateCartUI();
@@ -2937,8 +3470,11 @@
       } catch (error) {
         console.error('Checkout could not be completed.', error);
         isSubmittingOrder = false;
-        checkoutConfirmBtn.disabled = false;
+        updateCheckoutFinishButton();
+        checkoutPaidBtn.disabled = false;
         checkoutBackBtn.disabled = false;
+        checkoutBackStep2Btn.disabled = false;
+        checkoutBackStep3Btn.disabled = false;
         setCheckoutSubmitError(error.message === t('checkout.invalidCart')
           ? 'checkout.invalidCart'
           : failureKey);
@@ -3060,6 +3596,34 @@
       if (checkoutEmailErrorKey) validateCheckoutEmail();
     });
     checkoutBackBtn.addEventListener('click', closeCheckoutModal);
+    checkoutBackStep2Btn.addEventListener('click', () => setCheckoutStep(1));
+    checkoutBackStep3Btn.addEventListener('click', () => setCheckoutStep(2));
+    checkoutPaidBtn.addEventListener('click', () => setCheckoutStep(3));
+    checkoutConfirmationInput.addEventListener('change', () => {
+      setCheckoutConfirmationMessage(checkoutConfirmationInput.checked ? '' : 'checkout.confirmCheckRequired');
+      updateCheckoutFinishButton();
+    });
+    checkoutFinishWrap.addEventListener('click', () => {
+      if (checkoutFinishBtn.disabled && !isSubmittingOrder) {
+        setCheckoutConfirmationMessage('checkout.confirmCheckRequired');
+      }
+    });
+    document.getElementById('checkout-copy-amount').addEventListener('click', () => {
+      copyCheckoutText(document.getElementById('checkout-transfer-amount').textContent);
+    });
+    document.getElementById('checkout-copy-note').addEventListener('click', () => {
+      copyCheckoutText(checkoutOrderId);
+    });
+    document.querySelectorAll('.checkout-qr-tabs [role="tab"]').forEach((tab) => {
+      tab.addEventListener('click', () => setActiveQrProvider(tab.dataset.provider));
+    });
+    document.querySelectorAll('.checkout-qr-zoom').forEach((button) => {
+      button.addEventListener('click', () => openQrLightbox(button));
+    });
+    qrLightboxClose.addEventListener('click', closeQrLightbox);
+    qrLightbox.addEventListener('click', (event) => {
+      if (event.target === qrLightbox) closeQrLightbox();
+    });
     checkoutModal.addEventListener('click', (event) => {
       if (event.target === checkoutModal) closeCheckoutModal();
     });
@@ -3067,10 +3631,48 @@
       isSubmittingOrder = false;
       checkoutConfirmBtn.disabled = false;
       checkoutBackBtn.disabled = false;
+      checkoutPaidBtn.disabled = false;
+      checkoutBackStep2Btn.disabled = false;
+      checkoutBackStep3Btn.disabled = false;
+      updateCheckoutFinishButton();
       if (checkoutModal.style.display === 'flex') closeCheckoutModal();
     });
     document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape' && checkoutModal.style.display === 'flex') closeCheckoutModal();
+      if (checkoutModal.style.display !== 'flex') return;
+      if (event.key === 'Escape') {
+        if (!qrLightbox.hidden) closeQrLightbox();
+        else closeCheckoutModal();
+        return;
+      }
+      if (event.key === 'Tab') {
+        const dialog = qrLightbox.hidden
+          ? checkoutModal.querySelector('.checkout-modal-card')
+          : qrLightbox;
+        const focusable = Array.from(dialog.querySelectorAll(
+          '#checkout-title, a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )).filter((element) => !element.closest('[hidden]') && element.getClientRects().length > 0);
+        if (!focusable.length) {
+          event.preventDefault();
+          checkoutTitle.focus();
+          return;
+        }
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
+      if ((event.key === 'ArrowRight' || event.key === 'ArrowLeft') &&
+          event.target.matches('.checkout-qr-tabs [role="tab"]')) {
+        event.preventDefault();
+        const provider = activeQrProvider === 'momo' ? 'vpbank' : 'momo';
+        setActiveQrProvider(provider);
+        document.querySelector(`.checkout-qr-tabs [data-provider="${provider}"]`).focus();
+      }
     });
 
     authBtn.addEventListener('click', () => {
@@ -3166,6 +3768,7 @@
       if (checkoutModal.style.display === 'flex') {
         try {
           renderCheckoutSummary();
+          renderCheckoutStepLabels();
         } catch (error) {
           console.error('Could not refresh checkout summary.', error);
           setCheckoutSubmitError('checkout.invalidCart');
@@ -3173,6 +3776,17 @@
       }
       if (checkoutEmailErrorKey) setCheckoutEmailError(checkoutEmailErrorKey);
       if (checkoutSubmitErrorKey) setCheckoutSubmitError(checkoutSubmitErrorKey);
+      if (checkoutCopyStatusKey) checkoutCopyStatus.textContent = t(checkoutCopyStatusKey);
+      if (checkoutConfirmationMessageKey) {
+        checkoutConfirmationMessage.textContent = t(checkoutConfirmationMessageKey);
+      }
+      if (!qrLightbox.hidden && qrLightboxReturnFocus) {
+        const sourceImage = qrLightboxReturnFocus.querySelector('img');
+        if (sourceImage) {
+          qrLightboxImage.alt = sourceImage.alt;
+          qrLightboxTitle.textContent = t(sourceImage.dataset.i18nAlt);
+        }
+      }
     });
 
     bootstrap();

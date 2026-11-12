@@ -114,8 +114,24 @@
       'checkout.title': 'Complete your order', 'checkout.email': 'Email address',
       'checkout.emailPlaceholder': 'you@example.com', 'checkout.name': 'Full name',
       'checkout.nameOptional': '(optional)', 'checkout.itemCount': 'Number of items',
-      'checkout.total': 'Total to pay', 'checkout.confirm': 'Confirm checkout',
+      'checkout.total': 'Total to pay', 'checkout.continue': 'Continue to payment',
+      'checkout.paymentTitle': 'Bank transfer', 'checkout.reviewTitle': 'Confirm your information',
+      'checkout.step1Indicator': 'Step 1 of 3', 'checkout.step2Indicator': 'Step 2 of 3',
+      'checkout.step3Indicator': 'Step 3 of 3',
       'checkout.back': 'Back to cart', 'checkout.empty': 'Your cart is empty.',
+      'checkout.qrInstructions': 'Scan either QR code to transfer the exact amount, and include the order number as the transfer note.',
+      'checkout.amountToTransfer': 'Amount to transfer', 'checkout.transferNote': 'Transfer note',
+      'checkout.copy': 'Copy', 'checkout.copied': 'Copied.', 'checkout.copyFailed': 'Could not copy. Please copy the value manually.',
+      'checkout.momo': 'MoMo', 'checkout.vpbank': 'VPBank',
+      'checkout.momoAlt': 'MoMo bank transfer QR code', 'checkout.vpbankAlt': 'VPBank bank transfer QR code',
+      'checkout.zoomQr': 'Enlarge QR code', 'checkout.downloadQr': 'Download QR image',
+      'checkout.closeQr': 'Close enlarged QR code', 'checkout.paymentProviders': 'Payment providers',
+      'checkout.previous': 'Back', 'checkout.iHavePaid': 'I have paid',
+      'checkout.reviewInstructions': 'Please review your order information before completing.',
+      'checkout.orderId': 'Order number', 'checkout.notProvided': 'Not provided',
+      'checkout.infoConfirmation': 'I have double-checked my information (email, amount, transfer note) and it is correct.',
+      'checkout.confirmCheckRequired': 'Please check the confirmation box before finishing.',
+      'checkout.finish': 'Finish',
       'checkout.emailRequired': 'Enter your email address.',
       'checkout.emailInvalid': 'Enter a valid email address.',
       'checkout.invalidCart': 'We could not read the cart items. Please review your cart and try again.',
@@ -133,6 +149,9 @@
       'orderSuccess.lineTotal': 'Amount', 'orderSuccess.itemCount': 'Total items',
       'orderSuccess.subtotal': 'Subtotal', 'orderSuccess.total': 'Total to pay',
       'orderSuccess.note': 'Information about your order has been recorded for the email above.',
+      'orderSuccess.paymentPending': 'Order awaiting payment confirmation',
+      'orderSuccess.paymentMethod': 'Payment method', 'orderSuccess.paymentMethodValue': 'QR bank transfer',
+      'orderSuccess.paymentVnd': 'Transfer amount',
       'orderSuccess.home': 'Home', 'orderSuccess.print': 'Print receipt',
       'orderSuccess.orderMore': 'Order more',
       'feature.promo': 'Promo code (optional)', 'feature.addSomething': 'Your bag is empty. Add something flame-grilled.'
@@ -236,8 +255,24 @@
       'checkout.title': 'Hoàn tất đơn hàng', 'checkout.email': 'Địa chỉ email',
       'checkout.emailPlaceholder': 'ban@example.com', 'checkout.name': 'Họ và tên',
       'checkout.nameOptional': '(không bắt buộc)', 'checkout.itemCount': 'Số món',
-      'checkout.total': 'Tổng thanh toán', 'checkout.confirm': 'Xác nhận thanh toán',
+      'checkout.total': 'Tổng thanh toán', 'checkout.continue': 'Tiếp tục thanh toán',
+      'checkout.paymentTitle': 'Chuyển khoản ngân hàng', 'checkout.reviewTitle': 'Xác nhận thông tin',
+      'checkout.step1Indicator': 'Bước 1/3', 'checkout.step2Indicator': 'Bước 2/3',
+      'checkout.step3Indicator': 'Bước 3/3',
       'checkout.back': 'Quay lại giỏ hàng', 'checkout.empty': 'Giỏ hàng trống',
+      'checkout.qrInstructions': 'Quét một trong hai mã QR để chuyển đúng số tiền và ghi mã đơn hàng vào nội dung chuyển khoản.',
+      'checkout.amountToTransfer': 'Số tiền cần chuyển', 'checkout.transferNote': 'Nội dung chuyển khoản',
+      'checkout.copy': 'Sao chép', 'checkout.copied': 'Đã sao chép.', 'checkout.copyFailed': 'Không thể sao chép. Vui lòng tự sao chép nội dung.',
+      'checkout.momo': 'MoMo', 'checkout.vpbank': 'VPBank',
+      'checkout.momoAlt': 'Mã QR chuyển khoản MoMo', 'checkout.vpbankAlt': 'Mã QR chuyển khoản VPBank',
+      'checkout.zoomQr': 'Phóng to mã QR', 'checkout.downloadQr': 'Tải ảnh QR',
+      'checkout.closeQr': 'Đóng mã QR phóng to', 'checkout.paymentProviders': 'Đơn vị thanh toán',
+      'checkout.previous': 'Quay lại', 'checkout.iHavePaid': 'Tôi đã thanh toán',
+      'checkout.reviewInstructions': 'Vui lòng kiểm tra thông tin đơn hàng trước khi hoàn tất.',
+      'checkout.orderId': 'Mã đơn hàng', 'checkout.notProvided': 'Không cung cấp',
+      'checkout.infoConfirmation': 'Tôi đã kiểm tra kỹ thông tin của mình (email, số tiền, nội dung chuyển khoản) là chính xác.',
+      'checkout.confirmCheckRequired': 'Vui lòng tích xác nhận trước khi hoàn tất.',
+      'checkout.finish': 'Hoàn tất',
       'checkout.emailRequired': 'Vui lòng nhập địa chỉ email.',
       'checkout.emailInvalid': 'Vui lòng nhập địa chỉ email hợp lệ.',
       'checkout.invalidCart': 'Không thể đọc các món trong giỏ hàng. Vui lòng kiểm tra và thử lại.',
@@ -255,6 +290,9 @@
       'orderSuccess.lineTotal': 'Thành tiền', 'orderSuccess.itemCount': 'Tổng số món',
       'orderSuccess.subtotal': 'Tạm tính', 'orderSuccess.total': 'Tổng thanh toán',
       'orderSuccess.note': 'Thông tin đơn hàng được ghi nhận cho email trên.',
+      'orderSuccess.paymentPending': 'Đơn hàng đang chờ xác nhận thanh toán',
+      'orderSuccess.paymentMethod': 'Phương thức thanh toán', 'orderSuccess.paymentMethodValue': 'Chuyển khoản QR',
+      'orderSuccess.paymentVnd': 'Số tiền chuyển khoản',
       'orderSuccess.home': 'Về trang chủ', 'orderSuccess.print': 'In hóa đơn',
       'orderSuccess.orderMore': 'Đặt thêm món',
       'feature.promo': 'Mã ưu đãi (không bắt buộc)', 'feature.addSomething': 'Giỏ hàng đang trống. Hãy chọn món nướng lửa yêu thích.'
@@ -279,6 +317,9 @@
     });
     document.querySelectorAll('[data-i18n-aria-label]').forEach((element) => {
       element.setAttribute('aria-label', translate(element.dataset.i18nAriaLabel, element.getAttribute('aria-label')));
+    });
+    document.querySelectorAll('[data-i18n-alt]').forEach((element) => {
+      element.setAttribute('alt', translate(element.dataset.i18nAlt, element.getAttribute('alt')));
     });
     const button = document.getElementById('language-toggle');
     if (button) {
