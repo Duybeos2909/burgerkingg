@@ -1756,7 +1756,6 @@
       #home > .hero-grid{
         display:grid;
         grid-template-columns:minmax(0, 1fr);
-        width:calc(100% - 32px);
         min-width:0;
         flex:0 1 auto;
       }
@@ -1770,6 +1769,38 @@
       }
       #home .hero-art{
         min-height:0;
+      }
+      .stores-grid{
+        grid-template-columns:minmax(0,1fr);
+        min-width:0;
+      }
+      .stores-grid > *,
+      .search-row > *,
+      .store-list,
+      .store-card,
+      .map-box{
+        min-width:0;
+      }
+      .search-row{
+        grid-template-columns:minmax(0,1fr);
+      }
+      .store-top{
+        grid-template-columns:minmax(0,1fr) auto;
+      }
+      .map-box{
+        min-height:320px;
+        padding:24px;
+      }
+      .map-box > div{
+        min-width:0;
+        max-width:100%;
+        overflow-wrap:anywhere;
+      }
+      .deal-card h3{
+        margin-top:42px;
+        padding-right:0;
+        font-size:clamp(1.45rem,6vw,1.7rem);
+        overflow-wrap:anywhere;
       }
     }
 
