@@ -109,7 +109,8 @@
       'feature.openNow': 'Open Now', 'feature.open': 'Open', 'feature.closed': 'Closed',
       'feature.closes': 'Closes', 'feature.hours': 'Open 24hrs', 'feature.selectedStore': '📍 Pickup store: choose a store below',
       'feature.pickupStore': '📍 Pickup store',
-      'feature.guestCheckout': 'Guest checkout', 'feature.signInPoints': 'Sign in to earn points',
+      'feature.guestCheckout': 'Sign in to place an order', 'feature.signInPoints': 'Sign in to earn points',
+      'order.signInRequired': 'Please sign in before using this feature.',
       'feature.promo': 'Promo code (optional)', 'feature.addSomething': 'Your bag is empty. Add something flame-grilled.'
     },
     vi: {
@@ -206,7 +207,8 @@
       'feature.closes': 'Đóng cửa lúc', 'feature.hours': 'Mở cửa 24 giờ',
       'feature.selectedStore': '📍 Nhà hàng nhận món: chọn một địa điểm bên dưới',
       'feature.pickupStore': '📍 Nhà hàng nhận món',
-      'feature.guestCheckout': 'Thanh toán không cần tài khoản', 'feature.signInPoints': 'Đăng nhập để tích điểm',
+      'feature.guestCheckout': 'Đăng nhập để đặt món', 'feature.signInPoints': 'Đăng nhập để tích điểm',
+      'order.signInRequired': 'Vui lòng đăng nhập trước khi sử dụng tính năng này.',
       'feature.promo': 'Mã ưu đãi (không bắt buộc)', 'feature.addSomething': 'Giỏ hàng đang trống. Hãy chọn món nướng lửa yêu thích.'
     }
   };

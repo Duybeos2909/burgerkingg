@@ -193,7 +193,17 @@ import { escapeHtml, formatCurrency, formatTime, parseJSON } from './utils/forma
       cartTotalElement.textContent = formatCurrency(total);
     }
 
+    function requireSignInForOrdering() {
+      if (authToken && currentUser) return false;
+
+      window.alert(i18n.t('order.signInRequired'));
+      document.getElementById('rewards').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return true;
+    }
+
     async function addToCart(menuItemId) {
+      if (requireSignInForOrdering()) return;
+
       const item = menuItems.find((entry) => Number(entry.id) === Number(menuItemId));
       if (!item) return;
 
@@ -382,6 +392,8 @@ import { escapeHtml, formatCurrency, formatTime, parseJSON } from './utils/forma
     }
 
     async function handleCheckout() {
+      if (requireSignInForOrdering()) return;
+
       if (!cart.length) {
         alert('Your bag is empty.');
         return;
@@ -396,12 +408,6 @@ import { escapeHtml, formatCurrency, formatTime, parseJSON } from './utils/forma
       const promoCode = promoCodeInput.value.trim().toUpperCase();
       setPromoCode(promoCode);
 
-      let guestEmail = '';
-      if (!authToken) {
-        guestEmail = window.prompt('Enter your email for guest checkout:');
-        if (!guestEmail) return;
-      }
-
       const payload = {
         items: cart.map((item) => ({
           menu_item_id: Number(item.menu_item_id),
@@ -409,8 +415,7 @@ import { escapeHtml, formatCurrency, formatTime, parseJSON } from './utils/forma
         })),
         order_type: 'pickup',
         store_id: Number(storeId),
-        promo_code: promoCode || '',
-        guest_email: authToken ? '' : guestEmail.trim()
+        promo_code: promoCode || ''
       };
 
       try {
@@ -419,12 +424,7 @@ import { escapeHtml, formatCurrency, formatTime, parseJSON } from './utils/forma
           body: JSON.stringify(payload)
         });
 
-        if (authToken) {
-          await Promise.all([loadCartFromServer(), loadMe(), loadRewardsProfile()]);
-        } else {
-          cart = [];
-          saveGuestCart();
-        }
+        await Promise.all([loadCartFromServer(), loadMe(), loadRewardsProfile()]);
 
         updateCartUI();
         closeCart();
