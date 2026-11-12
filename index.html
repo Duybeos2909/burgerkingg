@@ -2027,7 +2027,7 @@
     </div>
   </div>
 
-  <script src="./i18n.js?v=3"></script>
+  <script src="./i18n.js?v=4"></script>
   <script>
     const i18n = window.BK_I18N;
     const t = i18n.t;
@@ -2823,6 +2823,9 @@
     }
 
     function openCheckoutModal() {
+      isSubmittingOrder = false;
+      checkoutConfirmBtn.disabled = false;
+      checkoutBackBtn.disabled = false;
       setCheckoutEmailError('');
       setCheckoutSubmitError('');
       checkoutEmailInput.value = currentUser && currentUser.email ? String(currentUser.email) : '';
@@ -2842,8 +2845,11 @@
     }
 
     function closeCheckoutModal() {
+      if (isSubmittingOrder) return;
       checkoutModal.style.display = 'none';
       checkoutModal.setAttribute('aria-hidden', 'true');
+      checkoutConfirmBtn.disabled = false;
+      checkoutBackBtn.disabled = false;
       if (!cartSidebar.classList.contains('open') && authModal.style.display !== 'flex') {
         document.body.style.overflow = '';
       }
@@ -2901,7 +2907,7 @@
       openCheckoutModal();
     }
 
-    function handleCheckoutSubmit(event) {
+    async function handleCheckoutSubmit(event) {
       event.preventDefault();
       if (isSubmittingOrder) return;
       setCheckoutSubmitError('');
@@ -2909,12 +2915,24 @@
       isSubmittingOrder = true;
       checkoutConfirmBtn.disabled = true;
       checkoutBackBtn.disabled = true;
+      let failureKey = 'checkout.saveFailed';
       try {
         const order = createOrder(checkoutEmailInput.value, checkoutNameInput.value);
+        if (authToken) {
+          try {
+            await apiFetch('/cart/clear', { method: 'DELETE' });
+          } catch (error) {
+            failureKey = 'checkout.cartClearFailed';
+            throw error;
+          }
+        }
         saveOrder(order);
         cart = [];
         saveGuestCart();
         updateCartUI();
+        isSubmittingOrder = false;
+        closeCheckoutModal();
+        closeCart();
         window.location.assign('./order-success.html');
       } catch (error) {
         console.error('Checkout could not be completed.', error);
@@ -2923,7 +2941,7 @@
         checkoutBackBtn.disabled = false;
         setCheckoutSubmitError(error.message === t('checkout.invalidCart')
           ? 'checkout.invalidCart'
-          : 'checkout.saveFailed');
+          : failureKey);
       }
     }
 
@@ -3044,6 +3062,12 @@
     checkoutBackBtn.addEventListener('click', closeCheckoutModal);
     checkoutModal.addEventListener('click', (event) => {
       if (event.target === checkoutModal) closeCheckoutModal();
+    });
+    window.addEventListener('pageshow', () => {
+      isSubmittingOrder = false;
+      checkoutConfirmBtn.disabled = false;
+      checkoutBackBtn.disabled = false;
+      if (checkoutModal.style.display === 'flex') closeCheckoutModal();
     });
     document.addEventListener('keydown', (event) => {
       if (event.key === 'Escape' && checkoutModal.style.display === 'flex') closeCheckoutModal();
