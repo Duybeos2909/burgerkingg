@@ -652,6 +652,21 @@
       font-size:1.05rem;
       font-weight:800;
     }
+    .cart-discount{color:#2e7d4a}
+    .cart-total-final{color:var(--red)}
+    .promo-code-message{
+      margin:-8px 0 0;
+      min-height:1.2em;
+      color:#b8182f;
+      font-size:.82rem;
+      font-weight:700;
+      overflow-wrap:anywhere;
+    }
+    .promo-code-message.is-success{color:#2e7d4a}
+    #cart-discount-row[hidden],
+    #cart-final-total-row[hidden],
+    #promo-code-message[hidden],
+    #checkout-discount-row[hidden]{display:none}
     .backdrop{
       position:fixed;
       inset:0;
@@ -1872,9 +1887,18 @@
         <span data-i18n="cart.subtotal">Subtotal</span>
         <span id="cart-total">$0.00</span>
       </div>
+      <div class="cart-total cart-discount" id="cart-discount-row" hidden>
+        <span data-i18n="cart.discount">Discount</span>
+        <span id="cart-discount">-$0.00</span>
+      </div>
+      <div class="cart-total cart-total-final" id="cart-final-total-row" hidden>
+        <span data-i18n="cart.total">Total</span>
+        <span id="cart-final-total">$0.00</span>
+      </div>
       <div class="cart-meta">
         <div class="selected-store-pill" id="selected-store-label" data-i18n="feature.selectedStore">📍 Pickup store: choose a store below</div>
         <input class="cart-mini-input" id="promo-code-input" type="text" placeholder="Promo code (optional)" data-i18n-placeholder="feature.promo" />
+        <p class="promo-code-message" id="promo-code-message" role="status" aria-live="polite" hidden></p>
         <div class="cart-helper">
           <span id="cart-mode-label" data-i18n="feature.guestCheckout">Guest checkout</span>
           <span id="cart-points-label" data-i18n="feature.signInPoints">Sign in to earn points</span>
@@ -2279,6 +2303,14 @@
               <span data-i18n="checkout.itemCount">Number of items</span>
               <strong id="checkout-item-count">0</strong>
             </div>
+            <div class="checkout-summary-row">
+              <span data-i18n="checkout.subtotal">Subtotal</span>
+              <strong id="checkout-subtotal">$0.00</strong>
+            </div>
+            <div class="checkout-summary-row" id="checkout-discount-row" hidden>
+              <span data-i18n="checkout.discount">Coupon discount</span>
+              <strong id="checkout-discount">-$0.00</strong>
+            </div>
             <div class="checkout-summary-row checkout-summary-total">
               <span data-i18n="checkout.total">Total to pay</span>
               <strong id="checkout-total">$0.00</strong>
@@ -2409,11 +2441,13 @@
       user: 'bk_user',
       guestCart: 'bk_guest_cart',
       selectedStoreId: 'bk_selected_store_id',
-      promoCode: 'bk_promo_code'
+      promoCode: 'bk_promo_code',
+      coupons: 'bk_coupons'
     };
 
     let menuItems = [];
     let usesLocalAdminMenu = false;
+    let adminCoupons = [];
     let filteredMenuItems = [];
     let deals = [];
     let stores = [];
@@ -2434,9 +2468,14 @@
     const cartCountElement = document.getElementById('cart-count');
     const cartItemsElement = document.getElementById('cart-items');
     const cartTotalElement = document.getElementById('cart-total');
+    const cartDiscountRow = document.getElementById('cart-discount-row');
+    const cartDiscountElement = document.getElementById('cart-discount');
+    const cartFinalTotalRow = document.getElementById('cart-final-total-row');
+    const cartFinalTotalElement = document.getElementById('cart-final-total');
     const cartSidebar = document.getElementById('cart-sidebar');
     const backdrop = document.getElementById('backdrop');
     const promoCodeInput = document.getElementById('promo-code-input');
+    const promoCodeMessage = document.getElementById('promo-code-message');
     const selectedStoreLabel = document.getElementById('selected-store-label');
     const cartModeLabel = document.getElementById('cart-mode-label');
     const cartPointsLabel = document.getElementById('cart-points-label');
@@ -2469,6 +2508,9 @@
     const checkoutEmailError = document.getElementById('checkout-email-error');
     const checkoutSubmitError = document.getElementById('checkout-submit-error');
     const checkoutItemCount = document.getElementById('checkout-item-count');
+    const checkoutSubtotal = document.getElementById('checkout-subtotal');
+    const checkoutDiscountRow = document.getElementById('checkout-discount-row');
+    const checkoutDiscount = document.getElementById('checkout-discount');
     const checkoutTotal = document.getElementById('checkout-total');
     const checkoutBackBtn = document.getElementById('checkout-back');
     const checkoutConfirmBtn = document.getElementById('checkout-confirm');
@@ -2675,10 +2717,65 @@
       });
     }
 
+    function isValidCouponDate(value) {
+      const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+      if (!match) return false;
+      const year = Number(match[1]);
+      const month = Number(match[2]);
+      const day = Number(match[3]);
+      const date = new Date(year, month - 1, day);
+      return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
+    }
+
+    function getLocalDateKey(date = new Date()) {
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+    }
+
+    function readLocalAdminCoupons() {
+      let raw;
+      try {
+        raw = localStorage.getItem(STORAGE_KEYS.coupons);
+      } catch (error) {
+        console.error('Could not read locally managed coupons.', error);
+        return [];
+      }
+      if (raw === null) return [];
+
+      let storedCoupons;
+      try {
+        storedCoupons = JSON.parse(raw);
+      } catch (error) {
+        console.error('Locally managed coupons are not valid JSON.', error);
+        return [];
+      }
+      if (!Array.isArray(storedCoupons)) {
+        console.error('Locally managed coupons must be an array.');
+        return [];
+      }
+
+      const today = getLocalDateKey();
+      return storedCoupons.flatMap((coupon) => {
+        if (!coupon || typeof coupon !== 'object' || Array.isArray(coupon) ||
+            typeof coupon.code !== 'string' || typeof coupon.type !== 'string' ||
+            typeof coupon.value !== 'number' || typeof coupon.enabled !== 'boolean') return [];
+        const code = coupon.code.trim().toUpperCase();
+        const expiresOn = coupon.expiresOn === undefined ? '' : coupon.expiresOn;
+        if (!/^[A-Z0-9_-]{2,30}$/.test(code) ||
+            !['percent', 'amount'].includes(coupon.type) ||
+            !Number.isFinite(coupon.value) || coupon.value <= 0 || coupon.value > 10000 ||
+            (coupon.type === 'percent' && coupon.value > 100) ||
+            typeof expiresOn !== 'string' ||
+            (expiresOn && (!isValidCouponDate(expiresOn) || expiresOn < today)) ||
+            !coupon.enabled) return [];
+        return [{ code, type: coupon.type, value: coupon.value, expiresOn }];
+      });
+    }
+
     async function bootstrap() {
       promoCodeInput.value = activePromoCode;
       const localAdminMenu = readLocalAdminMenu();
       usesLocalAdminMenu = localAdminMenu !== null;
+      adminCoupons = readLocalAdminCoupons();
 
       try {
         const [menuRes, dealsRes, storesRes] = await Promise.all([
@@ -2811,7 +2908,7 @@
 
     function renderDeals() {
       clearCountdowns();
-      dealsGrid.innerHTML = deals.map((deal) => {
+      const dealCards = deals.map((deal) => {
         const localized = i18n.localizeDeal(deal);
         return `
         <article class="deal-card animate-on-scroll">
@@ -2830,12 +2927,44 @@
       `;
       }).join('');
 
+      const couponCards = adminCoupons.map((coupon) => {
+        const offer = coupon.type === 'percent'
+          ? t('coupon.percentOff').replace('{value}', String(coupon.value))
+          : t('coupon.amountOff').replace('{value}', formatCurrency(coupon.value));
+        const expiry = coupon.expiresOn
+          ? `<div class="deal-code">${escapeHtml(t('coupon.validUntil').replace('{date}', formatCouponDate(coupon.expiresOn)))}</div>`
+          : '';
+        return `
+          <article class="deal-card animate-on-scroll">
+            <div class="deal-tag">${escapeHtml(t('coupon.tag'))}</div>
+            <div class="eyebrow">${escapeHtml(t('deals.limited'))}</div>
+            <h3>${escapeHtml(t('coupon.title').replace('{code}', coupon.code))}</h3>
+            <p>${escapeHtml(offer)}</p>
+            <div class="deal-meta">
+              <div class="deal-code">Code: ${escapeHtml(coupon.code)}</div>
+              ${expiry}
+              <button type="button" class="btn btn--primary deal-apply-btn" data-promo="${escapeHtml(coupon.code)}" data-admin-coupon="true">
+                ${t('deals.apply')}
+              </button>
+            </div>
+          </article>
+        `;
+      }).join('');
+      dealsGrid.innerHTML = `${dealCards}${couponCards}`;
+
       deals.forEach((deal) => {
         const el = document.getElementById(`deal-timer-${deal.id}`);
         startSingleCountdown(el, Number(deal.seconds_remaining || 0));
       });
 
       observeAnimated();
+    }
+
+    function formatCouponDate(value) {
+      const [year, month, day] = value.split('-').map(Number);
+      const locale = i18n.getLanguage() === 'vi' ? 'vi-VN' : 'en-US';
+      return new Intl.DateTimeFormat(locale, { year: 'numeric', month: 'short', day: 'numeric' })
+        .format(new Date(year, month - 1, day));
     }
 
     function renderStores() {
@@ -2929,6 +3058,9 @@
           </div>
         `;
         cartTotalElement.textContent = '$0.00';
+        cartDiscountRow.hidden = true;
+        cartFinalTotalRow.hidden = true;
+        updatePromoCodeMessage(0);
         return;
       }
 
@@ -2949,8 +3081,53 @@
         </div>
       `).join('');
 
-      const total = cart.reduce((sum, item) => sum + Number(item.price || 0) * Number(item.qty || 0), 0);
-      cartTotalElement.textContent = formatCurrency(total);
+      const subtotalCents = cart.reduce(
+        (sum, item) => sum + Math.round(Number(item.price || 0) * 100) * Number(item.qty || 0),
+        0
+      );
+      const coupon = getCouponForCode(activePromoCode);
+      const discountCents = getDiscountCents(subtotalCents, coupon);
+      cartTotalElement.textContent = formatMoney(subtotalCents);
+      cartDiscountRow.hidden = discountCents === 0;
+      cartDiscountElement.textContent = `-${formatMoney(discountCents)}`;
+      cartFinalTotalRow.hidden = discountCents === 0;
+      cartFinalTotalElement.textContent = formatMoney(subtotalCents - discountCents);
+      updatePromoCodeMessage(subtotalCents, coupon);
+    }
+
+    function getCouponForCode(code) {
+      const normalizedCode = String(code || '').trim().toUpperCase();
+      if (!normalizedCode) return null;
+      const today = getLocalDateKey();
+      return adminCoupons.find((coupon) =>
+        coupon.code === normalizedCode && (!coupon.expiresOn || coupon.expiresOn >= today)
+      ) || null;
+    }
+
+    function getDiscountCents(subtotalCents, coupon = getCouponForCode(activePromoCode)) {
+      if (!coupon || !Number.isSafeInteger(subtotalCents) || subtotalCents <= 0) return 0;
+      const requestedDiscount = coupon.type === 'percent'
+        ? Math.round(subtotalCents * coupon.value / 100)
+        : Math.round(coupon.value * 100);
+      return Math.min(subtotalCents, Math.max(0, requestedDiscount));
+    }
+
+    function updatePromoCodeMessage(subtotalCents = 0, coupon = getCouponForCode(activePromoCode)) {
+      const hasCode = Boolean(activePromoCode.trim());
+      promoCodeMessage.hidden = !hasCode;
+      promoCodeMessage.classList.toggle('is-success', Boolean(coupon));
+      if (!hasCode) {
+        promoCodeMessage.textContent = '';
+        return;
+      }
+      if (!coupon) {
+        promoCodeMessage.textContent = t('coupon.unavailable');
+        return;
+      }
+      const discountCents = getDiscountCents(subtotalCents, coupon);
+      promoCodeMessage.textContent = discountCents
+        ? `${t('coupon.applied')} · -${formatMoney(discountCents)}`
+        : t('coupon.applied');
     }
 
     function requireSignInForOrdering() {
@@ -3065,6 +3242,7 @@
       } else {
         localStorage.removeItem(STORAGE_KEYS.promoCode);
       }
+      updateCartUI();
     }
 
     function updateAuthUI() {
@@ -3276,13 +3454,18 @@
       if (!Number.isSafeInteger(itemCount) || !Number.isSafeInteger(subtotalCents)) {
         throw new Error(t('checkout.invalidCart'));
       }
+      const discountCents = getDiscountCents(subtotalCents);
+      const totalCents = subtotalCents - discountCents;
       checkoutItemCount.textContent = String(itemCount);
-      checkoutTotal.textContent = formatMoney(subtotalCents);
-      renderCheckoutPaymentDetails(subtotalCents);
+      checkoutSubtotal.textContent = formatMoney(subtotalCents);
+      checkoutDiscountRow.hidden = discountCents === 0;
+      checkoutDiscount.textContent = `-${formatMoney(discountCents)}`;
+      checkoutTotal.textContent = formatMoney(totalCents);
+      renderCheckoutPaymentDetails(totalCents);
     }
 
-    function renderCheckoutPaymentDetails(subtotalCents) {
-      const totalUsd = subtotalCents / 100;
+    function renderCheckoutPaymentDetails(totalCents) {
+      const totalUsd = totalCents / 100;
       checkoutPaymentAmountVnd = Math.round(
         totalUsd * PAYMENT_CONFIG.usdToVnd / PAYMENT_CONFIG.roundTo
       ) * PAYMENT_CONFIG.roundTo;
@@ -3520,11 +3703,14 @@
       if (!items.length) throw new Error(t('checkout.invalidCart'));
       const createdAt = new Date().toISOString();
       const subtotalCents = items.reduce((sum, item) => sum + item.lineTotalCents, 0);
+      const discountCents = getDiscountCents(subtotalCents);
+      const totalCents = subtotalCents - discountCents;
       const itemCount = items.reduce((sum, item) => sum + item.qty, 0);
       const amountVnd = Math.round(
-        (subtotalCents / 100) * PAYMENT_CONFIG.usdToVnd / PAYMENT_CONFIG.roundTo
+        (totalCents / 100) * PAYMENT_CONFIG.usdToVnd / PAYMENT_CONFIG.roundTo
       ) * PAYMENT_CONFIG.roundTo;
-      if (!Number.isSafeInteger(subtotalCents) || !Number.isSafeInteger(amountVnd) ||
+      if (!Number.isSafeInteger(subtotalCents) || !Number.isSafeInteger(discountCents) ||
+          !Number.isSafeInteger(totalCents) || !Number.isSafeInteger(amountVnd) ||
           !orderId || !/^BK-\d{8}-[A-Z0-9]{4}$/.test(orderId)) {
         throw new Error(t('checkout.invalidCart'));
       }
@@ -3548,8 +3734,8 @@
         totals: {
           itemCount,
           subtotalCents,
-          discountCents: 0,
-          totalCents: subtotalCents,
+          discountCents,
+          totalCents,
           currency: 'USD'
         }
       };
@@ -3709,7 +3895,9 @@
       if (code) {
         setPromoCode(code);
         openCart();
-        alert(`Promo code ${code} applied to your cart.`);
+        if (button.dataset.adminCoupon !== 'true') {
+          alert(`Promo code ${code} added to your cart.`);
+        }
       } else {
         document.getElementById('menu').scrollIntoView({ behavior: 'smooth' });
       }
@@ -3910,6 +4098,31 @@
       particle.style.height = particle.style.width;
       flameField.appendChild(particle);
     }
+
+    function refreshAdminCoupons() {
+      const nextCoupons = readLocalAdminCoupons();
+      if (JSON.stringify(nextCoupons) === JSON.stringify(adminCoupons)) return;
+      adminCoupons = nextCoupons;
+      renderDeals();
+      updateCartUI();
+      if (checkoutModal.style.display === 'flex') {
+        try {
+          renderCheckoutSummary();
+        } catch (error) {
+          console.error('Could not refresh checkout after coupon changes.', error);
+          setCheckoutSubmitError('checkout.invalidCart');
+        }
+      }
+    }
+
+    window.addEventListener('storage', (event) => {
+      if (event.key !== STORAGE_KEYS.coupons && event.key !== null) return;
+      refreshAdminCoupons();
+    });
+    window.addEventListener('pageshow', refreshAdminCoupons);
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) refreshAdminCoupons();
+    });
 
     document.addEventListener('bk-language-change', () => {
       renderMenu();
