@@ -2938,10 +2938,10 @@
           <article class="deal-card animate-on-scroll">
             <div class="deal-tag">${escapeHtml(t('coupon.tag'))}</div>
             <div class="eyebrow">${escapeHtml(t('deals.limited'))}</div>
-            <h3>${escapeHtml(t('coupon.title').replace('{code}', coupon.code))}</h3>
+            <h3>${escapeHtml(t('coupon.title'))}</h3>
             <p>${escapeHtml(offer)}</p>
             <div class="deal-meta">
-              <div class="deal-code">Code: ${escapeHtml(coupon.code)}</div>
+              <div class="deal-code">${escapeHtml(t('coupon.codeLabel').replace('{code}', coupon.code))}</div>
               ${expiry}
               <button type="button" class="btn btn--primary deal-apply-btn" data-promo="${escapeHtml(coupon.code)}" data-admin-coupon="true">
                 ${t('deals.apply')}
