@@ -3473,7 +3473,7 @@
         throw new Error(t('checkout.invalidCart'));
       }
       const locale = i18n.getLanguage() === 'vi' ? 'vi-VN' : 'en-US';
-      const amountLabel = `${formatMoney(subtotalCents)} ≈ ${new Intl.NumberFormat(locale).format(checkoutPaymentAmountVnd)} ₫`;
+      const amountLabel = `${formatMoney(totalCents)} ≈ ${new Intl.NumberFormat(locale).format(checkoutPaymentAmountVnd)} ₫`;
       document.getElementById('checkout-transfer-amount').textContent = amountLabel;
       document.getElementById('checkout-transfer-note').textContent = checkoutOrderId;
       document.getElementById('checkout-review-email').textContent = checkoutEmailInput.value.trim();
