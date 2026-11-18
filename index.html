@@ -852,7 +852,7 @@
     .rewards-grid{
       display:grid;
       gap:28px;
-      align-items:center;
+      align-items:start;
     }
     .rewards-copy .section-title{margin-bottom:16px}
     .value-list{
@@ -1608,13 +1608,14 @@
       flex-wrap:wrap;
       justify-content:space-between;
       gap:12px;
-      align-items:center;
+      align-items:flex-start;
       margin-bottom:16px;
     }
+    .profile-top > div:first-child{min-width:0}
     .profile-points{
       font-family:'Playfair Display',serif;
       font-size:2rem;
-      line-height:1;
+      line-height:1.15;
       margin:6px 0 0;
     }
     .reward-list{
