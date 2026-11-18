@@ -51,8 +51,13 @@ async function sendWelcomeEmail(email, firstName) {
 
 export async function register(req, res) {
   const { first_name, email, password, dob, postcode } = req.body;
+  const normalizedEmail = email.toLowerCase();
+  const adminEmail = (process.env.ADMIN_EMAIL || 'admin@bk.com').trim().toLowerCase();
+  if (normalizedEmail === adminEmail) {
+    return res.status(403).json({ error: 'Admin account must be provisioned by the server' });
+  }
 
-  const existingUser = db.prepare('SELECT id FROM users WHERE email = ?').get(email.toLowerCase());
+  const existingUser = db.prepare('SELECT id FROM users WHERE email = ?').get(normalizedEmail);
   if (existingUser) {
     return res.status(409).json({ error: 'Email already registered' });
   }
@@ -63,7 +68,7 @@ export async function register(req, res) {
     VALUES (?, ?, ?, ?, ?, 0, 'Grillmaster')
   `);
 
-  const result = insert.run(first_name, email.toLowerCase(), hashedPassword, dob || null, postcode || null);
+  const result = insert.run(first_name, normalizedEmail, hashedPassword, dob || null, postcode || null);
   const user = db.prepare('SELECT id, first_name, email, points, tier FROM users WHERE id = ?').get(result.lastInsertRowid);
 
   try {

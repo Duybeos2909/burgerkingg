@@ -14,3 +14,5 @@ services:
         value: production
       - key: ADMIN_EMAIL
         value: bduy.nina@gmail.com
+      - key: ADMIN_BOOTSTRAP_PASSWORD
+        sync: false
