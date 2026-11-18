@@ -61,6 +61,16 @@
       background:#fff;color:var(--ink);outline:none
     }
     .field textarea{min-height:96px;resize:vertical}
+    .image-upload{display:grid;gap:10px}
+    .image-upload input[type="file"]{padding:8px;cursor:pointer}
+    .menu-image-preview{width:100%;height:170px;border:1px dashed #D9C7AF;border-radius:12px;background:#FFFDF9;display:grid;place-items:center;overflow:hidden;color:#8A725F;font-size:.88rem}
+    .menu-image-preview img{width:100%;height:100%;object-fit:cover}
+    .menu-image-preview .preview-placeholder{text-align:center}
+    .menu-thumb{width:44px;height:44px;border-radius:10px;object-fit:cover;vertical-align:middle;margin-right:8px}
+    .exchange-rate-card{display:grid;gap:12px;padding:14px;border:1px solid #E7D8C4;border-radius:14px;background:#FFFDF9}
+    .exchange-rate-value{font-size:clamp(1.5rem,4vw,2.2rem);font-weight:800;color:var(--red);letter-spacing:-.02em}
+    .exchange-rate-meta{color:var(--muted);font-size:.82rem;line-height:1.5}
+    .exchange-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
     .field input:focus,.field select:focus,.field textarea:focus,.toolbar input:focus,.toolbar select:focus{
       border-color:var(--earth);box-shadow:0 0 0 3px rgba(122,59,28,.14)
     }
@@ -155,6 +165,19 @@
     tr:last-child td{border-bottom:0}
     .table-primary{font-weight:800;color:var(--brown)}
     .table-secondary{display:block;margin-top:3px;color:var(--muted);font-size:.78rem;overflow-wrap:anywhere}
+    .menu-table{table-layout:fixed}
+    .menu-table th:nth-child(1){width:28%}
+    .menu-table th:nth-child(2){width:13%}
+    .menu-table th:nth-child(3){width:10%}
+    .menu-table th:nth-child(4){width:15%}
+    .menu-table th:nth-child(5){width:18%}
+    .menu-table th:nth-child(6){width:16%}
+    .menu-table td{height:88px}
+    .menu-table td:nth-child(1){overflow-wrap:anywhere}
+    .menu-table td:nth-child(6){text-align:right}
+    .menu-table .actions{justify-content:flex-end;flex-wrap:nowrap}
+    .menu-table .actions .button{min-width:62px}
+    .stock-value{display:block;font-weight:800;color:var(--ink);font-size:1rem}
     .money{color:var(--red);font-weight:800;white-space:nowrap}
     .badge{display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border-radius:999px;background:#F2E7D7;color:#654A31;font-size:.74rem;font-weight:800;white-space:nowrap}
     .badge.green{background:#E4F1E5;color:#286537}
@@ -352,7 +375,7 @@
             <span class="badge" id="menu-count"></span>
           </div>
           <div class="table-card"><div class="table-scroll">
-            <table><thead><tr><th>Món ăn</th><th>Danh mục</th><th>Giá</th><th>Tồn kho</th><th>Đang bán</th><th>Thao tác</th></tr></thead><tbody id="menu-table"></tbody></table>
+            <table class="menu-table"><thead><tr><th>Món ăn</th><th>Danh mục</th><th>Giá</th><th>Tồn kho</th><th>Đang bán</th><th>Thao tác</th></tr></thead><tbody id="menu-table"></tbody></table>
           </div></div>
           <p class="inline-hint">Tồn kho là trường tùy chọn. Khi tồn kho về 0, món tự chuyển sang tạm hết; bật bán lại khi đã bổ sung hàng.</p>
         </section>
@@ -398,10 +421,14 @@
           <div class="settings-grid">
             <section class="settings-card">
               <h3>Tỷ giá USD → VND</h3><p>Tỷ giá này dùng cho phần quản trị và dữ liệu mới. Tỷ giá thanh toán trên trang khách có cấu hình riêng.</p>
-              <form id="rate-form" class="form-stack">
-                <div class="field"><label for="rate-input">Số VND cho 1 USD</label><input id="rate-input" type="number" min="1" step="1" required></div>
-                <button class="button button-primary" type="submit">Lưu tỷ giá</button>
-              </form>
+              <div class="exchange-rate-card">
+                <div class="exchange-rate-value" id="rate-display">Đang tải...</div>
+                <div class="exchange-rate-meta" id="rate-meta">Đang lấy tỷ giá thị trường từ dữ liệu USD/VND.</div>
+                <div class="exchange-actions">
+                  <button class="button button-primary" type="button" id="rate-refresh">Cập nhật từ thị trường</button>
+                  <span class="badge" id="rate-status">Tự động</span>
+                </div>
+              </div>
             </section>
             <section class="settings-card">
               <h3>Sao lưu dữ liệu</h3><p>Xuất hoặc nhập menu, đơn hàng, tỷ giá và mã giảm giá. Tệp nhập tối đa 2 MB và được kiểm tra trước khi ghi.</p>
@@ -446,7 +473,8 @@
     'use strict';
 
     const ADMIN_EMAIL = 'bduy.nina@gmail.com';
-    const ADMIN_HASH = '0286cfd47e73bd868b4088ca7029a6c5ccc6c97a24353d658185297d6a642594';
+    const LOCAL_DEMO_HASH = '1c104fae5440f543a29c9872a0b0dc7ab63ee4e74b9f67090e8c3dfee6187900';
+    const API_BASE = 'https://burgerking-backend.onrender.com/api';
     const SESSION_KEY = 'bk_admin_session';
     const LOCK_KEY = 'bk_admin_lock';
     const STORAGE_KEYS = {
@@ -597,6 +625,9 @@
         description:typeof raw.description==='string'?raw.description.slice(0,1000):'',
         available:typeof raw.available==='boolean'?raw.available:true
       };
+      if(typeof raw.image==='string'&&/^data:image\/(?:png|jpeg|webp|gif);base64,[A-Za-z0-9+/=]+$/.test(raw.image)&&raw.image.length<=3000000){
+        item.image=raw.image;
+      }
       if(stock!==undefined)item.stock=stock;
       if(item.stock===0)item.available=false;
       return item;
@@ -641,6 +672,11 @@
         }
       };
       if(raw.demo===true)order.demo=true;
+      if(['synced','revoked','not-registered','pending','not-applicable','local-only'].includes(raw.pointsSyncStatus)){
+        order.pointsSyncStatus=raw.pointsSyncStatus;
+      }
+      const pointsEarned=safeInteger(raw.pointsEarned,0);
+      if(pointsEarned!==null)order.pointsEarned=pointsEarned;
       return order;
     }
     function normalizeCoupon(raw,index=0){
@@ -673,7 +709,11 @@
       }
       const settingsRecord=readStored(STORAGE_KEYS.settings,{usdToVnd:25000});
       const rate=Number(settingsRecord.value?.usdToVnd);
-      state.settings={usdToVnd:Number.isFinite(rate)&&rate>0?rate:25000};
+      state.settings={
+        usdToVnd:Number.isFinite(rate)&&rate>0?rate:25000,
+        exchangeUpdatedAt:Number(settingsRecord.value?.exchangeUpdatedAt)||0,
+        exchangeSource:typeof settingsRecord.value?.exchangeSource==='string'?settingsRecord.value.exchangeSource:'Tỷ giá dự phòng'
+      };
       if(settingsRecord.exists&&(!isPlainObject(settingsRecord.value)||!Number.isFinite(rate)||rate<=0)){
         state.storageWarnings.push(`${STORAGE_KEYS.settings}:tỷ giá không hợp lệ`);
       }
@@ -684,19 +724,62 @@
       if(couponRecord.exists&&(!Array.isArray(couponRecord.value)||state.coupons.length!==couponRecord.value.length)){
         state.storageWarnings.push(`${STORAGE_KEYS.coupons}:dữ liệu sai định dạng`);
       }
-      $('#rate-input').value=String(state.settings.usdToVnd);
+      updateExchangeRateDisplay();
     }
     function saveMenu(){return writeStored(STORAGE_KEYS.menu,state.menu)}
     function saveOrders(){return writeStored(STORAGE_KEYS.orders,state.orders)}
     function saveSettings(){return writeStored(STORAGE_KEYS.settings,state.settings)}
     function saveCoupons(){return writeStored(STORAGE_KEYS.coupons,state.coupons)}
+    function formatExchangeRate(rate){return new Intl.NumberFormat('vi-VN',{maximumFractionDigits:0}).format(rate)}
+    function updateExchangeRateDisplay(){
+      const display=$('#rate-display');
+      const meta=$('#rate-meta');
+      const status=$('#rate-status');
+      if(!display||!meta||!status)return;
+      display.textContent=`1 USD = ${formatExchangeRate(state.settings.usdToVnd)} VND`;
+      const updatedAt=Number(state.settings.exchangeUpdatedAt||0);
+      const source=state.settings.exchangeSource||'Tỷ giá dự phòng';
+      meta.textContent=updatedAt
+        ?`Nguồn: ${source} · Cập nhật ${new Intl.DateTimeFormat('vi-VN',{dateStyle:'medium',timeStyle:'short'}).format(updatedAt)}`
+        :`Nguồn: ${source} · Chưa có lần cập nhật thị trường`;
+      status.textContent='Tự động';
+    }
+    async function refreshMarketExchangeRate(showMessage=true){
+      const button=$('#rate-refresh');
+      const status=$('#rate-status');
+      if(button)button.disabled=true;
+      if(status)status.textContent='Đang cập nhật';
+      try{
+        const response=await fetch('https://open.er-api.com/v6/latest/USD',{cache:'no-store'});
+        if(!response.ok)throw new Error(`Lỗi thị trường: ${response.status}`);
+        const data=await response.json();
+        const rate=Number(data?.rates?.VND);
+        if(!Number.isFinite(rate)||rate<=0||rate>100000000)throw new Error('Không nhận được tỷ giá USD/VND hợp lệ.');
+        state.settings={
+          usdToVnd:Math.round(rate),
+          exchangeUpdatedAt:Date.now(),
+          exchangeSource:'Open ER API'
+        };
+        if(!saveSettings())throw new Error('Không thể lưu tỷ giá vào trình duyệt.');
+        updateExchangeRateDisplay();
+        if(showMessage)toast('Đã cập nhật tỷ giá từ thị trường.','success');
+      }catch(error){
+        console.error(error);
+        updateExchangeRateDisplay();
+        if(status)status.textContent='Dùng tỷ giá lưu';
+        if(showMessage)toast(error.message||'Không thể cập nhật tỷ giá thị trường.','error');
+      }finally{
+        if(button)button.disabled=false;
+      }
+    }
 
     function sessionIsValid(){
       try{
         const raw=sessionStorage.getItem(SESSION_KEY);
         if(!raw)return false;
         const session=JSON.parse(raw);
-        if(!session||session.email!==ADMIN_EMAIL||!Number.isFinite(session.expiresAt)||session.expiresAt<=Date.now()){
+        const localDemo=session?.mode==='local-demo'&&isLocalDemoHost();
+        if(!session||session.email!==ADMIN_EMAIL||(!localDemo&&typeof session.token!=='string')||!Number.isFinite(session.expiresAt)||session.expiresAt<=Date.now()){
           sessionStorage.removeItem(SESSION_KEY);
           return false;
         }
@@ -706,6 +789,39 @@
         return false;
       }
     }
+    function isLocalDemoHost(){return ['localhost','127.0.0.1','::1'].includes(location.hostname)}
+    async function sha256Hex(value){
+      if(!window.crypto?.subtle||!window.TextEncoder)throw new Error('Trình duyệt không hỗ trợ xác minh SHA-256 trên kết nối này.');
+      const bytes=new TextEncoder().encode(value);
+      const hash=await crypto.subtle.digest('SHA-256',bytes);
+      return [...new Uint8Array(hash)].map(byte=>byte.toString(16).padStart(2,'0')).join('');
+    }
+    function startLocalDemoSession(email){
+      sessionStorage.setItem(SESSION_KEY,JSON.stringify({email,mode:'local-demo',expiresAt:Date.now()+SESSION_MS}));
+      sessionStorage.removeItem(LOCK_KEY);
+      sessionStorage.removeItem('bk_admin_attempts');
+      showAuthenticatedApp();
+      loginPassword.value='';
+      toast('Đang dùng demo cục bộ. Điểm rewards chưa đồng bộ với backend.','error');
+    }
+    function getAdminToken(){
+      try{return JSON.parse(sessionStorage.getItem(SESSION_KEY)||'null')?.token||''}
+      catch(error){console.error('Không thể đọc phiên quản trị.',error);return ''}
+    }
+    async function adminApi(path,options={}){
+      const headers={...(options.headers||{}),Authorization:`Bearer ${getAdminToken()}`};
+      if(options.body&&!headers['Content-Type'])headers['Content-Type']='application/json';
+      const response=await fetch(`${API_BASE}${path}`,{...options,headers});
+      const data=await response.json().catch(()=>({}));
+      if(!response.ok)throw new Error(data.error||data.message||`Lỗi backend (${response.status}).`);
+      return data;
+    }
+    async function validateAdminToken(token){
+      const response=await fetch(`${API_BASE}/rewards/admin/status`,{headers:{Authorization:`Bearer ${token}`}});
+      const data=await response.json().catch(()=>({}));
+      if(!response.ok)throw Object.assign(new Error(data.error||'Tài khoản này chưa được cấp quyền admin trên backend.'),{status:response.status});
+      return data;
+    }
     function showAuthenticatedApp(){
       loginScreen.hidden=true;
       adminApp.hidden=false;
@@ -713,6 +829,21 @@
       loadState();
       renderAll();
       renderNewOrderBadge();
+      const lastUpdate=Number(state.settings.exchangeUpdatedAt||0);
+      if(!lastUpdate||Date.now()-lastUpdate>30*60*1000)refreshMarketExchangeRate(false);
+      else updateExchangeRateDisplay();
+      if(getAdminToken()){
+        syncVerifiedOrderPoints();
+      }else{
+        state.orders.forEach(order=>{
+          if(order.paymentStatus==='verified'&&order.status!=='cancelled')order.pointsSyncStatus='local-only';
+        });
+        saveOrders();
+        renderOrders();
+      }
+      window.setInterval(()=>{
+        refreshMarketExchangeRate(false);
+      },30*60*1000);
       if(state.storageWarnings.length)toast('Một số dữ liệu lưu bị thiếu hoặc sai định dạng; trang đã dùng giá trị an toàn để tiếp tục.','error');
     }
     function logout(){
@@ -736,12 +867,6 @@
         logout();
       }
     }
-    async function sha256Hex(value){
-      if(!window.crypto?.subtle||!window.TextEncoder)throw new Error('Trình duyệt không hỗ trợ xác minh SHA-256 trên kết nối này.');
-      const bytes=new TextEncoder().encode(value);
-      const hash=await crypto.subtle.digest('SHA-256',bytes);
-      return [...new Uint8Array(hash)].map(byte=>byte.toString(16).padStart(2,'0')).join('');
-    }
     function getLoginLockUntil(){
       try{
         const lock=Number(sessionStorage.getItem(LOCK_KEY)||0);
@@ -759,34 +884,47 @@
         return;
       }
       const email=loginEmail.value.trim().toLowerCase();
-      const password=loginPassword.value.replace(/\s/g,'');
+      const password=loginPassword.value;
       if(!email||!password){loginError.textContent='Vui lòng nhập email và mật khẩu.';return}
       const submit=$('#login-submit');
       submit.disabled=true;
       try{
-        const digest=await sha256Hex(`${email}:${password}`);
-        if(email===ADMIN_EMAIL&&digest===ADMIN_HASH){
-          sessionStorage.setItem(SESSION_KEY,JSON.stringify({email,expiresAt:Date.now()+SESSION_MS}));
-          sessionStorage.removeItem(LOCK_KEY);
-          sessionStorage.removeItem('bk_admin_attempts');
-          showAuthenticatedApp();
-          loginPassword.value='';
+        const isLocalDemo=isLocalDemoHost()&&email===ADMIN_EMAIL&&await sha256Hex(`${email}:${password}`)===LOCAL_DEMO_HASH;
+        if(isLocalDemo){
+          startLocalDemoSession(email);
           return;
         }
-        let attempts=0;
-        try{attempts=Number(sessionStorage.getItem('bk_admin_attempts')||0)}catch(error){console.error('Không thể đọc số lần đăng nhập sai.',error)}
-        attempts=Number.isSafeInteger(attempts)&&attempts>=0?attempts+1:1;
-        if(attempts>=5){
-          sessionStorage.setItem(LOCK_KEY,String(Date.now()+LOCK_MS));
-          sessionStorage.removeItem('bk_admin_attempts');
-          loginError.textContent='Sai thông tin đăng nhập 5 lần. Tài khoản bị khóa trong 30 giây.';
-        }else{
-          sessionStorage.setItem('bk_admin_attempts',String(attempts));
-          loginError.textContent=`Email hoặc mật khẩu không chính xác. Còn ${5-attempts} lần thử.`;
-        }
+        const response=await fetch(`${API_BASE}/auth/login`,{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({email,password})
+        });
+        const result=await response.json().catch(()=>({}));
+        if(!response.ok)throw Object.assign(new Error(result.error||'Email hoặc mật khẩu không chính xác.'),{status:response.status});
+        if(result.user?.email?.toLowerCase()!==ADMIN_EMAIL)throw new Error('Tài khoản không khớp email admin đã cấu hình.');
+        await validateAdminToken(result.token);
+        sessionStorage.setItem(SESSION_KEY,JSON.stringify({email,token:result.token,expiresAt:Date.now()+SESSION_MS}));
+        sessionStorage.removeItem(LOCK_KEY);
+        sessionStorage.removeItem('bk_admin_attempts');
+        showAuthenticatedApp();
+        loginPassword.value='';
       }catch(error){
         console.error('Không thể xác minh thông tin đăng nhập.',error);
-        loginError.textContent=error.message||'Không thể xác minh đăng nhập.';
+        if(error.status===401){
+          let attempts=0;
+          try{attempts=Number(sessionStorage.getItem('bk_admin_attempts')||0)}catch(storageError){console.error('Không thể đọc số lần đăng nhập sai.',storageError)}
+          attempts=Number.isSafeInteger(attempts)&&attempts>=0?attempts+1:1;
+          if(attempts>=5){
+            sessionStorage.setItem(LOCK_KEY,String(Date.now()+LOCK_MS));
+            sessionStorage.removeItem('bk_admin_attempts');
+            loginError.textContent='Sai thông tin đăng nhập 5 lần. Tài khoản bị khóa trong 30 giây.';
+          }else{
+            sessionStorage.setItem('bk_admin_attempts',String(attempts));
+            loginError.textContent=`Email hoặc mật khẩu không chính xác. Còn ${5-attempts} lần thử.`;
+          }
+        }else{
+          loginError.textContent=error.message||'Không thể xác minh đăng nhập backend.';
+        }
       }finally{
         submit.disabled=false;
       }
@@ -878,16 +1016,16 @@
         (!category||item.category===category)&&(!query||item.name.toLocaleLowerCase('vi').includes(query)));
       $('#menu-count').textContent=`${filtered.length} / ${state.menu.length} món`;
       $('#menu-table').innerHTML=filtered.length?filtered.map(({item,index})=>`<tr>
-        <td><span class="table-primary">${escapeHTML(item.emoji)} ${escapeHTML(item.name)}</span><span class="table-secondary">${escapeHTML(item.description||'Chưa có mô tả')}</span></td>
+        <td><span class="table-primary">${item.image?`<img class="menu-thumb" src="${escapeHTML(item.image)}" alt="">`:`<span aria-hidden="true">${escapeHTML(item.emoji)}</span> `}${escapeHTML(item.name)}</span><span class="table-secondary">${escapeHTML(item.description||'Chưa có mô tả')}</span></td>
         <td>${CATEGORY_LABELS[item.category]}</td>
         <td class="money">${escapeHTML(formatPrice(item.price))}</td>
-        <td>${item.stock===undefined?'<span class="muted">Không theo dõi</span>':item.stock===0?'<span class="badge red">Hết hàng</span>':item.stock<LOW_STOCK_THRESHOLD?`<span class="badge amber">${item.stock} · Sắp hết</span>`:`${item.stock}`}</td>
+        <td>${item.stock===undefined?'<span class="stock-value">—</span><span class="table-secondary">Không theo dõi</span>':item.stock===0?'<span class="stock-value">0</span><span class="badge red">Hết hàng</span>':item.stock<LOW_STOCK_THRESHOLD?`<span class="stock-value">${item.stock}</span><span class="badge amber">Sắp hết</span>`:`<span class="stock-value">${item.stock}</span><span class="table-secondary">Đơn vị</span>`}</td>
         <td><label class="switch"><input type="checkbox" data-action="menu-toggle" data-index="${index}" ${item.available?'checked':''} ${item.stock===0?'disabled':''} aria-label="Đang bán ${escapeHTML(item.name)}"><span class="switch-track"></span><span>${item.available?'Đang bán':'Tạm hết'}</span></label></td>
         <td><div class="actions"><button type="button" class="button button-outline button-small" data-action="menu-edit" data-index="${index}">Sửa</button><button type="button" class="button button-danger button-small" data-action="menu-delete" data-index="${index}">Xóa</button></div></td>
       </tr>`).join(''):'<tr><td colspan="6"><div class="empty-state"><strong>Chưa có món phù hợp</strong>Thử đổi từ khóa hoặc thêm món mới.</div></td></tr>';
     }
     function openMenuForm(index=null){
-      const item=index===null?{name:'',category:'burgers',price:'',emoji:'🍔',rating:4.5,color:COLOR_PRESETS[0],description:'',available:true,stock:''}:state.menu[index];
+      const item=index===null?{name:'',category:'burgers',price:'',emoji:'🍔',rating:4.5,color:COLOR_PRESETS[0],description:'',available:true,stock:'',image:''}:state.menu[index];
       if(!item){toast('Không tìm thấy món ăn.','error');return}
       const selectedColor=COLOR_PRESETS.includes(item.color)?item.color:COLOR_PRESETS[0];
       showDialog(index===null?'Thêm món ăn':'Chỉnh sửa món ăn',`
@@ -899,12 +1037,18 @@
           <div class="field"><label for="menu-rating">Đánh giá</label><input id="menu-rating" name="rating" type="number" min="0" max="5" step="0.1" value="${escapeHTML(item.rating)}"></div>
           <div class="field span-2"><label for="menu-color">Màu thẻ</label><select id="menu-color" name="color">${COLOR_PRESETS.map((color,colorIndex)=>`<option value="${escapeHTML(color)}" ${selectedColor===color?'selected':''}>Tông màu ${colorIndex+1}</option>`).join('')}</select></div>
           <div class="field span-2"><label for="menu-description">Mô tả</label><textarea id="menu-description" name="description" maxlength="1000">${escapeHTML(item.description)}</textarea></div>
+          <div class="field span-2 image-upload">
+            <label for="menu-image">Hình ảnh món ăn</label>
+            <input id="menu-image" name="image" type="file" accept="image/png,image/jpeg,image/webp,image/gif">
+            <div class="menu-image-preview" id="menu-image-preview">${item.image?`<img src="${escapeHTML(item.image)}" alt="Xem trước hình ảnh món ăn">`:'<span class="preview-placeholder">Chọn ảnh PNG, JPG, WEBP hoặc GIF<br>tối đa 2 MB</span>'}</div>
+          </div>
           <div class="field"><label for="menu-stock">Tồn kho (để trống nếu không theo dõi)</label><input id="menu-stock" name="stock" type="number" min="0" max="10000000" step="1" value="${item.stock===undefined?'':escapeHTML(item.stock)}"></div>
           <label class="check-row"><input type="checkbox" name="available" ${item.available?'checked':''} ${item.stock===0?'disabled':''}> Đang bán</label>
           <p class="form-error span-2" id="menu-form-error" aria-live="polite"></p>
           <div class="dialog-actions span-2"><button type="button" class="button button-outline" data-action="dialog-close">Hủy</button><button type="submit" class="button button-primary">Lưu món</button></div>
         </form>`);
       $('#menu-form').dataset.editIndex=index===null?'':String(index);
+        $('#menu-form').dataset.imageData=typeof item.image==='string'?item.image:'';
       $('#menu-name').focus();
     }
     function saveMenuForm(form){
@@ -933,6 +1077,7 @@
         description:String(data.get('description')||'').trim().slice(0,1000),
         available:stock===0?false:form.elements.available.checked
       };
+      if(form.dataset.imageData)item.image=form.dataset.imageData;
       if(stock!==undefined)item.stock=stock;
       if(editIndex===null)state.menu.unshift(item);else state.menu[editIndex]=item;
       if(!saveMenu())return;
@@ -951,6 +1096,17 @@
     function paymentBadge(order){
       return order.paymentStatus==='verified'?'<span class="badge green">Đã nhận tiền</span>':'<span class="badge amber">Chờ xác nhận</span>';
     }
+    function renderPointsSyncStatus(order,index){
+      if(order.paymentStatus!=='verified')return '';
+      const label=order.pointsSyncStatus==='synced'?`Đã cộng ${order.pointsEarned||0} điểm`:
+        order.pointsSyncStatus==='not-registered'?'Chưa có tài khoản rewards':
+        order.pointsSyncStatus==='pending'?'Chờ đồng bộ điểm':
+        order.pointsSyncStatus==='local-only'?'Demo local · chưa đồng bộ':
+        order.pointsSyncStatus==='not-applicable'?'Không áp dụng':'Đang chờ cấp điểm';
+      const retry=['pending','not-registered'].includes(order.pointsSyncStatus)
+        ?` <button type="button" class="button button-outline button-small" data-action="points-sync" data-index="${index}">Thử lại</button>`:'';
+      return `<span class="table-secondary">${label}${retry}</span>`;
+    }
     function renderStatusOptions(selected){
       return ORDER_STATUSES.map(status=>`<option value="${status}" ${status===selected?'selected':''}>${ORDER_LABELS[status]}</option>`).join('');
     }
@@ -968,7 +1124,7 @@
         <td>${escapeHTML(formatDate(order.createdAt))}</td>
         <td class="money">${escapeHTML(formatMoney(order.totals.totalCents))}</td>
         <td><select class="status-select" data-action="order-status" data-index="${index}" aria-label="Trạng thái đơn ${escapeHTML(order.id)}">${renderStatusOptions(order.status)}</select></td>
-        <td><button type="button" class="button ${order.paymentStatus==='verified'?'button-dark':'button-amber'} button-small" data-action="payment-toggle" data-index="${index}" aria-pressed="${order.paymentStatus==='verified'}">${order.paymentStatus==='verified'?'Đã nhận tiền':'Xác nhận tiền'}</button></td>
+        <td><button type="button" class="button ${order.paymentStatus==='verified'?'button-dark':'button-amber'} button-small" data-action="payment-toggle" data-index="${index}" aria-pressed="${order.paymentStatus==='verified'}">${order.paymentStatus==='verified'?'Đã nhận tiền':'Xác nhận tiền'}</button>${renderPointsSyncStatus(order,index)}</td>
         <td><div class="actions"><button type="button" class="button button-outline button-small" data-action="order-detail" data-index="${index}">Chi tiết</button><button type="button" class="button button-danger button-small" data-action="order-delete" data-index="${index}">Xóa</button></div></td>
       </tr>`).join(''):'<tr><td colspan="7"><div class="empty-state"><strong>Không có đơn hàng phù hợp</strong>Hãy đổi bộ lọc hoặc từ khóa tìm kiếm.</div></td></tr>';
     }
@@ -1243,7 +1399,7 @@
       }
       state.menu=backup.menu;state.orders=backup.orders;state.settings=backup.settings;state.coupons=backup.coupons;
       state.pendingImport=null;
-      $('#rate-input').value=String(state.settings.usdToVnd);
+      updateExchangeRateDisplay();
       closeDialog();renderAll();renderNewOrderBadge();toast('Đã nhập bản sao lưu.','success');
     }
     function createDemoOrder(){
@@ -1332,26 +1488,83 @@
       const index=Number(element.dataset.index);
       return Number.isInteger(index)&&index>=0&&index<collection.length?index:null;
     }
-    function updateOrderStatus(element){
+    async function updateOrderStatus(element){
       const index=getIndex(element,state.orders);
       if(index===null||!ORDER_STATUSES.includes(element.value))return;
       const shouldReopen=dialog.open&&dialogTitle.textContent.startsWith('Chi tiết');
+      const wasPaid=state.orders[index].paymentStatus==='verified';
       state.orders[index].status=element.value;
       if(saveOrders()){
+        if(wasPaid)await syncOrderPoints(state.orders[index]);
         renderAll();renderNewOrderBadge();
         if(shouldReopen)openOrderDetails(index);
         toast('Đã cập nhật trạng thái đơn.','success');
       }
     }
-    function togglePayment(index){
+    async function syncOrderPoints(order,showResult=false){
+      if(order.demo||!order.customer.email){
+        order.pointsSyncStatus='not-applicable';
+        saveOrders();
+        return;
+      }
+      if(!getAdminToken()){
+        order.pointsSyncStatus='local-only';
+        saveOrders();
+        if(showResult)toast('Đang dùng demo local; điểm chưa thể đồng bộ vào tài khoản backend.','error');
+        return;
+      }
+      const paid=order.paymentStatus==='verified'&&order.status!=='cancelled';
+      try{
+        const result=await adminApi('/rewards/admin/order-payment',{
+          method:'POST',
+          body:JSON.stringify({
+            external_order_id:order.id,
+            customer_email:order.customer.email,
+            total_cents:order.totals.totalCents,
+            paid
+          })
+        });
+        if(result.reason==='user_not_found'){
+          order.pointsSyncStatus='not-registered';
+          order.pointsEarned=0;
+          if(showResult)toast('Đã xác nhận thanh toán, nhưng email này chưa có tài khoản rewards nên chưa thể cộng điểm.','error');
+        }else if(paid){
+          order.pointsSyncStatus='synced';
+          order.pointsEarned=result.points_earned||0;
+          if(showResult)toast(`Đã xác nhận thanh toán và cộng ${order.pointsEarned} điểm vào tài khoản khách.`, 'success');
+        }else{
+          order.pointsSyncStatus='revoked';
+          order.pointsEarned=0;
+          if(showResult)toast('Đã hủy xác nhận thanh toán và thu hồi điểm đơn này.','success');
+        }
+      }catch(error){
+        console.error('Không thể đồng bộ điểm rewards cho đơn hàng.',error);
+        order.pointsSyncStatus='pending';
+        if(showResult)toast(`Trạng thái thanh toán đã lưu, nhưng chưa đồng bộ được điểm: ${error.message}`,'error');
+      }
+      saveOrders();
+    }
+    async function syncVerifiedOrderPoints(){
+      for(const order of state.orders){
+        if(order.paymentStatus==='verified'&&order.status!=='cancelled'&&order.pointsSyncStatus!=='synced'&&order.pointsSyncStatus!=='not-applicable'){
+          await syncOrderPoints(order);
+        }
+      }
+      renderOrders();
+    }
+    async function togglePayment(index){
       const order=state.orders[index];
       if(!order)return;
+      if(order.status==='cancelled'&&order.paymentStatus!=='verified'){
+        toast('Không thể xác nhận thanh toán cho đơn đã hủy.','error');
+        return;
+      }
       order.paymentStatus=order.paymentStatus==='verified'?'unverified':'verified';
       if(saveOrders()){
         const shouldReopen=dialog.open&&dialogTitle.textContent.startsWith('Chi tiết');
+        await syncOrderPoints(order,true);
         renderAll();renderNewOrderBadge();
         if(shouldReopen)openOrderDetails(index);
-        toast(order.paymentStatus==='verified'?'Đã ghi nhận đã nhận tiền.':'Đã chuyển về chờ xác nhận tiền.','success');
       }
     }
     document.addEventListener('click',event=>{
@@ -1366,6 +1579,11 @@
       if(action==='menu-add'){openMenuForm();return}
       if(action==='menu-edit'){const index=getIndex(button,state.menu);if(index!==null)openMenuForm(index);return}
       if(action==='menu-delete'){const index=getIndex(button,state.menu);if(index!==null)showConfirmation('Xóa món ăn',`Bạn có chắc muốn xóa “${state.menu[index].name}” khỏi menu?`,'menu-delete',index);return}
+      if(action==='points-sync'){
+        const index=getIndex(button,state.orders);
+        if(index!==null)syncOrderPoints(state.orders[index],true).then(()=>renderAll());
+        return;
+      }
       if(action==='order-detail'){const index=getIndex(button,state.orders);if(index!==null)openOrderDetails(index);return}
       if(action==='order-delete'){const index=getIndex(button,state.orders);if(index!==null)showConfirmation('Xóa đơn hàng',`Xóa đơn ${state.orders[index].id}? Thao tác này không thể hoàn tác.`,'order-delete',index);return}
       if(action==='payment-toggle'){const index=getIndex(button,state.orders);if(index!==null)togglePayment(index);return}
@@ -1397,6 +1615,32 @@
         updateOrderStatus(target);
       }else if(target.id==='backup-file'){
         readBackupFile(target.files?.[0]);
+      }else if(target.id==='menu-image'){
+        const file=target.files?.[0];
+        if(!file)return;
+        if(!/^image\/(?:png|jpeg|webp|gif)$/.test(file.type)){
+          toast('Chỉ hỗ trợ ảnh PNG, JPG, WEBP hoặc GIF.','error');
+          target.value='';
+          return;
+        }
+        if(file.size>2*1024*1024){
+          toast('Hình ảnh phải nhỏ hơn hoặc bằng 2 MB.','error');
+          target.value='';
+          return;
+        }
+        const reader=new FileReader();
+        reader.onload=()=>{
+          const dataUrl=String(reader.result||'');
+          if(!/^data:image\/(?:png|jpeg|webp|gif);base64,/i.test(dataUrl)){
+            toast('Không thể đọc hình ảnh này.','error');
+            return;
+          }
+          const form=$('#menu-form');
+          form.dataset.imageData=dataUrl;
+          $('#menu-image-preview').innerHTML=`<img src="${escapeHTML(dataUrl)}" alt="Xem trước hình ảnh món ăn">`;
+        };
+        reader.onerror=()=>toast('Không thể đọc tệp hình ảnh.','error');
+        reader.readAsDataURL(file);
       }
     });
     document.addEventListener('submit',event=>{
@@ -1410,13 +1654,7 @@
     $('#order-status-filter').addEventListener('change',renderOrders);
     $('#order-payment-filter').addEventListener('change',renderOrders);
     $('#customer-search').addEventListener('input',renderCustomers);
-    $('#rate-form').addEventListener('submit',event=>{
-      event.preventDefault();
-      const rate=Number($('#rate-input').value);
-      if(!Number.isFinite(rate)||rate<=0||rate>100000000){toast('Tỷ giá phải là số lớn hơn 0.','error');return}
-      state.settings.usdToVnd=rate;
-      if(saveSettings())toast('Đã lưu tỷ giá.','success');
-    });
+    $('#rate-refresh').addEventListener('click',()=>refreshMarketExchangeRate(true));
     dialog.addEventListener('click',event=>{if(event.target===dialog)closeDialog()});
     dialog.addEventListener('cancel',event=>{event.preventDefault();closeDialog()});
     document.addEventListener('keydown',event=>{if(event.key==='Escape'&&dialog.open){event.preventDefault();closeDialog()}});
@@ -1439,7 +1677,9 @@
         const record=readStored(STORAGE_KEYS.settings,{usdToVnd:25000});
         const rate=Number(record.value?.usdToVnd);
         state.settings.usdToVnd=Number.isFinite(rate)&&rate>0?rate:25000;
-        $('#rate-input').value=String(state.settings.usdToVnd);
+        state.settings.exchangeUpdatedAt=Number(record.value?.exchangeUpdatedAt)||0;
+        state.settings.exchangeSource=typeof record.value?.exchangeSource==='string'?record.value.exchangeSource:'Tỷ giá dự phòng';
+        updateExchangeRateDisplay();
       }
     });
     document.addEventListener('visibilitychange',()=>{

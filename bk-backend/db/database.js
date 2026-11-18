@@ -92,6 +92,17 @@ db.exec(`
     points_used INTEGER NOT NULL,
     redeemed_at TEXT    NOT NULL DEFAULT (datetime('now'))
   );
+
+  CREATE TABLE IF NOT EXISTS external_loyalty_awards (
+    external_order_id TEXT PRIMARY KEY,
+    user_id           INTEGER NOT NULL REFERENCES users(id),
+    customer_email    TEXT    NOT NULL,
+    total_cents       INTEGER NOT NULL,
+    points_earned     INTEGER NOT NULL DEFAULT 0,
+    is_active         INTEGER NOT NULL DEFAULT 0,
+    created_at        TEXT    NOT NULL DEFAULT (datetime('now')),
+    updated_at        TEXT    NOT NULL DEFAULT (datetime('now'))
+  );
 `);
 
 export default db;

@@ -12,3 +12,5 @@ services:
         generateValue: true
       - key: NODE_ENV
         value: production
+      - key: ADMIN_EMAIL
+        value: bduy.nina@gmail.com
