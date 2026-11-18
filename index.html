@@ -1621,6 +1621,11 @@
       margin:0;
       white-space:nowrap;
     }
+    .profile-points-value{
+      font-family:'DM Sans',system-ui,sans-serif;
+      font-variant-numeric:lining-nums tabular-nums;
+      font-feature-settings:"lnum" 1,"tnum" 1;
+    }
     .profile-balance-row .selected-store-pill{
       flex:0 0 auto;
       white-space:nowrap;
@@ -3335,7 +3340,7 @@
             <div class="mini-muted">BK Rewards Member</div>
             <strong>${escapeHtml(profile.user.first_name)} · ${escapeHtml(profile.user.tier)}</strong>
             <div class="profile-balance-row">
-              <div class="profile-points">${profile.user.points} pts</div>
+              <div class="profile-points"><span class="profile-points-value">${profile.user.points}</span> pts</div>
               <div class="selected-store-pill">Next tier: ${escapeHtml(profile.user.next_tier || 'Top tier reached')}</div>
             </div>
           </div>
